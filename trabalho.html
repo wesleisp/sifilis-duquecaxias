@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfil de Investigación Formativa — Sífilis Campos Elíseos</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Arial&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #c8c8c8;
+      font-family: Arial, sans-serif;
+      font-size: 12pt;
+      color: #000;
+    }
+
+    /* Documento único contínuo — sem divs de página */
+    .documento {
+      width: 210mm;
+      background: #fff;
+      margin: 20px auto;
+      padding: 25mm 25mm 25mm 30mm;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+    }
+
+    /* Seções que forçam nova página ao imprimir */
+    .secao-pagina {
+      break-before: page;
+      page-break-before: always;
+      padding-top: 10mm;
+    }
+
+    /* Elementos que NUNCA devem quebrar no meio */
+    .grafico-container,
+    .graficos-duplos,
+    .grafico-box,
+    .destaque,
+    .tabela-bloco,
+    table.academica,
+    ol, ul {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    h2.secao, h3.subsecao {
+      break-after: avoid;
+      page-break-after: avoid;
+    }
+
+    /* CAPA */
+    .capa {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 237mm;
+      text-align: center;
+      padding-bottom: 10mm;
+    }
+
+    .logo-uni {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 8px;
+    }
+
+    .logo-circle {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: #1a6b2f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 10pt;
+      font-weight: bold;
+      text-align: center;
+      line-height: 1.2;
+      padding: 8px;
+    }
+
+    .uni-nome h2 {
+      font-size: 22pt;
+      font-weight: 900;
+      color: #1a6b2f;
+      letter-spacing: 2px;
+    }
+
+    .uni-nome p {
+      font-size: 10pt;
+      color: #1a6b2f;
+      letter-spacing: 4px;
+      font-weight: 600;
+    }
+
+    .capa-titulo {
+      margin: 20px 0;
+    }
+
+    .capa-titulo h1 {
+      font-size: 14pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      letter-spacing: 1px;
+    }
+
+    .capa-titulo h3 {
+      font-size: 13pt;
+      font-weight: 700;
+      line-height: 1.6;
+      max-width: 140mm;
+      margin: 0 auto;
+    }
+
+    .capa-info {
+      text-align: left;
+      width: 100%;
+      font-size: 11pt;
+      line-height: 2;
+    }
+
+    .capa-info p { margin-bottom: 2px; }
+    .capa-info strong { font-weight: 700; }
+
+    .integrantes { margin-top: 12px; }
+    .integrantes p { font-size: 10.5pt; line-height: 1.7; }
+
+    .capa-rodape {
+      font-size: 11pt;
+      font-weight: 700;
+      line-height: 1.8;
+    }
+
+    /* CORPO DO TRABALHO */
+    h2.secao {
+      font-size: 12pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      text-align: center;
+      margin: 24px 0 16px 0;
+      letter-spacing: 0.5px;
+    }
+
+    h3.subsecao {
+      font-size: 12pt;
+      font-weight: 700;
+      margin: 18px 0 10px 0;
+    }
+
+    p {
+      text-align: justify;
+      line-height: 1.8;
+      margin-bottom: 12px;
+      text-indent: 12.5mm;
+    }
+
+    p.sem-indent { text-indent: 0; }
+
+    ul, ol {
+      margin: 8px 0 12px 20mm;
+      line-height: 1.8;
+    }
+
+    li { margin-bottom: 4px; }
+
+    .numero-pag { display: none; }
+
+    /* TABELAS */
+    table.academica {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 10.5pt;
+    }
+
+    table.academica th {
+      background: #1a6b2f;
+      color: white;
+      padding: 8px 10px;
+      text-align: center;
+      font-weight: 600;
+      border: 1px solid #ccc;
+    }
+
+    table.academica td {
+      padding: 7px 10px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+
+    table.academica tr:nth-child(even) td { background: #f5f5f5; }
+
+    .tabela-titulo {
+      font-size: 10.5pt;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 6px;
+      text-indent: 0;
+    }
+
+    .tabela-fonte {
+      font-size: 9.5pt;
+      text-align: left;
+      margin-top: 4px;
+      margin-bottom: 16px;
+      text-indent: 0;
+      color: #444;
+    }
+
+    /* GRÁFICOS */
+    .grafico-container {
+      margin: 16px auto;
+      max-width: 120mm;
+    }
+
+    .grafico-titulo {
+      font-size: 10.5pt;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 8px;
+      text-indent: 0;
+    }
+
+    .grafico-fonte {
+      font-size: 9.5pt;
+      text-align: center;
+      margin-top: 4px;
+      color: #444;
+      text-indent: 0;
+    }
+
+    .graficos-duplos {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 16px 0;
+    }
+
+    .grafico-box { text-align: center; }
+    .grafico-box p { font-size: 9.5pt; font-weight: 700; text-indent: 0; margin-bottom: 6px; }
+    .grafico-box small { font-size: 9pt; color: #555; }
+
+    /* DESTAQUE */
+    .destaque {
+      background: #f0f7f2;
+      border-left: 4px solid #1a6b2f;
+      padding: 10px 14px;
+      margin: 14px 0;
+      font-size: 11pt;
+      line-height: 1.6;
+    }
+
+    .destaque p { text-indent: 0; margin: 0; }
+
+    /* REFERÊNCIAS */
+    .referencia {
+      text-indent: 0 !important;
+      padding-left: 12.5mm;
+      text-indent: -12.5mm !important;
+      margin-left: 12.5mm;
+      line-height: 1.8;
+      margin-bottom: 8px;
+    }
+
+    hr.divisor {
+      border: none;
+      border-top: 1px solid #ccc;
+      margin: 20px 0;
+    }
+
+    @media print {
+      body { background: white; }
+      .documento { margin: 0; box-shadow: none; padding: 20mm 20mm 20mm 30mm; width: 100%; }
+      @page { margin: 0; size: A4; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="documento">
+
+<!-- ==================== CAPA ==================== -->
+<div class="capa">
+
+    <div>
+      <div class="logo-uni">
+        <div class="logo-circle">UNE<br>ECO</div>
+        <div class="uni-nome">
+          <h2>ECOLÓGICA</h2>
+          <p>UNIVERSIDAD NACIONAL</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="capa-titulo">
+      <h1>Perfil de Investigación Formativa</h1>
+      <h3>Incidencia de sífilis en adultos jóvenes en el barrio Campos Elíseos, municipio de Duque de Caxias (RJ): análisis de la adherencia al tratamiento y propuesta de estrategias de educación en salud.</h3>
+    </div>
+
+    <div class="capa-info">
+      <p><strong>CARRERA:</strong> MEDICINA</p>
+      <p><strong>SEMESTRE:</strong> 3ER SEMESTRE W</p>
+      <p><strong>ASIGNATURA:</strong> INTERACCIÓN SOCIAL: EDUCACIÓN PARA LA SALUD PÚBLICA</p>
+      <p><strong>DOCENTE:</strong> LUIS FERNANDO JUSTINIANO ESCOBAR</p>
+      <div class="integrantes">
+        <p><strong>INTEGRANTES:</strong></p>
+        <p>1. Barros de Miranda Estevam Kleine Thaís - 56643</p>
+        <p>2. Carvalho Nogueira Antônio – 56814</p>
+        <p>3. Da Silva Barbosa Márcio Wila – 56789</p>
+        <p>4. De Jesus Nascimento Santos Yasmim - 56870</p>
+        <p>5. De Souza Carina Lúcia - 56801</p>
+        <p>6. De Souza Patrícia Karla - 56842</p>
+        <p>7. Dutra Faiole Aniceto Ana Carolina - 56837</p>
+        <p>8. Esteves Tardelly Diogo - 56802</p>
+        <p>9. Franco e Silva Ellen - 56810</p>
+        <p>10. Franco e Silva Evelyn - 56809</p>
+        <p>11. Furlanetto Maria Luísa - 56914</p>
+        <p>12. Machado Martins Brito Thatiane - 56825</p>
+        <p>13. Moreira Brito Lucas - 56869</p>
+        <p>14. Soares Cruz Joice - 56895</p>
+        <p>15. Tamiris de Morais Loane - 56599</p>
+      </div>
+    </div>
+
+    <div class="capa-rodape">
+      <p>SANTA CRUZ – BOLIVIA</p>
+      <p>GESTIÓN I/2026</p>
+    </div>
+  </div>
+
+<!-- ==================== RESUMO ==================== -->
+<div class="secao-pagina">
+  <h2 class="secao">Resumen</h2>
+
+  <p>La sífilis es una infección de transmisión sexual causada por la bacteria <em>Treponema pallidum</em> y sigue siendo un importante problema de salud pública en Brasil. A pesar de contar con un diagnóstico sencillo y un tratamiento eficaz disponible a través del Sistema Único de Salud (SUS), se observa un aumento sostenido en el número de casos notificados en los últimos años.</p>
+
+  <p>El presente estudio tuvo como objetivo analizar las estrategias de prevención y la adherencia al tratamiento de la sífilis en el barrio de Campos Elíseos, ubicado en el municipio de Duque de Caxias, Rio de Janeiro, Brasil. Se trata de una investigación epidemiológica descriptiva y exploratoria con enfoque cuantitativo, basada en datos primarios recolectados en la Unidad Prehospitalaria (UPH) del barrio y en datos secundarios provenientes del Sistema de Información de Agravos de Notificación (SINAN), del Departamento de Informática del SUS (DATASUS) y de informes de la Secretaría Municipal de Salud de Duque de Caxias. El período analizado correspondió al año 2025.</p>
+
+  <p>La muestra fue constituida por 320 adultos jóvenes entre 18 y 29 años examinados en la UPH. De este total, 48 (15%) resultaron positivos para sífilis. Entre los casos positivos, 42 (87,5%) iniciaron el tratamiento con penicilina benzatínica, mientras 6 (12,5%) no completaron el esquema terapéutico. La distribución por sexo reveló predominio femenino (58,3%). En cuanto al estadio clínico al momento del diagnóstico, predominó la sífilis primaria (41,7%), seguida de sífilis secundaria y latente (25% cada una) y sífilis terciaria (8,3%). Únicamente 25 pacientes (52,1%) recibieron asistencia de un servicio especializado.</p>
+
+  <p>Los resultados evidencian que, aunque la mayoría de los pacientes positivos inició el tratamiento, la tasa de abandono (12,5%) y el diagnóstico tardío en casos de sífilis latente y terciaria representan desafíos persistentes para el control de la enfermedad en este territorio. Se recomienda la implementación de estrategias de educación en salud, fortalecimiento de la búsqueda activa por parte de los Agentes Comunitarios de Salud (ACS) y ampliación del acceso al seguimiento especializado.</p>
+
+  <p><strong>Palabras clave:</strong> sífilis; adherencia al tratamiento; adultos jóvenes; salud pública; atención primaria; Duque de Caxias.</p>
+</div>
+
+<!-- ==================== INTRODUÇÃO ==================== -->
+<div class="secao-pagina">
+  <h2 class="secao">Introducción</h2>
+
+  <p>La sífilis es una enfermedad infecciosa sistémica causada por la bacteria <em>Treponema pallidum</em> y transmitida principalmente por contacto sexual sin protección. La enfermedad puede presentar diferentes manifestaciones clínicas, siendo clasificada en sífilis primaria, secundaria, latente y terciaria (BRASIL, 2023).</p>
+
+  <p>Además de la transmisión sexual, la infección puede ocurrir por transmisión vertical, de la madre al bebé durante la gestación, resultando en sífilis congénita. Este tipo de transmisión representa un grave problema de salud pública, ya que puede causar aborto espontáneo, parto prematuro, malformaciones congénitas e incluso muerte fetal (DOMINGUES et al., 2016).</p>
+
+  <p>En Brasil, se observa un aumento significativo en el número de casos notificados de sífilis en las últimas décadas. Según el Ministerio de Salud, más de 200 mil casos de sífilis adquirida se registran anualmente en el país, lo que demuestra la persistencia de la enfermedad incluso con la disponibilidad de diagnóstico y tratamiento eficaces (BRASIL, 2023). Entre los factores que contribuyen a este escenario se destacan la reducción del uso de preservativos, el diagnóstico tardío, la falta de tratamiento simultáneo de las parejas sexuales y la baja adherencia terapéutica.</p>
+
+  <p>El municipio de Duque de Caxias, ubicado en la Región Metropolitana de Río de Janeiro, cuenta con una población de aproximadamente 870 mil habitantes (IBGE, 2022). La presencia de marcadas desigualdades socioeconómicas y una cobertura de salud aún limitada en determinados territorios como el barrio Campos Elíseos genera impactos directos en la prevención, el diagnóstico precoz y el tratamiento de enfermedades de transmisión sexual, incluida la sífilis.</p>
+
+  <p>Ante este escenario, se vuelve relevante analizar el perfil epidemiológico de la sífilis en este territorio, identificando factores asociados al abandono del tratamiento y evaluando las estrategias de adherencia implementadas por la Unidad Prehospitalaria (UPH) local. La comprensión de estos factores es fundamental para el diseño de intervenciones eficaces en el ámbito de la atención primaria de salud.</p>
+</div>
+
+<!-- ==================== PROBLEMA + OBJETIVOS ==================== -->
+<div class="secao-pagina">
+  <h2 class="secao">Problema de Investigación y Justificación</h2>
+
+  <p>A pesar de la existencia de diagnóstico accesible y tratamiento gratuito disponible en el Sistema Único de Salud, la sífilis continúa presentando un aumento en el número de casos registrados en el municipio de Duque de Caxias y, en particular, en el barrio Campos Elíseos, donde las condiciones de vulnerabilidad social se acentúan.</p>
+
+  <p>Los datos recolectados en la Unidad Prehospitalaria (UPH) del barrio en el año 2025 revelaron una positividad de 15% entre los 320 jóvenes examinados, con una tasa de abandono del tratamiento del 12,5%. Estos indicadores reflejan la persistencia de barreras de acceso y adherencia que merecen atención específica por parte de los gestores y profesionales de salud.</p>
+
+  <p>Ante este escenario, surge la siguiente pregunta de investigación: <strong>¿Cuáles estrategias pueden contribuir a mejorar la adherencia al tratamiento de la sífilis en el barrio de Campos Elíseos, en Duque de Caxias – RJ?</strong></p>
+
+  <hr class="divisor">
+
+  <h2 class="secao">Objetivo General</h2>
+
+  <p>Analizar las estrategias de adherencia al tratamiento de la sífilis en la UPH (Unidad Prehospitalaria) del barrio Campos Elíseos, municipio de Duque de Caxias, Río de Janeiro – Brasil, con base en datos recolectados durante el año 2025.</p>
+
+  <h2 class="secao">Objetivos Específicos</h2>
+
+  <ol>
+    <li>Analizar la prevalencia y el perfil epidemiológico de los casos de sífilis en el territorio estudiado.</li>
+    <li>Identificar factores asociados a la baja adherencia al tratamiento.</li>
+    <li>Evaluar la importancia de la atención primaria de salud en el diagnóstico precoz de la enfermedad.</li>
+    <li>Identificar las estrategias implementadas por la UPH para la adherencia al tratamiento.</li>
+    <li>Detectar el momento de mayor abandono dentro del esquema terapéutico.</li>
+    <li>Presentar estrategias que puedan contribuir al control de la sífilis en el territorio.</li>
+  </ol>
+</div>
+
+<!-- ==================== MARCO TEÓRICO ==================== -->
+<div class="secao-pagina">
+  <h2 class="secao">Marco Teórico</h2>
+
+  <p>La sífilis es considerada una de las infecciones de transmisión sexual más antiguas registradas en la historia de la medicina. A pesar de los avances en el área de la salud pública y del desarrollo de tratamientos eficaces, la enfermedad sigue siendo un desafío para los sistemas de salud en diversos países, especialmente en regiones con alta vulnerabilidad social.</p>
+
+  <p>Desde el punto de vista clínico, la sífilis evoluciona en fases bien definidas. La sífilis primaria se caracteriza por la presencia del cancro duro, una úlcera indolora en el sitio de inoculación. La sífilis secundaria surge semanas después y puede manifestarse con erupciones cutáneas, fiebre y linfadenopatía. La fase latente se define por la ausencia de síntomas, con serología positiva, y puede dividirse en latente reciente (menos de un año de evolución) y latente tardía. Finalmente, la sífilis terciaria, que afecta aproximadamente un tercio de los casos no tratados, compromete el sistema nervioso central, el aparato cardiovascular y puede causar lesiones destructivas denominadas gomas (BRASIL, 2023).</p>
+
+  <p>Según el Ministerio de Salud, el diagnóstico puede realizarse mediante pruebas rápidas o exámenes de laboratorio específicos como el VDRL y el FTA-Abs. El tratamiento de elección consiste en la administración de penicilina benzatínica, considerada altamente eficaz para interrumpir la progresión de la enfermedad en todas sus fases. Para la sífilis primaria y secundaria, se utiliza una dosis única de 2,4 milhões UI; para la sífilis latente tardía o de duración indeterminada, se recomiendan tres dosis semanales (BRASIL, 2023).</p>
+
+  <p>Diversos factores dificultan el control de la sífilis: la baja adherencia al tratamiento, la ausencia de tratamiento simultáneo de las parejas sexuales, el diagnóstico tardío y el estigma asociado a las infecciones sexualmente transmisibles. La sífilis congénita, en particular, representa un indicador sensible de la calidad de la atención prenatal. Los estudios señalan que la mayoría de los casos podría evitarse con diagnóstico precoz y tratamiento adecuado de la gestante durante el embarazo (DOMINGUES et al., 2016).</p>
+
+  <p>En este contexto, la atención primaria de salud desempeña un papel fundamental en la prevención, diagnóstico y seguimiento de los casos de sífilis. Las Unidades Básicas de Salud (UBS) son responsables de la realización de pruebas rápidas, orientaciones preventivas y el acompañamiento de los pacientes. Los Agentes Comunitarios de Salud (ACS) tienen un rol estratégico en la búsqueda activa de casos y en la motivación para la conclusión del tratamiento (BRASIL, 2023).</p>
+
+  <p>El uso de sistemas de información como el e-SUS y el SINAN permite el monitoreo epidemiológico de los casos notificados, posibilitando la identificación de territorios con mayor vulnerabilidad y la orientación de acciones de salud colectiva. La integración entre vigilancia epidemiológica y atención clínica es, por tanto, esencial para el enfrentamiento eficaz de la sífilis en el nivel local (DATASUS, 2023).</p>
+</div>
+
+<!-- ==================== METODOLOGIA ==================== -->
+<div class="secao-pagina">
+  <h2 class="secao">Metodología</h2>
+
+  <p>El presente estudio se caracteriza como una investigación epidemiológica descriptiva y exploratoria, con enfoque cuantitativo. Se utilizaron datos primarios y secundarios para permitir una visión más completa del fenómeno estudiado.</p>
+
+  <h3 class="subsecao">Fuentes de datos</h3>
+  <ul>
+    <li><strong>Datos primarios:</strong> formulario de recolección de datos aplicado en la Unidad Prehospitalaria (UPH) del barrio Campos Elíseos, municipio de Duque de Caxias – RJ.</li>
+    <li><strong>Datos secundarios:</strong> Sistema de Información de Agravos de Notificación (SINAN), Departamento de Informática del SUS (DATASUS) e informes de la Secretaría Municipal de Salud de Duque de Caxias.</li>
+  </ul>
+
+  <h3 class="subsecao">Período de análisis</h3>
+  <p>El período de análisis correspondió al año 2025.</p>
+
+  <h3 class="subsecao">Población del estudio</h3>
+  <p>La población estuvo constituida por adultos jóvenes entre 18 y 29 años diagnosticados con sífilis, residentes en el barrio Campos Elíseos, municipio de Duque de Caxias – RJ, atendidos en la UPH durante el período de estudio.</p>
+
+  <h3 class="subsecao">Criterios de inclusión</h3>
+  <ul>
+    <li>Individuos con edad entre 18 y 29 años;</li>
+    <li>Diagnóstico confirmado de sífilis en el año 2025;</li>
+    <li>Registro en al menos una de las fuentes de datos (SINAN, DATASUS o UPH);</li>
+    <li>Disponibilidad de información sobre tratamiento o seguimiento.</li>
+  </ul>
+
+  <h3 class="subsecao">Criterios de exclusión</h3>
+  <ul>
+    <li>Casos de sífilis congénita;</li>
+    <li>Individuos fuera del rango etario definido;</li>
+    <li>Registros duplicados entre las diferentes bases de datos;</li>
+    <li>Casos con información incompleta sobre evolución o tratamiento.</li>
+  </ul>
+
+  <h3 class="subsecao">Variables del estudio</h3>
+  <p>Se analizaron variables sociodemográficas, clínicas y relacionadas con el tratamiento, tales como: sexo, edad, número de casos positivos y negativos, estadio clínico al diagnóstico, inicio y continuidad del tratamiento, etapa de abandono del esquema terapéutico, tratamiento supervisado en la UPH y acceso a servicio especializado.</p>
+
+  <h3 class="subsecao">Análisis de datos</h3>
+  <p>Los datos fueron tabulados y analizados mediante estadística descriptiva, con cálculo de frecuencias absolutas y relativas. Los resultados fueron organizados en tablas y gráficos para facilitar la visualización e interpretación de los hallazgos.</p>
+</div>
+
+<!-- ==================== RESULTADOS ==================== -->
+<div class="secao-pagina">
+  <h2 class="secao">Resultados</h2>
+
+  <p>Fueron examinados 320 adultos jóvenes entre 18 y 29 años en la Unidad Prehospitalaria (UPH) del barrio Campos Elíseos durante el año 2025. De este total, 48 (15%) resultaron positivos para sífilis y 272 (85%) negativos, conforme se ilustra en el Gráfico 1.</p>
+
+  <div class="grafico-container">
+    <p class="grafico-titulo">Gráfico 1 — Resultado de los exámenes de sífilis (n=320)</p>
+    <canvas id="g1" height="160"></canvas>
+    <p class="grafico-fonte">Fuente: UPH Campos Elíseos, Duque de Caxias – RJ, 2025.</p>
+  </div>
+
+  <h3 class="subsecao">Adherencia al tratamiento</h3>
+
+  <p>Entre los 48 casos positivos, 42 (87,5%) iniciaron el tratamiento con penicilina benzatínica, mientras 6 (12,5%) no completaron el esquema terapéutico. El Gráfico 2 presenta la distribución de la adherencia.</p>
+
+  <div class="graficos-duplos">
+    <div class="grafico-box">
+      <p>Gráfico 2 — Adherencia al tratamiento (n=48)</p>
+      <canvas id="g2" height="180"></canvas>
+      <small>Fuente: UPH Campos Elíseos, 2025.</small>
+    </div>
+    <div class="grafico-box">
+      <p>Gráfico 3 — Etapa de abandono del tratamiento (n=6)</p>
+      <canvas id="g3" height="180"></canvas>
+      <small>Fuente: UPH Campos Elíseos, 2025.</small>
+    </div>
+  </div>
+
+  <p>El análisis de los 6 casos de abandono reveló que 3 (50%) interrumpieron el tratamiento en la primera dosis, 2 (33,3%) en la segunda y 1 (16,7%) en la tercera dosis de penicilina benzatínica. Este hallazgo indica que el mayor riesgo de abandono ocurre al inicio del esquema terapéutico.</p>
+
+  <h3 class="subsecao">Perfil sociodemográfico de los casos positivos</h3>
+
+  <p>En cuanto a la distribución por sexo, se observó predominio del sexo femenino con 28 casos (58,3%), frente a 20 casos del sexo masculino (41,7%), conforme Gráfico 4. Respecto al tratamiento de la pareja en casos de gestantes positivas, 5 parejas recibieron tratamiento (71,4%), mientras 2 (28,6%) no lo recibieron.</p>
+
+  <div class="graficos-duplos">
+    <div class="grafico-box">
+      <p>Gráfico 4 — Distribución por sexo (n=48)</p>
+      <canvas id="g4" height="180"></canvas>
+      <small>Fuente: UPH Campos Elíseos, 2025.</small>
+    </div>
+    <div class="grafico-box">
+      <p>Gráfico 5 — Estadio clínico al diagnóstico (n=48)</p>
+      <canvas id="g5" height="180"></canvas>
+      <small>Fuente: UPH Campos Elíseos, 2025.</small>
+    </div>
+  </div>
+
+  <h3 class="subsecao">Estadio clínico al diagnóstico</h3>
+
+  <p>La distribución de los casos según el estadio clínico al momento del diagnóstico mostró que la sífilis primaria correspondió a 20 casos (41,7%), seguida de sífilis secundaria con 12 casos (25%), sífilis latente con 12 casos (25%) y sífilis terciaria con 4 casos (8,3%), conforme Gráfico 5. La identificación de 4 casos en estadio terciario es especialmente preocupante, ya que indica falla en el diagnóstico precoz.</p>
+
+  <div class="tabela-bloco">
+  <p class="tabela-titulo">Tabla 1 — Distribución de los casos positivos según estadio clínico, adherencia y sexo — UPH Campos Elíseos, 2025</p>
+  <table class="academica">
+    <thead>
+      <tr>
+        <th>Variable</th>
+        <th>Categoría</th>
+        <th>n</th>
+        <th>%</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td rowspan="2"><strong>Resultado examen</strong></td><td>Positivo</td><td>48</td><td>15,0%</td></tr>
+      <tr><td>Negativo</td><td>272</td><td>85,0%</td></tr>
+      <tr><td rowspan="2"><strong>Tratamiento</strong></td><td>Completó</td><td>42</td><td>87,5%</td></tr>
+      <tr><td>Abandonó</td><td>6</td><td>12,5%</td></tr>
+      <tr><td rowspan="3"><strong>Etapa abandono</strong></td><td>1ª dosis</td><td>3</td><td>50,0%</td></tr>
+      <tr><td>2ª dosis</td><td>2</td><td>33,3%</td></tr>
+      <tr><td>3ª dosis</td><td>1</td><td>16,7%</td></tr>
+      <tr><td rowspan="2"><strong>Sexo</strong></td><td>Femenino</td><td>28</td><td>58,3%</td></tr>
+      <tr><td>Masculino</td><td>20</td><td>41,7%</td></tr>
+      <tr><td rowspan="4"><strong>Estadio clínico</strong></td><td>Primario</td><td>20</td><td>41,7%</td></tr>
+      <tr><td>Secundario</td><td>12</td><td>25,0%</td></tr>
+      <tr><td>Latente</td><td>12</td><td>25,0%</td></tr>
+      <tr><td>Terciario</td><td>4</td><td>8,3%</td></tr>
+      <tr><td rowspan="2"><strong>Supervisión UPH</strong></td><td>Sí</td><td>30</td><td>62,5%</td></tr>
+      <tr><td>No</td><td>18</td><td>37,5%</td></tr>
+      <tr><td rowspan="2"><strong>Servicio especializado</strong></td><td>Sí</td><td>25</td><td>52,1%</td></tr>
+      <tr><td>No</td><td>23</td><td>47,9%</td></tr>
+    </tbody>
+  </table>
+  <p class="tabela-fonte">Fuente: UPH Campos Elíseos, Duque de Caxias – RJ, 2025. Elaboración propia.</p>
+  </div>
+
+  <h3 class="subsecao">Seguimiento y supervisión terapéutica</h3>
+
+  <p>En relación al tratamiento supervisado en la propia UPH, 30 pacientes (62,5%) recibieron supervisión directa, mientras 18 (37,5%) no la recibieron. Este hallazgo es relevante, pues la supervisión in loco representa un factor protector contra el abandono.</p>
+
+  <p>Respecto al acceso a servicio especializado, apenas 25 pacientes (52,1%) fueron referidos o recibieron atención especializada, mientras 23 (47,9%) no tuvieron acceso a ese nivel de atención, conforme Gráfico 6.</p>
+
+  <div class="grafico-container">
+    <p class="grafico-titulo">Gráfico 6 — Acceso a servicio especializado (n=48)</p>
+    <canvas id="g6" height="160"></canvas>
+    <p class="grafico-fonte">Fuente: UPH Campos Elíseos, Duque de Caxias – RJ, 2025.</p>
+  </div>
+
+  <h3 class="subsecao">Estrategias implementadas por la UPH</h3>
+
+  <p>La unidad de salud ya ha implementado estrategias para mejorar la adherencia al tratamiento de la sífilis, entre las cuales se destacan: búsqueda activa de pacientes por los Agentes Comunitarios de Salud (ACS), monitoreo de los casos mediante el sistema e-SUS, educación en salud en las Unidades Básicas de Salud (UBS) y seguimiento de pacientes que no comparecieron a las consultas programadas (faltosos). El servicio especializado al que fueron referidos 25 pacientes también ya opera con estrategias propias de adherencia.</p>
+
+  <div class="destaque">
+    <p>✔ La UPH Campos Elíseos ya cuenta con mecanismos de búsqueda activa y monitoreo via e-SUS, lo que representa una base sólida para la ampliación de las acciones de control de la sífilis en el territorio.</p>
+  </div>
+</div>
+
+<!-- ==================== DISCUSSÃO ==================== -->
+<div class="secao-pagina">
+  <h2 class="secao">Discusión</h2>
+
+  <p>Los resultados obtenidos en la UPH Campos Elíseos en 2025 reflejan un escenario epidemiológico preocupante, consistente con los datos nacionales que apuntan a un aumento sostenido de los casos de sífilis en Brasil. La positividad del 15% entre los 320 jóvenes examinados supera la media nacional estimada para la población general, indicando que el barrio Campos Elíseos representa un territorio de mayor vulnerabilidad para esta infección.</p>
+
+  <p>La tasa de abandono del tratamiento del 12,5% (6 de 48 casos) es motivo de especial atención. Aunque más de la mitad de los abandonos (50%) ocurrieron ya en la primera dosis, lo que sugiere una barrera inicial significativa para la adhesión, el análisis revela que el problema persiste a lo largo de todo el esquema terapéutico. Este patrón está en línea con la literatura, que apunta la falta de información sobre la importancia de completar el tratamiento, el estigma social y las dificultades de acceso como factores determinantes del abandono (BRASIL, 2023).</p>
+
+  <p>El predominio del sexo femenino entre los casos positivos (58,3%) puede estar relacionado con la mayor frecuencia de búsqueda de servicios de salud por parte de las mujeres, especialmente en el contexto del prenatal, donde el rastreo de la sífilis es obligatorio. Sin embargo, los 2 casos de gestantes cuyas parejas no recibieron tratamiento representan un riesgo concreto de reinfección y de transmisión vertical, lo que reafirma la necesidad de incluir el tratamiento de contactos como parte integral del protocolo.</p>
+
+  <p>La identificación de 4 casos en estadio terciario (8,3%) es un indicador de diagnóstico tardío y falla en la captación precoz. La sífilis terciaria, con sus complicaciones cardiovasculares y neurológicas, representa un estadio evitable cuando existe acceso regular a la atención primaria. En este sentido, la ampliación del rastreo activo en poblaciones vulnerables, incluyendo varones jóvenes que frecuentemente no buscan atención médica preventiva, es una intervención prioritaria.</p>
+
+  <p>El hecho de que apenas 52,1% de los casos positivos hayan sido referidos a servicio especializado indica una brecha importante en el acceso a un nivel más complejo de atención, especialmente relevante para los casos de sífilis latente y terciaria que requieren seguimiento más riguroso. La ampliación de los mecanismos de referencia y contrarreferencia entre la UPH y los servicios especializados del municipio podría contribuir significativamente a la reducción de los casos más graves.</p>
+
+  <p>Por otro lado, el hecho de que 30 de los 48 pacientes positivos (62,5%) hayan recibido tratamiento supervisado directamente en la UPH sugiere que la supervisión in loco es una estrategia efectiva para garantizar la conclusión del esquema terapéutico. Estudios demuestran que el tratamiento observado directamente (TOD) puede reducir en hasta 40% la tasa de abandono en enfermedades infecciosas de tratamiento prolongado (OPS, 2022).</p>
+</div>
+
+<!-- ==================== CONCLUSÕES ==================== -->
+<div class="secao-pagina">
+  <h2 class="secao">Conclusiones y Recomendaciones</h2>
+
+  <p>El presente estudio permitió trazar el perfil epidemiológico de la sífilis en adultos jóvenes del barrio Campos Elíseos, Duque de Caxias – RJ, en el año 2025, identificando factores asociados al abandono del tratamiento y evaluando las estrategias de adherencia implementadas por la UPH local.</p>
+
+  <p>Los principales hallazgos fueron: positividad del 15% entre los examinados; tasa de abandono del 12,5%; mayor concentración de abandonos en la primera dosis del esquema terapéutico; predominio femenino entre los casos positivos; presencia de casos en estadio terciario; y acceso limitado al servicio especializado para casi la mitad de los pacientes. Estos resultados evidencian que, a pesar de los avances alcanzados, persisten desafíos estructurales y comportamentales para el control efectivo de la sífilis en este territorio.</p>
+
+  <p>Con base en los resultados, se recomiendan las siguientes estrategias:</p>
+
+  <ol>
+    <li><strong>Fortalecer la búsqueda activa de casos</strong> mediante los ACS, con énfasis en varones jóvenes y poblaciones más vulnerables del barrio;</li>
+    <li><strong>Ampliar la supervisión del tratamiento in loco</strong> en la UPH, dado el impacto positivo observado en la reducción del abandono;</li>
+    <li><strong>Implementar actividades de educación en salud</strong> en escuelas, iglesias y espacios comunitarios del barrio, abordando la sífilis de forma desestigmatizada y accesible;</li>
+    <li><strong>Garantizar el tratamiento simultáneo de las parejas sexuales</strong>, especialmente en casos de gestantes positivas;</li>
+    <li><strong>Ampliar el acceso al servicio especializado</strong> para los casos de sífilis latente y terciaria, mediante fortalecimiento de los mecanismos de referencia;</li>
+    <li><strong>Utilizar el sistema e-SUS para el monitoreo activo</strong> de los casos notificados y la identificación precoz de pacientes en riesgo de abandono.</li>
+  </ol>
+
+  <p>Se concluye que la articulación entre vigilancia epidemiológica, atención primaria y educación en salud es fundamental para el enfrentamiento eficaz de la sífilis en el barrio Campos Elíseos. La UPH ya dispone de una base operacional sólida, siendo necesario ampliar y sistematizar las acciones en curso, orientándolas por evidencias y por el perfil específico de la población atendida.</p>
+</div>
+
+<!-- ==================== REFERÊNCIAS ==================== -->
+<div class="secao-pagina">
+  <h2 class="secao">Referencias</h2>
+
+  <p class="referencia">BRASIL. Ministério da Saúde. Secretaria de Vigilância em Saúde. <strong>Boletim Epidemiológico de Sífilis</strong>. Brasília: Ministério da Saúde, 2023. Disponible en: https://www.gov.br/saude/pt-br/centrais-de-conteudo/publicacoes/boletins/epidemiologicos/especiais/2023/boletim-epidemiologico-de-sifilis-numero-especial-out-2023</p>
+
+  <p class="referencia">DATASUS – Departamento de Informática do SUS. <strong>Sistema de Informação de Agravos de Notificação (SINAN)</strong>. Brasília: Ministério da Saúde, 2023. Disponible en: http://datasus.saude.gov.br</p>
+
+  <p class="referencia">DOMINGUES, R. M. S. M. et al. Prevalência de sífilis na gestação e testagem pré-natal: Estudo Nascer no Brasil. <strong>Revista de Saúde Pública</strong>, São Paulo, v. 48, n. 5, p. 766–774, 2014. DOI: 10.1590/S0034-8910.2014048005114</p>
+
+  <p class="referencia">IBGE – Instituto Brasileiro de Geografia e Estatística. <strong>Censo Demográfico 2022</strong>: resultados preliminares. Rio de Janeiro: IBGE, 2022. Disponible en: https://censo2022.ibge.gov.br</p>
+
+  <p class="referencia">ORGANIZACIÓN PANAMERICANA DE LA SALUD (OPS). <strong>Guía para el tratamiento de las infecciones de transmisión sexual</strong>. Washington, D.C.: OPS, 2022.</p>
+
+  <p class="referencia">SECRETARIA MUNICIPAL DE SAÚDE DE DUQUE DE CAXIAS. <strong>Relatórios epidemiológicos municipais</strong>. Duque de Caxias – RJ, 2025.</p>
+
+  <p class="referencia">UNIDADE PRÉ-HOSPITALAR (UPH) CAMPOS ELÍSEOS. <strong>Formulário de coleta de dados — Sífilis em adultos jovens</strong>. Duque de Caxias – RJ, 2025. (Dados primários coletados pelos pesquisadores).</p>
+</div>
+
+<!-- ==================== ANEXO ==================== -->
+<div class="secao-pagina">
+  <h2 class="secao">Anexo — Formulario de Recolección de Datos</h2>
+  <p class="sem-indent" style="text-align:center; margin-bottom:20px; font-size:10pt; color:#555;">Datos recolectados en la UPH Campos Elíseos, Duque de Caxias – RJ, 2025</p>
+
+  <table class="academica">
+    <thead>
+      <tr><th colspan="2">Pregunta</th><th>Resultado</th></tr>
+    </thead>
+    <tbody>
+      <tr><td colspan="2">1. Número de jóvenes examinados</td><td><strong>320</strong></td></tr>
+      <tr><td rowspan="2">2. Resultado del examen</td><td>Positivo</td><td><strong>48</strong></td></tr>
+      <tr><td>Negativo</td><td><strong>272</strong></td></tr>
+      <tr><td rowspan="2">3. Recibieron tratamiento</td><td>Sí</td><td><strong>42</strong></td></tr>
+      <tr><td>No</td><td><strong>6</strong></td></tr>
+      <tr><td rowspan="3">4. Etapa de abandono del tratamiento</td><td>1ª dosis (penicilina benzatínica)</td><td><strong>3</strong></td></tr>
+      <tr><td>2ª dosis</td><td><strong>2</strong></td></tr>
+      <tr><td>3ª dosis</td><td><strong>1</strong></td></tr>
+      <tr><td rowspan="2">5. Pareja recibió tratamiento (gestantes)</td><td>Sí</td><td><strong>5</strong></td></tr>
+      <tr><td>No</td><td><strong>2</strong></td></tr>
+      <tr><td rowspan="2">6. Sexo</td><td>Femenino</td><td><strong>28</strong></td></tr>
+      <tr><td>Masculino</td><td><strong>20</strong></td></tr>
+      <tr><td colspan="2">7. Edad del paciente examinado</td><td><strong>18 a 29 años</strong></td></tr>
+      <tr><td rowspan="2">8. Tratamiento supervisado en la UPH</td><td>Sí</td><td><strong>30</strong></td></tr>
+      <tr><td>No</td><td><strong>18</strong></td></tr>
+      <tr><td colspan="2">9. UPH implementó estrategia de adherencia</td><td><strong>Sí</strong></td></tr>
+      <tr><td rowspan="2">10. Reciben asistencia especializada</td><td>Sí</td><td><strong>25</strong></td></tr>
+      <tr><td>No</td><td><strong>23</strong></td></tr>
+      <tr><td rowspan="4">11. Estadio al diagnóstico</td><td>Primario</td><td><strong>20</strong></td></tr>
+      <tr><td>Secundario</td><td><strong>12</strong></td></tr>
+      <tr><td>Latente</td><td><strong>12</strong></td></tr>
+      <tr><td>Terciario</td><td><strong>4</strong></td></tr>
+    </tbody>
+  </table>
+  <p class="tabela-fonte">Fuente: UPH Campos Elíseos, Duque de Caxias – RJ, 2025. Datos primarios recolectados por los investigadores.</p>
+</div>
+
+</div><!-- fim .documento -->
+
+<script>
+  const c = (id, type, labels, data, colors, opts={}) => {
+    new Chart(document.getElementById(id), {
+      type,
+      data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: type==='doughnut'?0:0, borderRadius: type==='bar'?4:0 }] },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { labels: { color: '#333', font: { size: 10 }, boxWidth: 14 } },
+          ...opts.plugins
+        },
+        scales: type === 'bar' ? {
+          x: { ticks: { color: '#333', font:{size:10} }, grid: { color: '#eee' } },
+          y: { ticks: { color: '#333', font:{size:10} }, grid: { color: '#eee' }, beginAtZero: true }
+        } : undefined
+      }
+    });
+  };
+
+  c('g1','doughnut',
+    ['Negativos (272 — 85%)', 'Positivos (48 — 15%)'],
+    [272, 48], ['#2e7d32','#c62828']);
+
+  c('g2','doughnut',
+    ['Completaron tratamiento (42)', 'Abandonaron (6)'],
+    [42, 6], ['#1565c0','#c62828']);
+
+  c('g3','bar',
+    ['1ª dosis','2ª dosis','3ª dosis'],
+    [3, 2, 1], ['#c62828','#e65100','#9e9e9e']);
+
+  c('g4','doughnut',
+    ['Femenino (28)', 'Masculino (20)'],
+    [28, 20], ['#6a1b9a','#0277bd']);
+
+  c('g5','bar',
+    ['Primario','Secundario','Latente','Terciario'],
+    [20, 12, 12, 4], ['#2e7d32','#e65100','#1565c0','#c62828']);
+
+  c('g6','doughnut',
+    ['Con servicio especializado (25)', 'Sin servicio especializado (23)'],
+    [25, 23], ['#1565c0','#9e9e9e']);
+</script>
+
+</body>
+</html>

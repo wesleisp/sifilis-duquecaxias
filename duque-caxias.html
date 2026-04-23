@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sífilis — Duque de Caxias / RJ | Perfil Epidemiológico</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:'Segoe UI',sans-serif; background:#0f172a; color:#e2e8f0; }
+
+  header { background:linear-gradient(135deg,#1e3a5f,#0f172a); border-bottom:1px solid #334155; padding:20px 28px; }
+  header h1 { font-size:1.5rem; font-weight:700; }
+  header p  { color:#94a3b8; font-size:.82rem; margin-top:3px; }
+  .fonte-badge { display:inline-block; background:#1e40af; color:#bfdbfe; font-size:.7rem; padding:3px 10px; border-radius:20px; margin-top:6px; font-weight:600; }
+
+  .tabs { display:flex; gap:4px; padding:14px 28px 0; border-bottom:1px solid #1e293b; }
+  .tab { padding:8px 18px; border-radius:8px 8px 0 0; cursor:pointer; font-size:.85rem; font-weight:600; color:#64748b; border:1px solid transparent; border-bottom:none; transition:.15s; }
+  .tab.active { background:#1e293b; color:#f1f5f9; border-color:#334155; }
+  .tab:hover:not(.active) { color:#cbd5e1; }
+
+  .panel { display:none; padding:20px 28px; }
+  .panel.active { display:block; }
+
+  /* KPI row */
+  .kpi-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:18px; }
+  @media(max-width:800px){ .kpi-row{ grid-template-columns:repeat(2,1fr); } }
+  .kpi { background:#1e293b; border:1px solid #334155; border-radius:10px; padding:14px 16px; }
+  .kpi-label { font-size:.7rem; text-transform:uppercase; letter-spacing:.07em; color:#94a3b8; }
+  .kpi-val   { font-size:1.9rem; font-weight:800; line-height:1.1; }
+  .kpi-sub   { font-size:.72rem; color:#64748b; margin-top:3px; }
+  .azul { color:#38bdf8; } .rosa { color:#f472b6; } .verde { color:#34d399; }
+  .laranja { color:#fb923c; } .roxo { color:#a78bfa; }
+
+  /* Chart grid */
+  .chart-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  @media(max-width:900px){ .chart-grid{ grid-template-columns:1fr; } }
+  .chart-card { background:#1e293b; border:1px solid #334155; border-radius:10px; padding:16px; }
+  .chart-title { font-size:.85rem; font-weight:600; color:#cbd5e1; margin-bottom:12px; }
+  .chart-wrap { position:relative; height:200px; }
+  .wide2 { grid-column:span 2; }
+  @media(max-width:900px){ .wide2{ grid-column:span 1; } }
+
+  /* Alert box */
+  .alert { background:#1a2744; border:1px solid #1d4ed8; border-radius:8px; padding:12px 16px; margin-bottom:18px; font-size:.82rem; color:#93c5fd; }
+  .alert strong { color:#bfdbfe; }
+
+  /* Table */
+  table { width:100%; border-collapse:collapse; font-size:.8rem; }
+  th { background:#0f172a; color:#94a3b8; padding:7px 10px; text-align:center; font-size:.7rem; text-transform:uppercase; }
+  td { padding:7px 10px; text-align:center; border-bottom:1px solid #0f172a; }
+  tr:nth-child(even) td { background:#1a2744; }
+  td.lbl { text-align:left; color:#cbd5e1; font-weight:500; }
+  td.hi  { font-weight:700; }
+
+  footer { text-align:center; padding:18px 28px; font-size:.7rem; color:#475569; border-top:1px solid #1e293b; margin-top:4px; }
+  footer a { color:#3b82f6; text-decoration:none; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Sífilis — Duque de Caxias / RJ</h1>
+  <p>Perfil epidemiológico completo · SINAN / DATASUS · 2017–2024 · Município de residência (IBGE 330170)</p>
+  <span class="fonte-badge">SINAN / DATASUS — dados oficiais</span>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('adq',this)">Adquirida</div>
+  <div class="tab" onclick="switchTab('cong',this)">Congênita</div>
+  <div class="tab" onclick="switchTab('gest',this)">Gestante</div>
+</div>
+
+<!-- ── ADQUIRIDA ── -->
+<div class="panel active" id="panel-adq">
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-label">Total 2017–2024</div><div class="kpi-val azul">3.374</div><div class="kpi-sub">notificações</div></div>
+    <div class="kpi"><div class="kpi-label">Masculino</div><div class="kpi-val azul">1.936</div><div class="kpi-sub">57,4% do total</div></div>
+    <div class="kpi"><div class="kpi-label">Feminino</div><div class="kpi-val rosa">1.428</div><div class="kpi-sub">42,3% do total</div></div>
+    <div class="kpi"><div class="kpi-label">Faixa principal</div><div class="kpi-val laranja">20–39</div><div class="kpi-sub">2.157 casos (64%)</div></div>
+  </div>
+  <div class="alert">
+    <strong>Atenção:</strong> 62,6% dos casos (2.111) estão classificados como "Inconclusivos" — indica subnotificação ou encerramento incompleto das fichas. Apenas 14,3% (483) são confirmados com critério laboratorial ou clínico.
+  </div>
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="chart-title">Por Sexo</div>
+      <div class="chart-wrap"><canvas id="adqSexo"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Por Raça/Cor</div>
+      <div class="chart-wrap"><canvas id="adqRaca"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Por Classificação</div>
+      <div class="chart-wrap"><canvas id="adqClassif"></canvas></div>
+    </div>
+    <div class="chart-card wide2">
+      <div class="chart-title">Por Faixa Etária</div>
+      <div class="chart-wrap"><canvas id="adqFxEt"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Evolução do Caso</div>
+      <div class="chart-wrap"><canvas id="adqEvol"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── CONGÊNITA ── -->
+<div class="panel" id="panel-cong">
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-label">Total 2017–2024</div><div class="kpi-val rosa">1.705</div><div class="kpi-sub">casos confirmados</div></div>
+    <div class="kpi"><div class="kpi-label">Óbitos pelo agravo</div><div class="kpi-val rosa">102</div><div class="kpi-sub">6,0% dos casos</div></div>
+    <div class="kpi"><div class="kpi-label">≤ 6 dias de vida</div><div class="kpi-val laranja">1.897</div><div class="kpi-sub">de 2.057 com fx etária</div></div>
+    <div class="kpi"><div class="kpi-label">Pardos/Pretos</div><div class="kpi-val roxo">1.187</div><div class="kpi-sub">de casos com raça informada</div></div>
+  </div>
+  <div class="alert">
+    <strong>Atenção:</strong> Taxa de óbito neonatal por sífilis congênita = 6,0% (102/1.705). A maioria dos diagnósticos ocorre com até 6 dias de vida (diagnóstico pós-parto), indicando que a sífilis na gestante não foi tratada adequadamente no pré-natal.
+  </div>
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="chart-title">Por Sexo do RN</div>
+      <div class="chart-wrap"><canvas id="congSexo"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Por Raça/Cor</div>
+      <div class="chart-wrap"><canvas id="congRaca"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Evolução do Caso</div>
+      <div class="chart-wrap"><canvas id="congEvol"></canvas></div>
+    </div>
+    <div class="chart-card wide2">
+      <div class="chart-title">Por Faixa Etária (idade ao diagnóstico)</div>
+      <div class="chart-wrap"><canvas id="congFxEt"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── GESTANTE ── -->
+<div class="panel" id="panel-gest">
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-label">Total 2017–2024</div><div class="kpi-val verde">4.586</div><div class="kpi-sub">notificações</div></div>
+    <div class="kpi"><div class="kpi-label">Faixa 20–39</div><div class="kpi-val verde">4.779</div><div class="kpi-sub">maior concentração</div></div>
+    <div class="kpi"><div class="kpi-label">Adolescentes 15–19</div><div class="kpi-val laranja">1.813</div><div class="kpi-sub">gestantes jovens</div></div>
+    <div class="kpi"><div class="kpi-label">10–14 anos</div><div class="kpi-val rosa">101</div><div class="kpi-sub">crianças gestantes</div></div>
+  </div>
+  <div class="alert">
+    <strong>Atenção:</strong> 101 gestantes com 10–14 anos de idade (provável abuso sexual). 1.813 adolescentes de 15–19 anos = 29,6% do total de gestantes com sífilis no período.
+  </div>
+  <div class="chart-grid">
+    <div class="chart-card wide2">
+      <div class="chart-title">Por Faixa Etária das Gestantes</div>
+      <div class="chart-wrap"><canvas id="gestFxEt"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Por Raça/Cor</div>
+      <div class="chart-wrap"><canvas id="gestRaca"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Table: raça comparativa -->
+  <div class="chart-card" style="margin-top:14px">
+    <div class="chart-title">Raça/Cor comparativa — Adquirida vs Congênita vs Gestante (2017–2024)</div>
+    <table>
+      <thead><tr><th>Raça/Cor</th><th>Adquirida</th><th>% Adq</th><th>Congênita</th><th>% Cong</th><th>Gestante</th><th>% Gest</th></tr></thead>
+      <tbody id="tblRaca"></tbody>
+    </table>
+    <p style="font-size:.68rem;color:#475569;margin-top:6px;">Excluídos registros Ign/Branco para cálculo de %</p>
+  </div>
+</div>
+
+<footer>
+  Fonte: Ministério da Saúde / SVSA — SINAN via <a href="http://tabnet.datasus.gov.br/cgi/tabcgi.exe?sinannet/cnv/SifilisAdquiridaRJ.def" target="_blank">DATASUS Tabnet</a>.<br>
+  Município de residência: Duque de Caxias (330170) · RJ · 2017–2024 · Consulta abril/2026.
+</footer>
+
+<script>
+const CORES = {
+  azul:'#38bdf8', rosa:'#f472b6', verde:'#34d399', laranja:'#fb923c',
+  roxo:'#a78bfa', cinza:'#64748b', amarelo:'#fbbf24', vermelho:'#f87171'
+};
+const BG_DARK = color => color + '33';
+
+function donut(id, labels, values, colors){
+  new Chart(document.getElementById(id),{
+    type:'doughnut',
+    data:{ labels, datasets:[{ data:values, backgroundColor:colors, borderWidth:2, borderColor:'#0f172a' }] },
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ position:'right', labels:{ color:'#94a3b8', font:{size:10}, boxWidth:12 } } } }
+  });
+}
+function hbar(id, labels, values, color){
+  new Chart(document.getElementById(id),{
+    type:'bar',
+    data:{ labels, datasets:[{ data:values, backgroundColor:color+'55', borderColor:color, borderWidth:1, borderRadius:4 }] },
+    options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ display:false } },
+      scales:{
+        x:{ grid:{color:'#1e293b'}, ticks:{color:'#94a3b8',font:{size:10}} },
+        y:{ grid:{color:'#1e293b'}, ticks:{color:'#94a3b8',font:{size:10}} }
+      }
+    }
+  });
+}
+
+// ── ADQUIRIDA ──────────────────────────────────────────────────────
+donut('adqSexo',
+  ['Masculino','Feminino','Ignorado'],
+  [1936,1428,10],
+  [CORES.azul, CORES.rosa, CORES.cinza]
+);
+donut('adqRaca',
+  ['Parda','Branca','Preta','Ign/Branco','Amarela','Indígena'],
+  [944,588,529,1293,16,4],
+  [CORES.laranja,CORES.azul,CORES.vermelho,CORES.cinza,CORES.amarelo,CORES.verde]
+);
+donut('adqClassif',
+  ['Inconclusivo','Confirmado','Ign/Branco'],
+  [2111,483,780],
+  [CORES.laranja, CORES.verde, CORES.cinza]
+);
+hbar('adqFxEt',
+  ['80+','70-79','65-69','60-64','40-59','20-39','15-19','10-14','5-9'],
+  [3,22,38,70,603,2157,442,24,1],
+  CORES.azul
+);
+donut('adqEvol',
+  ['Ign/Branco','Cura'],
+  [3260,114],
+  [CORES.cinza, CORES.verde]
+);
+
+// ── CONGÊNITA ─────────────────────────────────────────────────────
+donut('congSexo',
+  ['Masculino','Feminino','Ignorado'],
+  [947,947,163],
+  [CORES.azul, CORES.rosa, CORES.cinza]
+);
+donut('congRaca',
+  ['Parda','Branca','Preta','Ign/Branco','Amarela'],
+  [1025,200,162,667,3],
+  [CORES.laranja,CORES.azul,CORES.vermelho,CORES.cinza,CORES.amarelo]
+);
+donut('congEvol',
+  ['Vivo','Óbito pelo agravo','Ign/Branco','Óbito outra causa'],
+  [1735,102,61,20],
+  [CORES.verde, CORES.vermelho, CORES.cinza, CORES.laranja]
+);
+hbar('congFxEt',
+  ['≤6 dias','7-27 dias','28d a <1 ano','1 ano','2-4 anos','5-12 anos'],
+  [1897,30,18,100,4,8],
+  CORES.rosa
+);
+
+// ── GESTANTE ──────────────────────────────────────────────────────
+hbar('gestFxEt',
+  ['10-14','15-19','20-39','40-59'],
+  [101,1813,4779,94],
+  CORES.verde
+);
+donut('gestRaca',
+  ['Parda','Branca','Preta','Ign/Branco','Amarela','Indígena'],
+  [3007,951,1265,1488,68,8],
+  [CORES.laranja,CORES.azul,CORES.vermelho,CORES.cinza,CORES.amarelo,CORES.verde]
+);
+
+// ── Tabela raça comparativa ────────────────────────────────────────
+const racas = [
+  {r:'Parda',     adq:944,  cong:1025, gest:3007},
+  {r:'Branca',    adq:588,  cong:200,  gest:951},
+  {r:'Preta',     adq:529,  cong:162,  gest:1265},
+  {r:'Amarela',   adq:16,   cong:3,    gest:68},
+  {r:'Indígena',  adq:4,    cong:0,    gest:8},
+];
+const totAdq  = racas.reduce((a,b)=>a+b.adq,0);
+const totCong = racas.reduce((a,b)=>a+b.cong,0);
+const totGest = racas.reduce((a,b)=>a+b.gest,0);
+const tb = document.getElementById('tblRaca');
+racas.forEach(({r,adq,cong,gest})=>{
+  tb.innerHTML += `<tr>
+    <td class="lbl">${r}</td>
+    <td class="hi azul">${adq.toLocaleString('pt-BR')}</td>
+    <td>${(adq/totAdq*100).toFixed(1)}%</td>
+    <td class="hi rosa">${cong.toLocaleString('pt-BR')}</td>
+    <td>${(cong/totCong*100).toFixed(1)}%</td>
+    <td class="hi verde">${gest.toLocaleString('pt-BR')}</td>
+    <td>${(gest/totGest*100).toFixed(1)}%</td>
+  </tr>`;
+});
+
+// tab switch
+function switchTab(name, el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('panel-'+name).classList.add('active');
+}
+</script>
+</body>
+</html>

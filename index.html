@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sífilis RJ — SINAN / DATASUS</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+
+  header { background: linear-gradient(135deg,#1e3a5f 0%,#0f172a 100%); border-bottom:1px solid #334155; padding:20px 28px; }
+  header h1 { font-size:1.5rem; font-weight:700; color:#f8fafc; }
+  header p  { color:#94a3b8; font-size:0.82rem; margin-top:3px; }
+  .fonte-badge { display:inline-block; background:#1e40af; color:#bfdbfe; font-size:0.7rem; padding:3px 10px; border-radius:20px; margin-top:6px; font-weight:600; }
+
+  /* Search bar */
+  .search-area { padding:16px 28px; background:#0f172a; border-bottom:1px solid #1e293b; position:relative; }
+  .search-wrap { position:relative; max-width:480px; }
+  .search-wrap input {
+    width:100%; background:#1e293b; border:1px solid #334155; border-radius:8px;
+    padding:10px 14px 10px 38px; color:#f1f5f9; font-size:0.95rem; outline:none;
+    transition: border .2s;
+  }
+  .search-wrap input:focus { border-color:#3b82f6; }
+  .search-wrap .icon { position:absolute; left:11px; top:50%; transform:translateY(-50%); color:#64748b; font-size:1rem; }
+  .dropdown {
+    position:absolute; top:calc(100% + 4px); left:0; right:0;
+    background:#1e293b; border:1px solid #334155; border-radius:8px;
+    max-height:280px; overflow-y:auto; z-index:100; display:none;
+    box-shadow: 0 8px 24px rgba(0,0,0,.4);
+  }
+  .dropdown.open { display:block; }
+  .dropdown-item {
+    padding:9px 14px; cursor:pointer; font-size:0.88rem; color:#cbd5e1;
+    border-bottom:1px solid #0f172a; transition:background .15s;
+  }
+  .dropdown-item:hover, .dropdown-item.active { background:#334155; color:#f8fafc; }
+  .dropdown-item span.ibge { color:#475569; font-size:0.75rem; margin-left:6px; }
+  .mun-label { display:inline-block; margin-left:12px; color:#38bdf8; font-size:0.88rem; font-weight:600; vertical-align:middle; }
+
+  /* KPI cards */
+  .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; padding:16px 28px 0; }
+  @media(max-width:800px){ .grid{ grid-template-columns:1fr; } }
+  .card { background:#1e293b; border:1px solid #334155; border-radius:10px; padding:16px 20px; }
+  .card-title { font-size:0.72rem; text-transform:uppercase; letter-spacing:.08em; color:#94a3b8; margin-bottom:3px; }
+  .card-value { font-size:2.2rem; font-weight:800; line-height:1; }
+  .card-sub { font-size:0.76rem; color:#64748b; margin-top:5px; }
+  .azul { color:#38bdf8; } .rosa { color:#f472b6; } .verde { color:#34d399; }
+
+  /* Charts */
+  .charts-area { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; padding:14px 28px; }
+  @media(max-width:800px){ .charts-area{ grid-template-columns:1fr; } }
+  .chart-card { background:#1e293b; border:1px solid #334155; border-radius:10px; padding:18px; }
+  .chart-title { font-size:0.87rem; font-weight:600; color:#cbd5e1; margin-bottom:14px; }
+  .chart-wrap { position:relative; height:200px; }
+  .wide { grid-column:span 3; }
+  @media(max-width:800px){ .wide{ grid-column:span 1; } }
+  .chart-wrap.tall { height:240px; }
+
+  /* Table */
+  .tabela-wrap { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; font-size:0.8rem; }
+  th { background:#0f172a; color:#94a3b8; text-align:center; padding:7px 10px; font-weight:600; font-size:0.72rem; text-transform:uppercase; }
+  td { padding:7px 10px; text-align:center; border-bottom:1px solid #1e293b; }
+  tr:nth-child(even) td { background:#1a2744; }
+  td.lbl { text-align:left; font-weight:600; color:#cbd5e1; }
+  td.tot { font-weight:700; background:#0f172a !important; }
+
+  footer { text-align:center; padding:20px 28px; font-size:0.72rem; color:#475569; border-top:1px solid #1e293b; margin-top:4px; }
+  footer a { color:#3b82f6; text-decoration:none; }
+  .no-data { color:#ef4444; font-size:0.82rem; padding:12px 0; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Sífilis — Estado do Rio de Janeiro</h1>
+  <p>Notificações registradas no SINAN · 2017–2024 · Município de residência</p>
+  <span class="fonte-badge">SINAN / DATASUS — dados oficiais</span>
+</header>
+
+<div class="search-area">
+  <div class="search-wrap">
+    <span class="icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Buscar município (ex: Caxias, Niterói, Rio...)" autocomplete="off">
+    <div class="dropdown" id="dropdown"></div>
+  </div>
+  <span class="mun-label" id="munLabel">— selecione um município —</span>
+</div>
+
+<div class="grid" id="kpiGrid" style="display:none">
+  <div class="card">
+    <div class="card-title">Sífilis Adquirida</div>
+    <div class="card-value azul" id="kpiAdq">—</div>
+    <div class="card-sub">notificações · 2017–2024</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Sífilis Congênita</div>
+    <div class="card-value rosa" id="kpiCong">—</div>
+    <div class="card-sub">casos confirmados · 2017–2024</div>
+  </div>
+  <div class="card">
+    <div class="card-title">Sífilis em Gestante</div>
+    <div class="card-value verde" id="kpiGest">—</div>
+    <div class="card-sub">notificações · 2017–2024</div>
+  </div>
+</div>
+
+<div class="charts-area" id="chartsArea" style="display:none">
+  <div class="chart-card">
+    <div class="chart-title">Sífilis Adquirida · por ano</div>
+    <div class="chart-wrap"><canvas id="chartAdq"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">Sífilis Congênita · por ano</div>
+    <div class="chart-wrap"><canvas id="chartCong"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-title">Sífilis em Gestante · por ano</div>
+    <div class="chart-wrap"><canvas id="chartGest"></canvas></div>
+  </div>
+  <div class="chart-card wide">
+    <div class="chart-title">Evolução comparativa 2017–2023 (anos completos)</div>
+    <div class="chart-wrap tall"><canvas id="chartComp"></canvas></div>
+  </div>
+  <div class="chart-card wide">
+    <div class="chart-title">Série histórica · <span id="tabelaMun"></span></div>
+    <div class="tabela-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Tipo</th>
+            <th>2017</th><th>2018</th><th>2019</th><th>2020</th>
+            <th>2021</th><th>2022</th><th>2023</th><th>2024*</th><th>Total</th>
+          </tr>
+        </thead>
+        <tbody id="tabelaBody"></tbody>
+      </table>
+      <p style="font-size:.7rem;color:#475569;margin-top:8px;">* 2024: dados parciais. Fonte: <a href="http://tabnet.datasus.gov.br/cgi/tabcgi.exe?sinannet/cnv/SifilisAdquiridaRJ.def" target="_blank">SINAN Adquirida</a> · <a href="http://tabnet.datasus.gov.br/cgi/tabcgi.exe?sinannet/cnv/sifilisRJ.def" target="_blank">Congênita</a> · <a href="http://tabnet.datasus.gov.br/cgi/tabcgi.exe?sinannet/cnv/SifilisGestanteRJ.def" target="_blank">Gestante</a></p>
+    </div>
+  </div>
+</div>
+
+<div id="noData" style="display:none; padding:24px 28px;">
+  <p class="no-data">Nenhum dado encontrado para este município no período 2017–2024.</p>
+</div>
+
+<footer>
+  Fonte: Ministério da Saúde / SVSA — Sistema de Informação de Agravos de Notificação (SINAN) via DATASUS Tabnet.<br>
+  Estado do Rio de Janeiro · 92 municípios · Consulta realizada em abril/2026.
+</footer>
+
+<script>
+// ── Data embedded from SINAN/DATASUS batch fetch ──────────────────────────────
+const DADOS = {"330015":{"nome":"APERIBE","adq":[0,0,3,1,0,4,9,0],"cong":[1,1,0,0,0,0,1,0],"gest":[0,0,0,0,0,3,1,0]},"330022":{"nome":"AREAL","adq":[5,0,5,4,2,4,13,1],"cong":[2,3,0,1,2,0,0,0],"gest":[0,3,0,0,2,3,2,2]},"330025":{"nome":"ARRAIAL DO CABO","adq":[21,23,13,7,10,26,41,6],"cong":[4,3,8,4,5,3,4,2],"gest":[17,13,6,9,17,27,30,10]},"330023":{"nome":"ARMACAO DOS BUZIOS","adq":[15,10,17,14,27,37,44,3],"cong":[1,4,12,5,6,3,2,2],"gest":[7,11,31,13,17,34,23,11]},"330010":{"nome":"ANGRA DOS REIS","adq":[53,80,122,77,136,125,138,12],"cong":[35,31,27,21,18,46,14,6],"gest":[45,46,39,48,60,115,93,31]},"330020":{"nome":"ARARUAMA","adq":[32,21,37,31,65,57,53,2],"cong":[26,29,41,60,63,30,15,5],"gest":[83,87,61,58,62,31,32,10]},"330030":{"nome":"BARRA DO PIRAI","adq":[64,43,24,31,18,28,94,13],"cong":[39,46,66,44,53,42,26,22],"gest":[47,61,79,56,88,50,75,20]},"330040":{"nome":"BARRA MANSA","adq":[10,24,38,4,5,9,37,4],"cong":[10,5,14,4,14,11,15,4],"gest":[48,64,52,48,71,64,67,28]},"330050":{"nome":"BOM JARDIM","adq":[0,0,1,2,2,0,1,0],"cong":[2,3,3,0,0,0,0,0],"gest":[1,3,3,2,2,0,2,2]},"330045":{"nome":"BELFORD ROXO","adq":[295,437,657,375,509,494,393,10],"cong":[255,345,347,354,434,241,182,77],"gest":[138,216,313,507,684,524,462,138]},"330060":{"nome":"BOM JESUS DO ITABAPOANA","adq":[8,10,22,16,11,29,16,6],"cong":[2,5,6,1,0,0,0,0],"gest":[8,1,10,4,11,25,26,14]},"330095":{"nome":"COMENDADOR LEVY GASPARIAN","adq":[0,0,2,0,3,0,2,0],"cong":[3,3,6,0,3,0,0,0],"gest":[3,2,2,1,4,6,2,0]},"330093":{"nome":"CARAPEBUS","adq":[1,0,1,7,2,0,2,2],"cong":[0,0,2,2,0,1,2,0],"gest":[0,0,3,8,4,4,9,1]},"330090":{"nome":"CAMBUCI","adq":[1,0,2,0,0,5,0,0],"cong":[0,0,0,0,0,3,1,0],"gest":[0,1,0,0,0,9,0,1]},"330070":{"nome":"CABO FRIO","adq":[30,93,96,140,251,276,262,13],"cong":[35,40,34,11,53,28,22,26],"gest":[49,102,120,138,195,147,96,40]},"330080":{"nome":"CACHOEIRAS DE MACACU","adq":[2,12,2,2,29,82,75,1],"cong":[2,4,4,3,14,12,2,2],"gest":[5,4,5,3,20,30,31,11]},"330100":{"nome":"CAMPOS DOS GOYTACAZES","adq":[92,61,174,32,210,258,322,45],"cong":[20,47,29,39,94,219,68,24],"gest":[89,97,27,17,121,308,321,77]},"330110":{"nome":"CANTAGALO","adq":[5,3,7,11,8,9,20,0],"cong":[2,2,1,0,1,3,5,1],"gest":[6,9,8,2,9,11,8,5]},"330115":{"nome":"CARDOSO MOREIRA","adq":[0,0,0,0,3,3,0,0],"cong":[0,1,1,1,0,3,0,1],"gest":[1,5,0,0,2,3,2,1]},"330130":{"nome":"CASIMIRO DE ABREU","adq":[5,39,4,4,5,43,72,7],"cong":[1,4,6,4,9,3,5,2],"gest":[5,12,13,19,39,24,25,5]},"330120":{"nome":"CARMO","adq":[8,7,3,4,3,3,3,0],"cong":[4,0,0,1,3,1,1,0],"gest":[2,3,3,5,1,2,3,4]},"330140":{"nome":"CONCEICAO DE MACABU","adq":[2,12,10,8,12,22,18,7],"cong":[3,7,2,3,1,3,2,1],"gest":[3,4,3,7,0,12,7,4]},"330160":{"nome":"DUAS BARRAS","adq":[0,0,1,0,0,0,1,0],"cong":[1,0,2,0,0,1,2,0],"gest":[1,2,0,1,0,0,1,0]},"330150":{"nome":"CORDEIRO","adq":[7,8,14,0,3,10,3,0],"cong":[2,5,5,0,0,0,0,1],"gest":[4,7,18,10,5,8,4,2]},"330180":{"nome":"ENGENHEIRO PAULO DE FRONTIN","adq":[3,0,4,2,0,2,6,1],"cong":[0,1,1,0,0,0,1,0],"gest":[1,2,2,1,1,1,3,1]},"330170":{"nome":"DUQUE DE CAXIAS","adq":[393,569,606,319,469,493,504,21],"cong":[361,352,298,266,188,252,226,111],"gest":[400,544,754,776,638,810,767,297]},"330185":{"nome":"GUAPIMIRIM","adq":[20,32,144,59,72,77,60,3],"cong":[16,21,12,11,6,24,17,7],"gest":[50,42,50,29,26,24,21,9]},"330187":{"nome":"IGUABA GRANDE","adq":[15,10,18,7,22,23,23,1],"cong":[7,3,4,10,6,3,4,1],"gest":[9,2,18,17,27,12,19,6]},"330190":{"nome":"ITABORAI","adq":[272,304,234,239,196,231,335,50],"cong":[56,63,104,109,110,101,85,46],"gest":[71,155,184,170,155,163,206,111]},"330200":{"nome":"ITAGUAI","adq":[45,109,125,34,91,106,81,6],"cong":[12,20,14,27,39,28,33,7],"gest":[15,54,65,90,135,59,63,18]},"330210":{"nome":"ITAOCARA","adq":[1,0,0,0,4,3,1,0],"cong":[0,0,1,0,1,2,0,0],"gest":[3,2,0,0,6,3,2,1]},"330205":{"nome":"ITALVA","adq":[1,0,0,0,1,0,2,0],"cong":[0,0,3,3,1,0,0,0],"gest":[0,0,1,0,2,1,0,1]},"330225":{"nome":"ITATIAIA","adq":[6,4,12,10,10,6,35,3],"cong":[5,5,4,2,2,6,4,1],"gest":[8,14,14,8,17,13,23,6]},"330220":{"nome":"ITAPERUNA","adq":[3,1,1,0,5,2,4,0],"cong":[3,10,10,13,17,17,11,8],"gest":[21,28,22,43,43,11,26,12]},"330227":{"nome":"JAPERI","adq":[99,174,89,115,146,870,826,135],"cong":[45,28,49,32,53,37,28,7],"gest":[63,52,85,86,118,90,105,35]},"330245":{"nome":"MACUCO","adq":[2,2,4,0,2,1,2,0],"cong":[1,4,1,0,1,3,0,0],"gest":[4,6,0,1,2,10,2,1]},"330240":{"nome":"MACAE","adq":[390,395,482,258,442,397,360,43],"cong":[54,58,85,115,179,72,92,40],"gest":[150,151,199,195,262,161,172,74]},"330230":{"nome":"LAJE DO MURIAE","adq":[0,0,0,0,0,9,3,0],"cong":[1,1,1,0,1,0,3,0],"gest":[0,1,0,0,6,4,0,0]},"330250":{"nome":"MAGE","adq":[251,554,399,382,347,430,488,44],"cong":[125,114,156,88,42,40,41,14],"gest":[160,158,201,183,164,245,249,82]},"330270":{"nome":"MARICA","adq":[84,114,157,95,182,205,321,8],"cong":[28,40,51,41,43,48,22,9],"gest":[30,69,73,94,153,171,147,61]},"330290":{"nome":"MIGUEL PEREIRA","adq":[10,5,8,15,7,9,21,2],"cong":[0,0,2,0,1,0,0,0],"gest":[2,3,1,5,1,1,3,3]},"330260":{"nome":"MANGARATIBA","adq":[4,13,10,17,17,89,61,8],"cong":[4,1,2,1,3,3,2,2],"gest":[12,8,7,14,8,8,14,10]},"330280":{"nome":"MENDES","adq":[4,3,0,1,2,0,5,0],"cong":[0,0,0,1,0,0,0,0],"gest":[8,0,3,0,0,0,4,1]},"330285":{"nome":"MESQUITA","adq":[99,255,274,171,187,221,312,43],"cong":[89,91,134,89,106,73,42,18],"gest":[76,140,157,144,164,130,142,101]},"330310":{"nome":"NATIVIDADE","adq":[2,2,2,0,1,0,0,0],"cong":[0,0,0,1,0,0,1,0],"gest":[0,2,0,0,1,0,0,1]},"330300":{"nome":"MIRACEMA","adq":[0,1,1,0,5,6,15,1],"cong":[0,0,0,0,0,0,0,0],"gest":[0,2,0,0,1,4,7,2]},"330320":{"nome":"NILOPOLIS","adq":[39,72,154,122,89,86,85,6],"cong":[39,56,84,65,73,37,33,15],"gest":[11,30,55,86,77,60,61,32]},"330330":{"nome":"NITEROI","adq":[476,698,626,487,670,919,1022,35],"cong":[115,50,112,137,126,87,62,39],"gest":[146,185,210,201,180,256,263,62]},"330340":{"nome":"NOVA FRIBURGO","adq":[13,2,13,1,15,2,2,1],"cong":[14,23,31,16,23,14,22,6],"gest":[59,51,81,53,59,47,60,12]},"330350":{"nome":"NOVA IGUACU","adq":[1135,2007,1921,1095,1037,1442,1370,139],"cong":[463,469,425,334,596,344,258,53],"gest":[795,799,911,899,1098,900,770,367]},"330390":{"nome":"PETROPOLIS","adq":[2,10,347,635,680,614,694,39],"cong":[105,139,79,33,101,64,73,30],"gest":[46,75,91,39,152,163,215,90]},"330385":{"nome":"PATY DO ALFERES","adq":[30,21,11,13,13,18,8,2],"cong":[0,0,0,1,0,0,1,0],"gest":[6,11,3,5,6,5,11,3]},"330360":{"nome":"PARACAMBI","adq":[23,19,34,26,24,21,22,5],"cong":[4,2,4,4,7,2,2,3],"gest":[1,6,16,15,13,18,5,4]},"330380":{"nome":"PARATY","adq":[4,2,4,2,1,5,29,7],"cong":[2,4,1,1,0,1,1,0],"gest":[5,7,5,12,8,13,9,7]},"330370":{"nome":"PARAIBA DO SUL","adq":[3,7,6,4,10,17,14,1],"cong":[1,6,6,7,7,2,0,0],"gest":[8,7,5,9,16,8,9,3]},"330395":{"nome":"PINHEIRAL","adq":[26,7,1,6,3,16,10,1],"cong":[2,3,1,3,4,1,3,0],"gest":[11,12,10,6,2,8,9,4]},"330400":{"nome":"PIRAI","adq":[1,1,3,9,11,28,18,4],"cong":[1,0,0,1,2,5,2,1],"gest":[13,13,5,6,10,15,4,3]},"330410":{"nome":"PORCIUNCULA","adq":[10,15,17,3,0,7,3,0],"cong":[0,0,2,0,0,0,0,0],"gest":[3,2,3,1,2,5,2,1]},"330411":{"nome":"PORTO REAL","adq":[20,15,15,17,8,18,20,1],"cong":[3,5,4,2,0,2,0,0],"gest":[8,6,4,9,10,6,5,4]},"330415":{"nome":"QUISSAMA","adq":[7,12,16,7,11,25,20,2],"cong":[0,1,3,4,0,3,1,1],"gest":[1,5,11,10,4,20,7,3]},"330412":{"nome":"QUATIS","adq":[8,2,2,1,0,3,2,0],"cong":[2,2,1,1,1,0,1,0],"gest":[5,3,3,5,1,2,1,2]},"330420":{"nome":"RESENDE","adq":[0,5,5,18,36,70,67,5],"cong":[25,34,9,18,25,23,24,0],"gest":[43,53,61,79,93,100,99,16]},"330414":{"nome":"QUEIMADOS","adq":[70,60,72,64,161,198,160,7],"cong":[75,54,69,62,118,66,67,20],"gest":[103,123,151,134,154,140,144,45]},"330430":{"nome":"RIO BONITO","adq":[4,3,4,2,1,2,0,0],"cong":[13,8,15,5,4,10,5,2],"gest":[12,19,20,14,15,13,12,3]},"330440":{"nome":"RIO CLARO","adq":[1,4,16,9,4,2,2,1],"cong":[0,1,0,0,0,0,0,0],"gest":[2,1,1,3,2,0,2,0]},"330450":{"nome":"RIO DAS FLORES","adq":[4,3,6,5,2,5,4,2],"cong":[0,1,1,1,1,0,0,1],"gest":[2,2,4,1,2,0,1,4]},"330452":{"nome":"RIO DAS OSTRAS","adq":[108,94,99,89,97,164,246,10],"cong":[20,22,23,42,44,31,18,7],"gest":[51,52,79,94,125,89,86,28]},"330460":{"nome":"SANTA MARIA MADALENA","adq":[0,1,1,0,1,0,1,1],"cong":[1,0,1,0,1,1,0,1],"gest":[0,3,3,1,0,1,1,3]},"330455":{"nome":"RIO DE JANEIRO","adq":[6402,7224,7564,8138,10894,13671,12965,1166],"cong":[1454,1171,1177,1479,1443,1446,1233,572],"gest":[4188,4330,4151,5766,5489,5647,5448,2785]},"330470":{"nome":"SANTO ANTONIO DE PADUA","adq":[11,5,39,10,9,5,14,1],"cong":[0,1,0,0,0,0,0,1],"gest":[9,6,6,2,3,9,6,2]},"330475":{"nome":"SAO FRANCISCO DE ITABAPOANA","adq":[3,1,5,10,3,4,4,0],"cong":[0,2,3,1,2,12,1,3],"gest":[0,11,3,2,2,14,9,4]},"330490":{"nome":"SAO GONCALO","adq":[593,934,1328,741,560,437,737,16],"cong":[455,453,449,606,507,330,231,122],"gest":[397,554,651,667,553,564,605,269]},"330480":{"nome":"SAO FIDELIS","adq":[10,3,1,0,1,3,3,1],"cong":[0,1,0,1,0,1,2,0],"gest":[1,13,7,10,7,10,3,3]},"330500":{"nome":"SAO JOAO DA BARRA","adq":[5,1,3,0,5,4,6,1],"cong":[1,2,1,1,1,6,2,1],"gest":[2,3,1,0,1,6,20,3]},"330510":{"nome":"SAO JOAO DE MERITI","adq":[389,622,441,213,465,601,683,8],"cong":[236,367,343,272,371,187,128,63],"gest":[139,441,410,420,707,635,540,217]},"330513":{"nome":"SAO JOSE DE UBA","adq":[1,0,0,0,2,3,3,1],"cong":[0,0,1,0,2,1,0,1],"gest":[2,0,1,0,1,3,3,0]},"330515":{"nome":"SAO JOSE DO VALE DO RIO PRETO","adq":[0,2,2,6,9,29,17,0],"cong":[1,0,2,2,1,5,3,1],"gest":[0,0,1,2,1,6,8,0]},"330530":{"nome":"SAO SEBASTIAO DO ALTO","adq":[1,0,1,0,0,0,0,0],"cong":[0,0,0,0,0,0,0,0],"gest":[0,0,0,0,0,1,1,0]},"330520":{"nome":"SAO PEDRO DA ALDEIA","adq":[2,27,9,15,37,22,100,11],"cong":[8,28,30,34,50,47,13,7],"gest":[23,39,50,68,139,117,89,29]},"330540":{"nome":"SAPUCAIA","adq":[5,0,1,4,4,6,3,2],"cong":[0,0,0,2,0,1,0,1],"gest":[0,3,1,3,3,7,1,3]},"330550":{"nome":"SAQUAREMA","adq":[13,40,87,28,39,32,52,5],"cong":[16,12,29,25,18,6,21,11],"gest":[16,43,62,36,30,21,23,12]},"330555":{"nome":"SEROPEDICA","adq":[16,21,35,17,26,35,32,4],"cong":[8,5,4,11,19,4,10,6],"gest":[17,37,31,57,43,30,47,19]},"330570":{"nome":"SUMIDOURO","adq":[3,0,1,1,1,1,0,0],"cong":[0,0,1,1,1,0,0,0],"gest":[1,1,2,2,6,1,1,1]},"330560":{"nome":"SILVA JARDIM","adq":[2,6,7,2,3,5,20,1],"cong":[1,3,5,4,1,0,2,1],"gest":[9,1,2,6,5,4,15,6]},"330575":{"nome":"TANGUA","adq":[1,8,14,6,13,19,29,3],"cong":[5,5,7,6,6,4,1,1],"gest":[3,3,14,10,17,13,20,3]},"330580":{"nome":"TERESOPOLIS","adq":[2,5,5,4,7,4,5,0],"cong":[36,19,38,25,6,5,22,5],"gest":[43,75,83,105,83,64,90,23]},"330590":{"nome":"TRAJANO DE MORAES","adq":[0,4,0,0,0,0,2,0],"cong":[0,0,1,0,0,0,0,0],"gest":[0,3,1,0,0,1,1,0]},"330600":{"nome":"TRES RIOS","adq":[7,7,18,8,10,18,11,0],"cong":[12,42,14,4,3,4,4,4],"gest":[17,12,12,8,27,74,35,0]},"330615":{"nome":"VARRE-SAI","adq":[0,0,1,0,0,0,1,0],"cong":[0,0,0,0,0,0,0,0],"gest":[0,0,2,0,0,1,2,1]},"330610":{"nome":"VALENCA","adq":[85,189,196,144,164,214,122,12],"cong":[8,12,18,15,16,9,16,9],"gest":[7,37,24,24,27,15,27,17]},"330620":{"nome":"VASSOURAS","adq":[4,5,0,0,8,2,17,2],"cong":[1,2,0,2,0,2,0,1],"gest":[5,12,16,10,12,14,12,4]},"330630":{"nome":"VOLTA REDONDA","adq":[149,187,153,134,113,209,402,44],"cong":[54,67,39,36,24,27,13,5],"gest":[94,96,106,87,87,161,154,61]}};
+// ─────────────────────────────────────────────────────────────────────────────
+
+const ANOS = ['2017','2018','2019','2020','2021','2022','2023','2024*'];
+const ANOS_COMP = ['2017','2018','2019','2020','2021','2022','2023'];
+
+// Build searchable list
+const LISTA = Object.entries(DADOS).map(([ibge, d]) => ({ibge, nome: d.nome}));
+LISTA.sort((a,b) => a.nome.localeCompare(b.nome));
+
+let charts = {};
+
+// ── Search ────────────────────────────────────────────────────────────────────
+const input = document.getElementById('searchInput');
+const dropdown = document.getElementById('dropdown');
+
+function normalizar(s){ return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase(); }
+
+input.addEventListener('input', () => {
+  const q = normalizar(input.value.trim());
+  if(!q){ dropdown.classList.remove('open'); return; }
+  const matches = LISTA.filter(m => normalizar(m.nome).includes(q)).slice(0,12);
+  if(!matches.length){ dropdown.classList.remove('open'); return; }
+  dropdown.innerHTML = matches.map(m =>
+    `<div class="dropdown-item" onclick="selectMun('${m.ibge}','${m.nome}')">${m.nome} <span class="ibge">${m.ibge}</span></div>`
+  ).join('');
+  dropdown.classList.add('open');
+});
+
+input.addEventListener('blur', () => setTimeout(()=>dropdown.classList.remove('open'),200));
+
+function selectMun(ibge, nome){
+  dropdown.classList.remove('open');
+  input.value = nome;
+  render(ibge, nome);
+}
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function fmt(n){ return n.toLocaleString('pt-BR'); }
+
+function render(ibge, nome){
+  const d = DADOS[ibge];
+  document.getElementById('munLabel').textContent = nome + ' (' + ibge + ')';
+
+  const adqTotal  = d.adq.reduce((a,b)=>a+b,0);
+  const congTotal = d.cong.reduce((a,b)=>a+b,0);
+  const gestTotal = d.gest.reduce((a,b)=>a+b,0);
+
+  if(adqTotal + congTotal + gestTotal === 0){
+    document.getElementById('kpiGrid').style.display = 'none';
+    document.getElementById('chartsArea').style.display = 'none';
+    document.getElementById('noData').style.display = 'block';
+    return;
+  }
+  document.getElementById('noData').style.display = 'none';
+  document.getElementById('kpiGrid').style.display = 'grid';
+  document.getElementById('chartsArea').style.display = 'grid';
+
+  document.getElementById('kpiAdq').textContent  = fmt(adqTotal);
+  document.getElementById('kpiCong').textContent = fmt(congTotal);
+  document.getElementById('kpiGest').textContent = fmt(gestTotal);
+  document.getElementById('tabelaMun').textContent = nome;
+
+  // Table
+  const tb = document.getElementById('tabelaBody');
+  const rows = [
+    {label:'Adquirida',  cls:'azul',  vals:d.adq},
+    {label:'Congênita',  cls:'rosa',  vals:d.cong},
+    {label:'Gestante',   cls:'verde', vals:d.gest},
+  ];
+  tb.innerHTML = rows.map(r => {
+    const tot = r.vals.reduce((a,b)=>a+b,0);
+    const cells = r.vals.map((v,i)=>`<td class="${r.cls}">${v||'—'}</td>`).join('');
+    return `<tr><td class="lbl ${r.cls}">${r.label}</td>${cells}<td class="tot ${r.cls}">${fmt(tot)}</td></tr>`;
+  }).join('');
+
+  // Charts
+  const axCfg = { grid:{color:'#1e293b'}, ticks:{color:'#94a3b8', font:{size:10}} };
+  const baseCfg = { responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false}}, scales:{x:axCfg, y:{...axCfg, beginAtZero:true}} };
+
+  function mkBar(id, data, bg, border){
+    if(charts[id]) charts[id].destroy();
+    charts[id] = new Chart(document.getElementById(id),{
+      type:'bar',
+      data:{ labels:ANOS, datasets:[{data, backgroundColor:bg, borderColor:border, borderWidth:1, borderRadius:4}] },
+      options:baseCfg
+    });
+  }
+  mkBar('chartAdq',  d.adq,  '#1d4ed8','#38bdf8');
+  mkBar('chartCong', d.cong, '#9d174d','#f472b6');
+  mkBar('chartGest', d.gest, '#065f46','#34d399');
+
+  if(charts.chartComp) charts.chartComp.destroy();
+  charts.chartComp = new Chart(document.getElementById('chartComp'),{
+    type:'line',
+    data:{ labels:ANOS_COMP, datasets:[
+      {label:'Adquirida', data:d.adq.slice(0,7), borderColor:'#38bdf8', backgroundColor:'rgba(56,189,248,.08)', fill:true, tension:.3, pointRadius:4},
+      {label:'Gestante',  data:d.gest.slice(0,7), borderColor:'#34d399', backgroundColor:'rgba(52,211,153,.08)', fill:true, tension:.3, pointRadius:4},
+      {label:'Congênita', data:d.cong.slice(0,7), borderColor:'#f472b6', backgroundColor:'rgba(244,114,182,.08)', fill:true, tension:.3, pointRadius:4},
+    ]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{display:true, labels:{color:'#cbd5e1', font:{size:11}}}},
+      scales:{x:axCfg, y:{...axCfg, beginAtZero:true}}
+    }
+  });
+}
+
+// Auto-select Duque de Caxias on load
+window.addEventListener('DOMContentLoaded', () => {
+  selectMun('330170','DUQUE DE CAXIAS');
+  input.value = 'DUQUE DE CAXIAS';
+});
+</script>
+
+</body>
+</html>
