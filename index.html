@@ -6,268 +6,185 @@
 <title>Sífilis RJ — SINAN / DATASUS</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
-
-  header { background: linear-gradient(135deg,#1e3a5f 0%,#0f172a 100%); border-bottom:1px solid #334155; padding:20px 28px; }
-  header h1 { font-size:1.5rem; font-weight:700; color:#f8fafc; }
-  header p  { color:#94a3b8; font-size:0.82rem; margin-top:3px; }
-  .fonte-badge { display:inline-block; background:#1e40af; color:#bfdbfe; font-size:0.7rem; padding:3px 10px; border-radius:20px; margin-top:6px; font-weight:600; }
-
-  /* Search bar */
-  .search-area { padding:16px 28px; background:#0f172a; border-bottom:1px solid #1e293b; position:relative; }
-  .search-wrap { position:relative; max-width:480px; }
-  .search-wrap input {
-    width:100%; background:#1e293b; border:1px solid #334155; border-radius:8px;
-    padding:10px 14px 10px 38px; color:#f1f5f9; font-size:0.95rem; outline:none;
-    transition: border .2s;
-  }
-  .search-wrap input:focus { border-color:#3b82f6; }
-  .search-wrap .icon { position:absolute; left:11px; top:50%; transform:translateY(-50%); color:#64748b; font-size:1rem; }
-  .dropdown {
-    position:absolute; top:calc(100% + 4px); left:0; right:0;
-    background:#1e293b; border:1px solid #334155; border-radius:8px;
-    max-height:280px; overflow-y:auto; z-index:100; display:none;
-    box-shadow: 0 8px 24px rgba(0,0,0,.4);
-  }
-  .dropdown.open { display:block; }
-  .dropdown-item {
-    padding:9px 14px; cursor:pointer; font-size:0.88rem; color:#cbd5e1;
-    border-bottom:1px solid #0f172a; transition:background .15s;
-  }
-  .dropdown-item:hover, .dropdown-item.active { background:#334155; color:#f8fafc; }
-  .dropdown-item span.ibge { color:#475569; font-size:0.75rem; margin-left:6px; }
-  .mun-label { display:inline-block; margin-left:12px; color:#38bdf8; font-size:0.88rem; font-weight:600; vertical-align:middle; }
-
-  /* KPI cards */
-  .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; padding:16px 28px 0; }
-  @media(max-width:800px){ .grid{ grid-template-columns:1fr; } }
-  .card { background:#1e293b; border:1px solid #334155; border-radius:10px; padding:16px 20px; }
-  .card-title { font-size:0.72rem; text-transform:uppercase; letter-spacing:.08em; color:#94a3b8; margin-bottom:3px; }
-  .card-value { font-size:2.2rem; font-weight:800; line-height:1; }
-  .card-sub { font-size:0.76rem; color:#64748b; margin-top:5px; }
-  .azul { color:#38bdf8; } .rosa { color:#f472b6; } .verde { color:#34d399; }
-
-  /* Charts */
-  .charts-area { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; padding:14px 28px; }
-  @media(max-width:800px){ .charts-area{ grid-template-columns:1fr; } }
-  .chart-card { background:#1e293b; border:1px solid #334155; border-radius:10px; padding:18px; }
-  .chart-title { font-size:0.87rem; font-weight:600; color:#cbd5e1; margin-bottom:14px; }
-  .chart-wrap { position:relative; height:200px; }
-  .wide { grid-column:span 3; }
-  @media(max-width:800px){ .wide{ grid-column:span 1; } }
-  .chart-wrap.tall { height:240px; }
-
-  /* Table */
-  .tabela-wrap { overflow-x:auto; }
-  table { width:100%; border-collapse:collapse; font-size:0.8rem; }
-  th { background:#0f172a; color:#94a3b8; text-align:center; padding:7px 10px; font-weight:600; font-size:0.72rem; text-transform:uppercase; }
-  td { padding:7px 10px; text-align:center; border-bottom:1px solid #1e293b; }
-  tr:nth-child(even) td { background:#1a2744; }
-  td.lbl { text-align:left; font-weight:600; color:#cbd5e1; }
-  td.tot { font-weight:700; background:#0f172a !important; }
-
-  footer { text-align:center; padding:20px 28px; font-size:0.72rem; color:#475569; border-top:1px solid #1e293b; margin-top:4px; }
-  footer a { color:#3b82f6; text-decoration:none; }
-  .no-data { color:#ef4444; font-size:0.82rem; padding:12px 0; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:'Segoe UI',sans-serif; background:#0f172a; color:#e2e8f0; min-height:100vh; }
+header { background:linear-gradient(135deg,#1e3a5f,#0f172a); border-bottom:1px solid #334155; padding:20px 28px; }
+header h1 { font-size:1.5rem; font-weight:700; color:#f8fafc; }
+header p  { color:#94a3b8; font-size:.82rem; margin-top:3px; }
+.fonte-badge { display:inline-block; background:#1e40af; color:#bfdbfe; font-size:.7rem; padding:3px 10px; border-radius:20px; margin-top:6px; font-weight:600; }
+.search-area { padding:14px 28px; background:#0f172a; border-bottom:1px solid #1e293b; }
+.search-wrap { position:relative; max-width:480px; display:inline-block; width:100%; }
+.search-wrap input { width:100%; background:#1e293b; border:1px solid #334155; border-radius:8px; padding:10px 14px 10px 38px; color:#f1f5f9; font-size:.95rem; outline:none; }
+.search-wrap input:focus { border-color:#3b82f6; }
+.search-wrap .icon { position:absolute; left:11px; top:50%; transform:translateY(-50%); color:#64748b; }
+.dropdown { position:absolute; top:calc(100% + 4px); left:0; right:0; background:#1e293b; border:1px solid #334155; border-radius:8px; max-height:280px; overflow-y:auto; z-index:100; display:none; box-shadow:0 8px 24px rgba(0,0,0,.4); }
+.dropdown.open { display:block; }
+.dropdown-item { padding:9px 14px; cursor:pointer; font-size:.88rem; color:#cbd5e1; border-bottom:1px solid #0f172a; }
+.dropdown-item:hover { background:#334155; color:#f8fafc; }
+.ibge { color:#475569; font-size:.75rem; margin-left:6px; }
+.mun-label { display:inline-block; margin-left:14px; color:#38bdf8; font-size:.88rem; font-weight:600; vertical-align:middle; }
+.kpi-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; padding:16px 28px 0; }
+@media(max-width:800px){ .kpi-row{ grid-template-columns:1fr; } }
+.kpi { background:#1e293b; border:1px solid #334155; border-radius:10px; padding:14px 18px; }
+.kpi-label { font-size:.7rem; text-transform:uppercase; letter-spacing:.07em; color:#94a3b8; }
+.kpi-val { font-size:2rem; font-weight:800; line-height:1.1; }
+.kpi-sub { font-size:.72rem; color:#64748b; margin-top:3px; }
+.azul{color:#38bdf8;} .rosa{color:#f472b6;} .verde{color:#34d399;} .laranja{color:#fb923c;} .cinza{color:#64748b;}
+.sec { padding:14px 28px 6px; font-size:.75rem; text-transform:uppercase; letter-spacing:.1em; color:#475569; font-weight:700; border-top:1px solid #1e293b; margin-top:4px; }
+.g3 { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; padding:0 28px 14px; }
+.g4 { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; padding:0 28px 14px; }
+.g2 { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; padding:0 28px 14px; }
+@media(max-width:900px){ .g3,.g4,.g2{ grid-template-columns:1fr; } }
+.cc { background:#1e293b; border:1px solid #334155; border-radius:10px; padding:16px; }
+.ct { font-size:.84rem; font-weight:600; color:#cbd5e1; margin-bottom:12px; }
+.cw { position:relative; height:190px; }
+.cw.t { height:220px; }
+.sp2 { grid-column:span 2; }
+.sp3 { grid-column:span 3; }
+@media(max-width:900px){ .sp2,.sp3{ grid-column:span 1; } }
+.tw { overflow-x:auto; padding:0 28px 14px; }
+table { width:100%; border-collapse:collapse; font-size:.79rem; }
+th { background:#0f172a; color:#94a3b8; padding:7px 10px; text-align:center; font-size:.7rem; text-transform:uppercase; }
+td { padding:7px 10px; text-align:center; border-bottom:1px solid #0f172a; }
+tr:nth-child(even) td { background:#1a2744; }
+td.l { text-align:left; color:#cbd5e1; font-weight:500; }
+td.b { font-weight:700; background:#0f172a !important; }
+footer { text-align:center; padding:18px 28px; font-size:.7rem; color:#475569; border-top:1px solid #1e293b; margin-top:4px; }
+footer a { color:#3b82f6; text-decoration:none; }
+.nd { color:#ef4444; font-size:.82rem; padding:24px 28px; }
 </style>
 </head>
 <body>
-
 <header>
   <h1>Sífilis — Estado do Rio de Janeiro</h1>
   <p>Notificações registradas no SINAN · 2017–2024 · Município de residência</p>
   <span class="fonte-badge">SINAN / DATASUS — dados oficiais</span>
 </header>
-
 <div class="search-area">
   <div class="search-wrap">
-    <span class="icon">🔍</span>
-    <input type="text" id="searchInput" placeholder="Buscar município (ex: Caxias, Niterói, Rio...)" autocomplete="off">
-    <div class="dropdown" id="dropdown"></div>
+    <span class="icon">&#128269;</span>
+    <input type="text" id="si" placeholder="Buscar município (ex: Caxias, Niterói, Rio...)" autocomplete="off">
+    <div class="dropdown" id="dd"></div>
   </div>
-  <span class="mun-label" id="munLabel">— selecione um município —</span>
+  <span class="mun-label" id="ml">— selecione um município —</span>
 </div>
-
-<div class="grid" id="kpiGrid" style="display:none">
-  <div class="card">
-    <div class="card-title">Sífilis Adquirida</div>
-    <div class="card-value azul" id="kpiAdq">—</div>
-    <div class="card-sub">notificações · 2017–2024</div>
+<div id="mc" style="display:none">
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-label">Sífilis Adquirida</div><div class="kpi-val azul" id="ka">—</div><div class="kpi-sub">notificações · 2017–2024</div></div>
+    <div class="kpi"><div class="kpi-label">Sífilis Congênita</div><div class="kpi-val rosa" id="kc">—</div><div class="kpi-sub">casos confirmados · 2017–2024</div></div>
+    <div class="kpi"><div class="kpi-label">Sífilis em Gestante</div><div class="kpi-val verde" id="kg">—</div><div class="kpi-sub">notificações · 2017–2024</div></div>
   </div>
-  <div class="card">
-    <div class="card-title">Sífilis Congênita</div>
-    <div class="card-value rosa" id="kpiCong">—</div>
-    <div class="card-sub">casos confirmados · 2017–2024</div>
+  <div class="sec">Série Histórica 2017–2024</div>
+  <div class="g3">
+    <div class="cc"><div class="ct">Adquirida · por ano</div><div class="cw"><canvas id="cA"></canvas></div></div>
+    <div class="cc"><div class="ct">Congênita · por ano</div><div class="cw"><canvas id="cC"></canvas></div></div>
+    <div class="cc"><div class="ct">Gestante · por ano</div><div class="cw"><canvas id="cG"></canvas></div></div>
   </div>
-  <div class="card">
-    <div class="card-title">Sífilis em Gestante</div>
-    <div class="card-value verde" id="kpiGest">—</div>
-    <div class="card-sub">notificações · 2017–2024</div>
+  <div class="g3">
+    <div class="cc sp3"><div class="ct">Evolução comparativa 2017–2023</div><div class="cw t"><canvas id="cL"></canvas></div></div>
   </div>
-</div>
-
-<div class="charts-area" id="chartsArea" style="display:none">
-  <div class="chart-card">
-    <div class="chart-title">Sífilis Adquirida · por ano</div>
-    <div class="chart-wrap"><canvas id="chartAdq"></canvas></div>
+  <div class="sec">Perfil Demográfico — Adquirida</div>
+  <div class="g4">
+    <div class="cc"><div class="ct">Por Sexo</div><div class="cw"><canvas id="dAs"></canvas></div></div>
+    <div class="cc"><div class="ct">Por Raça/Cor</div><div class="cw"><canvas id="dAr"></canvas></div></div>
+    <div class="cc"><div class="ct">Classificação</div><div class="cw"><canvas id="dAc"></canvas></div></div>
+    <div class="cc"><div class="ct">Faixa Etária</div><div class="cw"><canvas id="dAf"></canvas></div></div>
   </div>
-  <div class="chart-card">
-    <div class="chart-title">Sífilis Congênita · por ano</div>
-    <div class="chart-wrap"><canvas id="chartCong"></canvas></div>
+  <div class="sec">Perfil Demográfico — Congênita &amp; Gestante</div>
+  <div class="g3">
+    <div class="cc"><div class="ct">Congênita · Evolução</div><div class="cw"><canvas id="dCe"></canvas></div></div>
+    <div class="cc"><div class="ct">Gestante · Faixa Etária</div><div class="cw"><canvas id="dGf"></canvas></div></div>
+    <div class="cc"><div class="ct">Congênita · Faixa Etária</div><div class="cw"><canvas id="dCf"></canvas></div></div>
   </div>
-  <div class="chart-card">
-    <div class="chart-title">Sífilis em Gestante · por ano</div>
-    <div class="chart-wrap"><canvas id="chartGest"></canvas></div>
-  </div>
-  <div class="chart-card wide">
-    <div class="chart-title">Evolução comparativa 2017–2023 (anos completos)</div>
-    <div class="chart-wrap tall"><canvas id="chartComp"></canvas></div>
-  </div>
-  <div class="chart-card wide">
-    <div class="chart-title">Série histórica · <span id="tabelaMun"></span></div>
-    <div class="tabela-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Tipo</th>
-            <th>2017</th><th>2018</th><th>2019</th><th>2020</th>
-            <th>2021</th><th>2022</th><th>2023</th><th>2024*</th><th>Total</th>
-          </tr>
-        </thead>
-        <tbody id="tabelaBody"></tbody>
-      </table>
-      <p style="font-size:.7rem;color:#475569;margin-top:8px;">* 2024: dados parciais. Fonte: <a href="http://tabnet.datasus.gov.br/cgi/tabcgi.exe?sinannet/cnv/SifilisAdquiridaRJ.def" target="_blank">SINAN Adquirida</a> · <a href="http://tabnet.datasus.gov.br/cgi/tabcgi.exe?sinannet/cnv/sifilisRJ.def" target="_blank">Congênita</a> · <a href="http://tabnet.datasus.gov.br/cgi/tabcgi.exe?sinannet/cnv/SifilisGestanteRJ.def" target="_blank">Gestante</a></p>
-    </div>
+  <div class="sec">Série Histórica Completa</div>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Tipo</th><th>2017</th><th>2018</th><th>2019</th><th>2020</th><th>2021</th><th>2022</th><th>2023</th><th>2024*</th><th>Total</th></tr></thead>
+      <tbody id="tb"></tbody>
+    </table>
+    <p style="font-size:.68rem;color:#475569;margin-top:8px;">* 2024: dados parciais. Fonte: <a href="http://tabnet.datasus.gov.br/cgi/tabcgi.exe?sinannet/cnv/SifilisAdquiridaRJ.def" target="_blank">SINAN Adquirida</a> · <a href="http://tabnet.datasus.gov.br/cgi/tabcgi.exe?sinannet/cnv/sifilisRJ.def" target="_blank">Congênita</a> · <a href="http://tabnet.datasus.gov.br/cgi/tabcgi.exe?sinannet/cnv/SifilisGestanteRJ.def" target="_blank">Gestante</a></p>
   </div>
 </div>
-
-<div id="noData" style="display:none; padding:24px 28px;">
-  <p class="no-data">Nenhum dado encontrado para este município no período 2017–2024.</p>
-</div>
-
+<div id="nd" style="display:none"><p class="nd">Nenhum dado encontrado para este município no período 2017–2024.</p></div>
 <footer>
-  Fonte: Ministério da Saúde / SVSA — Sistema de Informação de Agravos de Notificação (SINAN) via DATASUS Tabnet.<br>
-  Estado do Rio de Janeiro · 92 municípios · Consulta realizada em abril/2026.
+  Fonte: Ministério da Saúde / SVSA — SINAN via DATASUS Tabnet · RJ · 92 municípios · Abril/2026
 </footer>
-
 <script>
-// ── Data embedded from SINAN/DATASUS batch fetch ──────────────────────────────
-const DADOS = {"330015":{"nome":"APERIBE","adq":[0,0,3,1,0,4,9,0],"cong":[1,1,0,0,0,0,1,0],"gest":[0,0,0,0,0,3,1,0]},"330022":{"nome":"AREAL","adq":[5,0,5,4,2,4,13,1],"cong":[2,3,0,1,2,0,0,0],"gest":[0,3,0,0,2,3,2,2]},"330025":{"nome":"ARRAIAL DO CABO","adq":[21,23,13,7,10,26,41,6],"cong":[4,3,8,4,5,3,4,2],"gest":[17,13,6,9,17,27,30,10]},"330023":{"nome":"ARMACAO DOS BUZIOS","adq":[15,10,17,14,27,37,44,3],"cong":[1,4,12,5,6,3,2,2],"gest":[7,11,31,13,17,34,23,11]},"330010":{"nome":"ANGRA DOS REIS","adq":[53,80,122,77,136,125,138,12],"cong":[35,31,27,21,18,46,14,6],"gest":[45,46,39,48,60,115,93,31]},"330020":{"nome":"ARARUAMA","adq":[32,21,37,31,65,57,53,2],"cong":[26,29,41,60,63,30,15,5],"gest":[83,87,61,58,62,31,32,10]},"330030":{"nome":"BARRA DO PIRAI","adq":[64,43,24,31,18,28,94,13],"cong":[39,46,66,44,53,42,26,22],"gest":[47,61,79,56,88,50,75,20]},"330040":{"nome":"BARRA MANSA","adq":[10,24,38,4,5,9,37,4],"cong":[10,5,14,4,14,11,15,4],"gest":[48,64,52,48,71,64,67,28]},"330050":{"nome":"BOM JARDIM","adq":[0,0,1,2,2,0,1,0],"cong":[2,3,3,0,0,0,0,0],"gest":[1,3,3,2,2,0,2,2]},"330045":{"nome":"BELFORD ROXO","adq":[295,437,657,375,509,494,393,10],"cong":[255,345,347,354,434,241,182,77],"gest":[138,216,313,507,684,524,462,138]},"330060":{"nome":"BOM JESUS DO ITABAPOANA","adq":[8,10,22,16,11,29,16,6],"cong":[2,5,6,1,0,0,0,0],"gest":[8,1,10,4,11,25,26,14]},"330095":{"nome":"COMENDADOR LEVY GASPARIAN","adq":[0,0,2,0,3,0,2,0],"cong":[3,3,6,0,3,0,0,0],"gest":[3,2,2,1,4,6,2,0]},"330093":{"nome":"CARAPEBUS","adq":[1,0,1,7,2,0,2,2],"cong":[0,0,2,2,0,1,2,0],"gest":[0,0,3,8,4,4,9,1]},"330090":{"nome":"CAMBUCI","adq":[1,0,2,0,0,5,0,0],"cong":[0,0,0,0,0,3,1,0],"gest":[0,1,0,0,0,9,0,1]},"330070":{"nome":"CABO FRIO","adq":[30,93,96,140,251,276,262,13],"cong":[35,40,34,11,53,28,22,26],"gest":[49,102,120,138,195,147,96,40]},"330080":{"nome":"CACHOEIRAS DE MACACU","adq":[2,12,2,2,29,82,75,1],"cong":[2,4,4,3,14,12,2,2],"gest":[5,4,5,3,20,30,31,11]},"330100":{"nome":"CAMPOS DOS GOYTACAZES","adq":[92,61,174,32,210,258,322,45],"cong":[20,47,29,39,94,219,68,24],"gest":[89,97,27,17,121,308,321,77]},"330110":{"nome":"CANTAGALO","adq":[5,3,7,11,8,9,20,0],"cong":[2,2,1,0,1,3,5,1],"gest":[6,9,8,2,9,11,8,5]},"330115":{"nome":"CARDOSO MOREIRA","adq":[0,0,0,0,3,3,0,0],"cong":[0,1,1,1,0,3,0,1],"gest":[1,5,0,0,2,3,2,1]},"330130":{"nome":"CASIMIRO DE ABREU","adq":[5,39,4,4,5,43,72,7],"cong":[1,4,6,4,9,3,5,2],"gest":[5,12,13,19,39,24,25,5]},"330120":{"nome":"CARMO","adq":[8,7,3,4,3,3,3,0],"cong":[4,0,0,1,3,1,1,0],"gest":[2,3,3,5,1,2,3,4]},"330140":{"nome":"CONCEICAO DE MACABU","adq":[2,12,10,8,12,22,18,7],"cong":[3,7,2,3,1,3,2,1],"gest":[3,4,3,7,0,12,7,4]},"330160":{"nome":"DUAS BARRAS","adq":[0,0,1,0,0,0,1,0],"cong":[1,0,2,0,0,1,2,0],"gest":[1,2,0,1,0,0,1,0]},"330150":{"nome":"CORDEIRO","adq":[7,8,14,0,3,10,3,0],"cong":[2,5,5,0,0,0,0,1],"gest":[4,7,18,10,5,8,4,2]},"330180":{"nome":"ENGENHEIRO PAULO DE FRONTIN","adq":[3,0,4,2,0,2,6,1],"cong":[0,1,1,0,0,0,1,0],"gest":[1,2,2,1,1,1,3,1]},"330170":{"nome":"DUQUE DE CAXIAS","adq":[393,569,606,319,469,493,504,21],"cong":[361,352,298,266,188,252,226,111],"gest":[400,544,754,776,638,810,767,297]},"330185":{"nome":"GUAPIMIRIM","adq":[20,32,144,59,72,77,60,3],"cong":[16,21,12,11,6,24,17,7],"gest":[50,42,50,29,26,24,21,9]},"330187":{"nome":"IGUABA GRANDE","adq":[15,10,18,7,22,23,23,1],"cong":[7,3,4,10,6,3,4,1],"gest":[9,2,18,17,27,12,19,6]},"330190":{"nome":"ITABORAI","adq":[272,304,234,239,196,231,335,50],"cong":[56,63,104,109,110,101,85,46],"gest":[71,155,184,170,155,163,206,111]},"330200":{"nome":"ITAGUAI","adq":[45,109,125,34,91,106,81,6],"cong":[12,20,14,27,39,28,33,7],"gest":[15,54,65,90,135,59,63,18]},"330210":{"nome":"ITAOCARA","adq":[1,0,0,0,4,3,1,0],"cong":[0,0,1,0,1,2,0,0],"gest":[3,2,0,0,6,3,2,1]},"330205":{"nome":"ITALVA","adq":[1,0,0,0,1,0,2,0],"cong":[0,0,3,3,1,0,0,0],"gest":[0,0,1,0,2,1,0,1]},"330225":{"nome":"ITATIAIA","adq":[6,4,12,10,10,6,35,3],"cong":[5,5,4,2,2,6,4,1],"gest":[8,14,14,8,17,13,23,6]},"330220":{"nome":"ITAPERUNA","adq":[3,1,1,0,5,2,4,0],"cong":[3,10,10,13,17,17,11,8],"gest":[21,28,22,43,43,11,26,12]},"330227":{"nome":"JAPERI","adq":[99,174,89,115,146,870,826,135],"cong":[45,28,49,32,53,37,28,7],"gest":[63,52,85,86,118,90,105,35]},"330245":{"nome":"MACUCO","adq":[2,2,4,0,2,1,2,0],"cong":[1,4,1,0,1,3,0,0],"gest":[4,6,0,1,2,10,2,1]},"330240":{"nome":"MACAE","adq":[390,395,482,258,442,397,360,43],"cong":[54,58,85,115,179,72,92,40],"gest":[150,151,199,195,262,161,172,74]},"330230":{"nome":"LAJE DO MURIAE","adq":[0,0,0,0,0,9,3,0],"cong":[1,1,1,0,1,0,3,0],"gest":[0,1,0,0,6,4,0,0]},"330250":{"nome":"MAGE","adq":[251,554,399,382,347,430,488,44],"cong":[125,114,156,88,42,40,41,14],"gest":[160,158,201,183,164,245,249,82]},"330270":{"nome":"MARICA","adq":[84,114,157,95,182,205,321,8],"cong":[28,40,51,41,43,48,22,9],"gest":[30,69,73,94,153,171,147,61]},"330290":{"nome":"MIGUEL PEREIRA","adq":[10,5,8,15,7,9,21,2],"cong":[0,0,2,0,1,0,0,0],"gest":[2,3,1,5,1,1,3,3]},"330260":{"nome":"MANGARATIBA","adq":[4,13,10,17,17,89,61,8],"cong":[4,1,2,1,3,3,2,2],"gest":[12,8,7,14,8,8,14,10]},"330280":{"nome":"MENDES","adq":[4,3,0,1,2,0,5,0],"cong":[0,0,0,1,0,0,0,0],"gest":[8,0,3,0,0,0,4,1]},"330285":{"nome":"MESQUITA","adq":[99,255,274,171,187,221,312,43],"cong":[89,91,134,89,106,73,42,18],"gest":[76,140,157,144,164,130,142,101]},"330310":{"nome":"NATIVIDADE","adq":[2,2,2,0,1,0,0,0],"cong":[0,0,0,1,0,0,1,0],"gest":[0,2,0,0,1,0,0,1]},"330300":{"nome":"MIRACEMA","adq":[0,1,1,0,5,6,15,1],"cong":[0,0,0,0,0,0,0,0],"gest":[0,2,0,0,1,4,7,2]},"330320":{"nome":"NILOPOLIS","adq":[39,72,154,122,89,86,85,6],"cong":[39,56,84,65,73,37,33,15],"gest":[11,30,55,86,77,60,61,32]},"330330":{"nome":"NITEROI","adq":[476,698,626,487,670,919,1022,35],"cong":[115,50,112,137,126,87,62,39],"gest":[146,185,210,201,180,256,263,62]},"330340":{"nome":"NOVA FRIBURGO","adq":[13,2,13,1,15,2,2,1],"cong":[14,23,31,16,23,14,22,6],"gest":[59,51,81,53,59,47,60,12]},"330350":{"nome":"NOVA IGUACU","adq":[1135,2007,1921,1095,1037,1442,1370,139],"cong":[463,469,425,334,596,344,258,53],"gest":[795,799,911,899,1098,900,770,367]},"330390":{"nome":"PETROPOLIS","adq":[2,10,347,635,680,614,694,39],"cong":[105,139,79,33,101,64,73,30],"gest":[46,75,91,39,152,163,215,90]},"330385":{"nome":"PATY DO ALFERES","adq":[30,21,11,13,13,18,8,2],"cong":[0,0,0,1,0,0,1,0],"gest":[6,11,3,5,6,5,11,3]},"330360":{"nome":"PARACAMBI","adq":[23,19,34,26,24,21,22,5],"cong":[4,2,4,4,7,2,2,3],"gest":[1,6,16,15,13,18,5,4]},"330380":{"nome":"PARATY","adq":[4,2,4,2,1,5,29,7],"cong":[2,4,1,1,0,1,1,0],"gest":[5,7,5,12,8,13,9,7]},"330370":{"nome":"PARAIBA DO SUL","adq":[3,7,6,4,10,17,14,1],"cong":[1,6,6,7,7,2,0,0],"gest":[8,7,5,9,16,8,9,3]},"330395":{"nome":"PINHEIRAL","adq":[26,7,1,6,3,16,10,1],"cong":[2,3,1,3,4,1,3,0],"gest":[11,12,10,6,2,8,9,4]},"330400":{"nome":"PIRAI","adq":[1,1,3,9,11,28,18,4],"cong":[1,0,0,1,2,5,2,1],"gest":[13,13,5,6,10,15,4,3]},"330410":{"nome":"PORCIUNCULA","adq":[10,15,17,3,0,7,3,0],"cong":[0,0,2,0,0,0,0,0],"gest":[3,2,3,1,2,5,2,1]},"330411":{"nome":"PORTO REAL","adq":[20,15,15,17,8,18,20,1],"cong":[3,5,4,2,0,2,0,0],"gest":[8,6,4,9,10,6,5,4]},"330415":{"nome":"QUISSAMA","adq":[7,12,16,7,11,25,20,2],"cong":[0,1,3,4,0,3,1,1],"gest":[1,5,11,10,4,20,7,3]},"330412":{"nome":"QUATIS","adq":[8,2,2,1,0,3,2,0],"cong":[2,2,1,1,1,0,1,0],"gest":[5,3,3,5,1,2,1,2]},"330420":{"nome":"RESENDE","adq":[0,5,5,18,36,70,67,5],"cong":[25,34,9,18,25,23,24,0],"gest":[43,53,61,79,93,100,99,16]},"330414":{"nome":"QUEIMADOS","adq":[70,60,72,64,161,198,160,7],"cong":[75,54,69,62,118,66,67,20],"gest":[103,123,151,134,154,140,144,45]},"330430":{"nome":"RIO BONITO","adq":[4,3,4,2,1,2,0,0],"cong":[13,8,15,5,4,10,5,2],"gest":[12,19,20,14,15,13,12,3]},"330440":{"nome":"RIO CLARO","adq":[1,4,16,9,4,2,2,1],"cong":[0,1,0,0,0,0,0,0],"gest":[2,1,1,3,2,0,2,0]},"330450":{"nome":"RIO DAS FLORES","adq":[4,3,6,5,2,5,4,2],"cong":[0,1,1,1,1,0,0,1],"gest":[2,2,4,1,2,0,1,4]},"330452":{"nome":"RIO DAS OSTRAS","adq":[108,94,99,89,97,164,246,10],"cong":[20,22,23,42,44,31,18,7],"gest":[51,52,79,94,125,89,86,28]},"330460":{"nome":"SANTA MARIA MADALENA","adq":[0,1,1,0,1,0,1,1],"cong":[1,0,1,0,1,1,0,1],"gest":[0,3,3,1,0,1,1,3]},"330455":{"nome":"RIO DE JANEIRO","adq":[6402,7224,7564,8138,10894,13671,12965,1166],"cong":[1454,1171,1177,1479,1443,1446,1233,572],"gest":[4188,4330,4151,5766,5489,5647,5448,2785]},"330470":{"nome":"SANTO ANTONIO DE PADUA","adq":[11,5,39,10,9,5,14,1],"cong":[0,1,0,0,0,0,0,1],"gest":[9,6,6,2,3,9,6,2]},"330475":{"nome":"SAO FRANCISCO DE ITABAPOANA","adq":[3,1,5,10,3,4,4,0],"cong":[0,2,3,1,2,12,1,3],"gest":[0,11,3,2,2,14,9,4]},"330490":{"nome":"SAO GONCALO","adq":[593,934,1328,741,560,437,737,16],"cong":[455,453,449,606,507,330,231,122],"gest":[397,554,651,667,553,564,605,269]},"330480":{"nome":"SAO FIDELIS","adq":[10,3,1,0,1,3,3,1],"cong":[0,1,0,1,0,1,2,0],"gest":[1,13,7,10,7,10,3,3]},"330500":{"nome":"SAO JOAO DA BARRA","adq":[5,1,3,0,5,4,6,1],"cong":[1,2,1,1,1,6,2,1],"gest":[2,3,1,0,1,6,20,3]},"330510":{"nome":"SAO JOAO DE MERITI","adq":[389,622,441,213,465,601,683,8],"cong":[236,367,343,272,371,187,128,63],"gest":[139,441,410,420,707,635,540,217]},"330513":{"nome":"SAO JOSE DE UBA","adq":[1,0,0,0,2,3,3,1],"cong":[0,0,1,0,2,1,0,1],"gest":[2,0,1,0,1,3,3,0]},"330515":{"nome":"SAO JOSE DO VALE DO RIO PRETO","adq":[0,2,2,6,9,29,17,0],"cong":[1,0,2,2,1,5,3,1],"gest":[0,0,1,2,1,6,8,0]},"330530":{"nome":"SAO SEBASTIAO DO ALTO","adq":[1,0,1,0,0,0,0,0],"cong":[0,0,0,0,0,0,0,0],"gest":[0,0,0,0,0,1,1,0]},"330520":{"nome":"SAO PEDRO DA ALDEIA","adq":[2,27,9,15,37,22,100,11],"cong":[8,28,30,34,50,47,13,7],"gest":[23,39,50,68,139,117,89,29]},"330540":{"nome":"SAPUCAIA","adq":[5,0,1,4,4,6,3,2],"cong":[0,0,0,2,0,1,0,1],"gest":[0,3,1,3,3,7,1,3]},"330550":{"nome":"SAQUAREMA","adq":[13,40,87,28,39,32,52,5],"cong":[16,12,29,25,18,6,21,11],"gest":[16,43,62,36,30,21,23,12]},"330555":{"nome":"SEROPEDICA","adq":[16,21,35,17,26,35,32,4],"cong":[8,5,4,11,19,4,10,6],"gest":[17,37,31,57,43,30,47,19]},"330570":{"nome":"SUMIDOURO","adq":[3,0,1,1,1,1,0,0],"cong":[0,0,1,1,1,0,0,0],"gest":[1,1,2,2,6,1,1,1]},"330560":{"nome":"SILVA JARDIM","adq":[2,6,7,2,3,5,20,1],"cong":[1,3,5,4,1,0,2,1],"gest":[9,1,2,6,5,4,15,6]},"330575":{"nome":"TANGUA","adq":[1,8,14,6,13,19,29,3],"cong":[5,5,7,6,6,4,1,1],"gest":[3,3,14,10,17,13,20,3]},"330580":{"nome":"TERESOPOLIS","adq":[2,5,5,4,7,4,5,0],"cong":[36,19,38,25,6,5,22,5],"gest":[43,75,83,105,83,64,90,23]},"330590":{"nome":"TRAJANO DE MORAES","adq":[0,4,0,0,0,0,2,0],"cong":[0,0,1,0,0,0,0,0],"gest":[0,3,1,0,0,1,1,0]},"330600":{"nome":"TRES RIOS","adq":[7,7,18,8,10,18,11,0],"cong":[12,42,14,4,3,4,4,4],"gest":[17,12,12,8,27,74,35,0]},"330615":{"nome":"VARRE-SAI","adq":[0,0,1,0,0,0,1,0],"cong":[0,0,0,0,0,0,0,0],"gest":[0,0,2,0,0,1,2,1]},"330610":{"nome":"VALENCA","adq":[85,189,196,144,164,214,122,12],"cong":[8,12,18,15,16,9,16,9],"gest":[7,37,24,24,27,15,27,17]},"330620":{"nome":"VASSOURAS","adq":[4,5,0,0,8,2,17,2],"cong":[1,2,0,2,0,2,0,1],"gest":[5,12,16,10,12,14,12,4]},"330630":{"nome":"VOLTA REDONDA","adq":[149,187,153,134,113,209,402,44],"cong":[54,67,39,36,24,27,13,5],"gest":[94,96,106,87,87,161,154,61]}};
-// ─────────────────────────────────────────────────────────────────────────────
+const D={"330015":{"nome":"APERIBE","adq":[0,0,3,1,0,4,9,0],"cong":[1,1,0,0,0,0,1,0],"gest":[0,0,0,0,0,3,1,0],"demo":{"adq_sexo":{"Masculino":9,"Feminino":8},"adq_raca":{"Ign/Branco":2,"Branca":7,"Preta":7,"Parda":1},"adq_fxet":{"Em branco/IGN":1,"15-19":1,"20-39":11,"40-59":2,"60-64":1,"70-79":1},"adq_clas":{"Confirmado":16,"Inconclusivo":1},"cong_evol":{"Vivo":2,"&Oacute;bito por outra causa":1},"gest_fxet":{"15-19":2,"20-39":3}}},"330022":{"nome":"AREAL","adq":[5,0,5,4,2,4,13,1],"cong":[2,3,0,1,2,0,0,0],"gest":[0,3,0,0,2,3,2,2],"demo":{"adq_sexo":{"Masculino":15,"Feminino":19},"adq_raca":{"Ign/Branco":5,"Branca":9,"Preta":5,"Parda":15},"adq_fxet":{"15-19":1,"20-39":25,"40-59":7,"65-69":1},"adq_clas":{"Ign/Branco":10,"Confirmado":18,"Inconclusivo":6},"cong_evol":{"Vivo":8},"gest_fxet":{"15-19":2,"20-39":12}}},"330025":{"nome":"ARRAIAL DO CABO","adq":[21,23,13,7,10,26,41,6],"cong":[4,3,8,4,5,3,4,2],"gest":[17,13,6,9,17,27,30,10],"demo":{"adq_sexo":{"Masculino":101,"Feminino":46},"adq_raca":{"Ign/Branco":31,"Branca":43,"Preta":21,"Parda":51,"Indigena":1},"adq_fxet":{"10-14":2,"15-19":13,"20-39":93,"40-59":30,"60-64":5,"65-69":2,"70-79":2},"adq_clas":{"Ign/Branco":20,"Confirmado":115,"Descartado":5,"Inconclusivo":7},"cong_evol":{"Ign/Branco":3,"Vivo":27,"&Oacute;bito pelo agravo notificado":1},"gest_fxet":{"10-14":1,"15-19":39,"20-39":107,"40-59":1}}},"330023":{"nome":"ARMACAO DOS BUZIOS","adq":[15,10,17,14,27,37,44,3],"cong":[1,4,12,5,6,3,2,2],"gest":[7,11,31,13,17,34,23,11],"demo":{"adq_sexo":{"Masculino":98,"Feminino":69},"adq_raca":{"Ign/Branco":35,"Branca":74,"Preta":21,"Amarela":2,"Parda":34,"Indigena":1},"adq_fxet":{"Em branco/IGN":1,"15-19":12,"20-39":102,"40-59":37,"60-64":8,"65-69":3,"70-79":3,"80 e +":1},"adq_clas":{"Ign/Branco":19,"Confirmado":140,"Descartado":1,"Inconclusivo":7},"cong_evol":{"Ign/Branco":9,"Vivo":26},"gest_fxet":{"15-19":37,"20-39":127,"40-59":3}}},"330010":{"nome":"ANGRA DOS REIS","adq":[53,80,122,77,136,125,138,12],"cong":[35,31,27,21,18,46,14,6],"gest":[45,46,39,48,60,115,93,31],"demo":{"adq_sexo":{"Masculino":422,"Feminino":321},"adq_raca":{"Ign/Branco":420,"Branca":143,"Preta":51,"Amarela":12,"Parda":117},"adq_fxet":{"Em branco/IGN":6,"10-14":5,"15-19":95,"20-39":434,"40-59":145,"60-64":23,"65-69":11,"70-79":9,"80 e +":15},"adq_clas":{"Ign/Branco":10,"Confirmado":578,"Descartado":4,"Inconclusivo":151},"cong_evol":{"Ign/Branco":11,"Vivo":168,"&Oacute;bito pelo agravo notificado":8},"gest_fxet":{"10-14":6,"15-19":152,"20-39":453,"40-59":9,"80 e +":2}}},"330020":{"nome":"ARARUAMA","adq":[32,21,37,31,65,57,53,2],"cong":[26,29,41,60,63,30,15,5],"gest":[83,87,61,58,62,31,32,10],"demo":{"adq_sexo":{"Masculino":146,"Feminino":152},"adq_raca":{"Ign/Branco":62,"Branca":73,"Preta":68,"Amarela":2,"Parda":91,"Indigena":2},"adq_fxet":{"Em branco/IGN":6,"1-4":1,"10-14":3,"15-19":39,"20-39":166,"40-59":58,"60-64":11,"65-69":13,"70-79":1},"adq_clas":{"Ign/Branco":30,"Confirmado":211,"Descartado":4,"Inconclusivo":53},"cong_evol":{"Ign/Branco":140,"Vivo":129},"gest_fxet":{"10-14":6,"15-19":165,"20-39":365,"40-59":12}}},"330030":{"nome":"BARRA DO PIRAI","adq":[64,43,24,31,18,28,94,13],"cong":[39,46,66,44,53,42,26,22],"gest":[47,61,79,56,88,50,75,20],"demo":{"adq_sexo":{"Masculino":160,"Feminino":155},"adq_raca":{"Ign/Branco":69,"Branca":73,"Preta":86,"Amarela":8,"Parda":79},"adq_fxet":{"Em branco/IGN":5,"10-14":5,"15-19":34,"20-39":181,"40-59":73,"60-64":8,"65-69":5,"70-79":4},"adq_clas":{"Ign/Branco":1,"Confirmado":298,"Descartado":2,"Inconclusivo":14},"cong_evol":{"Ign/Branco":15,"Vivo":314,"&Oacute;bito pelo agravo notificado":3,"&Oacute;bito por outra causa":2},"gest_fxet":{"10-14":4,"15-19":153,"20-39":444,"40-59":11}}},"330040":{"nome":"BARRA MANSA","adq":[10,24,38,4,5,9,37,4],"cong":[10,5,14,4,14,11,15,4],"gest":[48,64,52,48,71,64,67,28],"demo":{"adq_sexo":{"Masculino":79,"Feminino":52},"adq_raca":{"Ign/Branco":22,"Branca":54,"Preta":21,"Amarela":6,"Parda":28},"adq_fxet":{"15-19":10,"20-39":88,"40-59":28,"65-69":2,"70-79":2,"80 e +":1},"adq_clas":{"Ign/Branco":6,"Confirmado":125},"cong_evol":{"Vivo":65,"&Oacute;bito pelo agravo notificado":4,"&Oacute;bito por outra causa":1},"gest_fxet":{"10-14":6,"15-19":123,"20-39":419,"40-59":8}}},"330050":{"nome":"BOM JARDIM","adq":[0,0,1,2,2,0,1,0],"cong":[2,3,3,0,0,0,0,0],"gest":[1,3,3,2,2,0,2,2],"demo":{"adq_sexo":{"Masculino":2,"Feminino":4},"adq_raca":{"Ign/Branco":1,"Branca":4,"Parda":1},"adq_fxet":{"20-39":4,"40-59":2},"adq_clas":{"Ign/Branco":1,"Confirmado":4,"Inconclusivo":1},"cong_evol":{"Vivo":8},"gest_fxet":{"15-19":6,"20-39":13}}},"330045":{"nome":"BELFORD ROXO","adq":[295,437,657,375,509,494,393,10],"cong":[255,345,347,354,434,241,182,77],"gest":[138,216,313,507,684,524,462,138],"demo":{"adq_sexo":{"Ignorado":3,"Masculino":1851,"Feminino":1316},"adq_raca":{"Ign/Branco":1465,"Branca":422,"Preta":465,"Amarela":50,"Parda":754,"Indigena":14},"adq_fxet":{"Em branco/IGN":17,"1-4":2,"5-9":2,"10-14":26,"15-19":389,"20-39":2045,"40-59":588,"60-64":47,"65-69":27,"70-79":26,"80 e +":1},"adq_clas":{"Ign/Branco":965,"Confirmado":2097,"Descartado":84,"Inconclusivo":24},"cong_evol":{"Ign/Branco":138,"Vivo":1968,"&Oacute;bito pelo agravo notificado":34,"&Oacute;bito por outra causa":10},"gest_fxet":{"Em branco/IGN":1,"10-14":45,"15-19":897,"20-39":2486,"40-59":29,"60-64":1,"70-79":2}}},"330060":{"nome":"BOM JESUS DO ITABAPOANA","adq":[8,10,22,16,11,29,16,6],"cong":[2,5,6,1,0,0,0,0],"gest":[8,1,10,4,11,25,26,14],"demo":{"adq_sexo":{"Masculino":69,"Feminino":49},"adq_raca":{"Ign/Branco":5,"Branca":48,"Preta":36,"Amarela":3,"Parda":26},"adq_fxet":{"10-14":2,"15-19":21,"20-39":73,"40-59":20,"65-69":1,"70-79":1},"adq_clas":{"Ign/Branco":4,"Confirmado":113,"Inconclusivo":1},"cong_evol":{"Ign/Branco":3,"Vivo":8,"&Oacute;bito pelo agravo notificado":1},"gest_fxet":{"10-14":3,"15-19":25,"20-39":89,"40-59":3}}},"330095":{"nome":"COMENDADOR LEVY GASPARIAN","adq":[0,0,2,0,3,0,2,0],"cong":[3,3,6,0,3,0,0,0],"gest":[3,2,2,1,4,6,2,0],"demo":{}},"330093":{"nome":"CARAPEBUS","adq":[1,0,1,7,2,0,2,2],"cong":[0,0,2,2,0,1,2,0],"gest":[0,0,3,8,4,4,9,1],"demo":{"adq_sexo":{"Masculino":10,"Feminino":5},"adq_raca":{"Ign/Branco":7,"Branca":1,"Preta":2,"Parda":5},"adq_fxet":{"15-19":2,"20-39":7,"40-59":6},"adq_clas":{"Ign/Branco":5,"Confirmado":8,"Inconclusivo":2},"cong_evol":{"Vivo":7},"gest_fxet":{"15-19":7,"20-39":26}}},"330090":{"nome":"CAMBUCI","adq":[1,0,2,0,0,5,0,0],"cong":[0,0,0,0,0,3,1,0],"gest":[0,1,0,0,0,9,0,1],"demo":{"adq_sexo":{"Masculino":6,"Feminino":2},"adq_raca":{"Ign/Branco":1,"Branca":1,"Preta":3,"Amarela":2,"Parda":1},"adq_fxet":{"15-19":2,"20-39":3,"40-59":3},"adq_clas":{"Ign/Branco":2,"Confirmado":1,"Inconclusivo":5},"cong_evol":{"Ign/Branco":2,"Vivo":1,"&Oacute;bito pelo agravo notificado":1},"gest_fxet":{"15-19":1,"20-39":10}}},"330070":{"nome":"CABO FRIO","adq":[30,93,96,140,251,276,262,13],"cong":[35,40,34,11,53,28,22,26],"gest":[49,102,120,138,195,147,96,40],"demo":{"adq_sexo":{"Masculino":723,"Feminino":438},"adq_raca":{"Ign/Branco":134,"Branca":373,"Preta":249,"Amarela":16,"Parda":384,"Indigena":5},"adq_fxet":{"Em branco/IGN":20,"1-4":1,"10-14":9,"15-19":122,"20-39":711,"40-59":226,"60-64":39,"65-69":15,"70-79":14,"80 e +":4},"adq_clas":{"Ign/Branco":35,"Confirmado":47,"Descartado":1,"Inconclusivo":1078},"cong_evol":{"Ign/Branco":62,"Vivo":182,"&Oacute;bito pelo agravo notificado":3},"gest_fxet":{"10-14":5,"15-19":244,"20-39":734,"40-59":21}}},"330080":{"nome":"CACHOEIRAS DE MACACU","adq":[2,12,2,2,29,82,75,1],"cong":[2,4,4,3,14,12,2,2],"gest":[5,4,5,3,20,30,31,11],"demo":{"adq_sexo":{"Masculino":107,"Feminino":98},"adq_raca":{"Ign/Branco":19,"Branca":53,"Preta":22,"Amarela":2,"Parda":108,"Indigena":1},"adq_fxet":{"Em branco/IGN":2,"10-14":2,"15-19":15,"20-39":109,"40-59":56,"60-64":8,"65-69":4,"70-79":7,"80 e +":2},"adq_clas":{"Ign/Branco":8,"Confirmado":179,"Descartado":1,"Inconclusivo":17},"cong_evol":{"Ign/Branco":5,"Vivo":32,"&Oacute;bito pelo agravo notificado":4,"&Oacute;bito por outra causa":1},"gest_fxet":{"10-14":4,"15-19":22,"20-39":90,"40-59":1}}},"330100":{"nome":"CAMPOS DOS GOYTACAZES","adq":[92,61,174,32,210,258,322,45],"cong":[20,47,29,39,94,219,68,24],"gest":[89,97,27,17,121,308,321,77],"demo":{"adq_sexo":{"Ignorado":2,"Masculino":670,"Feminino":522},"adq_raca":{"Ign/Branco":420,"Branca":211,"Preta":228,"Amarela":4,"Parda":328,"Indigena":3},"adq_fxet":{"Em branco/IGN":10,"5-9":1,"10-14":10,"15-19":118,"20-39":753,"40-59":257,"60-64":25,"65-69":12,"70-79":7,"80 e +":1},"adq_clas":{"Ign/Branco":17,"Confirmado":1013,"Descartado":21,"Inconclusivo":143},"cong_evol":{"Ign/Branco":8,"Vivo":524,"&Oacute;bito pelo agravo notificado":9,"&Oacute;bito por outra causa":1},"gest_fxet":{"Em branco/IGN":1,"10-14":12,"15-19":276,"20-39":914,"40-59":17}}},"330110":{"nome":"CANTAGALO","adq":[5,3,7,11,8,9,20,0],"cong":[2,2,1,0,1,3,5,1],"gest":[6,9,8,2,9,11,8,5],"demo":{"adq_sexo":{"Masculino":28,"Feminino":35},"adq_raca":{"Ign/Branco":2,"Branca":15,"Preta":25,"Amarela":2,"Parda":18,"Indigena":1},"adq_fxet":{"Em branco/IGN":6,"10-14":1,"15-19":5,"20-39":35,"40-59":15,"60-64":1},"adq_clas":{"Ign/Branco":4,"Confirmado":46,"Descartado":1,"Inconclusivo":12},"cong_evol":{"Ign/Branco":4,"Vivo":11},"gest_fxet":{"Em branco/IGN":1,"10-14":3,"15-19":22,"20-39":49,"40-59":1}}},"330115":{"nome":"CARDOSO MOREIRA","adq":[0,0,0,0,3,3,0,0],"cong":[0,1,1,1,0,3,0,1],"gest":[1,5,0,0,2,3,2,1],"demo":{"adq_sexo":{"Masculino":3,"Feminino":3},"adq_raca":{"Ign/Branco":1,"Preta":2,"Parda":3},"adq_fxet":{"15-19":1,"20-39":5},"adq_clas":{"Confirmado":2,"Descartado":2,"Inconclusivo":2},"cong_evol":{"Ign/Branco":1,"Vivo":6},"gest_fxet":{"15-19":4,"20-39":12}}},"330130":{"nome":"CASIMIRO DE ABREU","adq":[5,39,4,4,5,43,72,7],"cong":[1,4,6,4,9,3,5,2],"gest":[5,12,13,19,39,24,25,5],"demo":{"adq_sexo":{"Masculino":91,"Feminino":88},"adq_raca":{"Ign/Branco":67,"Branca":36,"Preta":19,"Amarela":1,"Parda":56},"adq_fxet":{"Em branco/IGN":1,"10-14":1,"15-19":28,"20-39":106,"40-59":32,"60-64":6,"65-69":4,"70-79":1},"adq_clas":{"Ign/Branco":15,"Confirmado":163,"Descartado":1},"cong_evol":{"Ign/Branco":4,"Vivo":27,"&Oacute;bito pelo agravo notificado":1},"gest_fxet":{"10-14":3,"15-19":37,"20-39":118,"40-59":6}}},"330120":{"nome":"CARMO","adq":[8,7,3,4,3,3,3,0],"cong":[4,0,0,1,3,1,1,0],"gest":[2,3,3,5,1,2,3,4],"demo":{"adq_sexo":{"Masculino":17,"Feminino":14},"adq_raca":{"Ign/Branco":4,"Branca":13,"Preta":11,"Parda":3},"adq_fxet":{"Em branco/IGN":1,"15-19":2,"20-39":19,"40-59":8,"70-79":1},"adq_clas":{"Confirmado":25,"Inconclusivo":6},"cong_evol":{"Vivo":8,"&Oacute;bito pelo agravo notificado":2},"gest_fxet":{"10-14":1,"15-19":8,"20-39":24}}},"330140":{"nome":"CONCEICAO DE MACABU","adq":[2,12,10,8,12,22,18,7],"cong":[3,7,2,3,1,3,2,1],"gest":[3,4,3,7,0,12,7,4],"demo":{"adq_sexo":{"Ignorado":1,"Masculino":43,"Feminino":47},"adq_raca":{"Ign/Branco":85,"Branca":3,"Preta":3},"adq_fxet":{"Em branco/IGN":3,"1-4":1,"10-14":1,"15-19":9,"20-39":53,"40-59":19,"60-64":4,"65-69":1},"adq_clas":{"Ign/Branco":17,"Confirmado":38,"Descartado":1,"Inconclusivo":35},"cong_evol":{"Ign/Branco":3,"Vivo":19},"gest_fxet":{"15-19":15,"20-39":29,"40-59":3}}},"330160":{"nome":"DUAS BARRAS","adq":[0,0,1,0,0,0,1,0],"cong":[1,0,2,0,0,1,2,0],"gest":[1,2,0,1,0,0,1,0],"demo":{"adq_sexo":{"Masculino":2},"adq_raca":{"Branca":1,"Preta":1},"adq_fxet":{"20-39":1,"40-59":1},"adq_clas":{"Ign/Branco":2},"cong_evol":{"Ign/Branco":1,"Vivo":5},"gest_fxet":{"15-19":7,"20-39":14,"40-59":1}}},"330150":{"nome":"CORDEIRO","adq":[7,8,14,0,3,10,3,0],"cong":[2,5,5,0,0,0,0,1],"gest":[4,7,18,10,5,8,4,2],"demo":{"adq_sexo":{"Masculino":20,"Feminino":25},"adq_raca":{"Ign/Branco":5,"Branca":13,"Preta":15,"Parda":12},"adq_fxet":{"10-14":1,"15-19":5,"20-39":24,"40-59":14,"65-69":1},"adq_clas":{"Ign/Branco":1,"Confirmado":25,"Inconclusivo":19},"cong_evol":{"Vivo":12},"gest_fxet":{"15-19":20,"20-39":52,"40-59":3}}},"330180":{"nome":"ENGENHEIRO PAULO DE FRONTIN","adq":[3,0,4,2,0,2,6,1],"cong":[0,1,1,0,0,0,1,0],"gest":[1,2,2,1,1,1,3,1],"demo":{"adq_sexo":{"Masculino":11,"Feminino":7},"adq_raca":{"Ign/Branco":3,"Branca":11,"Preta":3,"Parda":1},"adq_fxet":{"15-19":1,"20-39":9,"40-59":8},"adq_clas":{"Ign/Branco":2,"Confirmado":16},"cong_evol":{"Vivo":1,"&Oacute;bito pelo agravo notificado":2},"gest_fxet":{"15-19":5,"20-39":14}}},"330170":{"nome":"DUQUE DE CAXIAS","adq":[393,569,606,319,469,493,504,21],"cong":[361,352,298,266,188,252,226,111],"gest":[400,544,754,776,638,810,767,297],"demo":{"adq_sexo":{"Ignorado":10,"Masculino":1936,"Feminino":1428},"adq_raca":{"Ign/Branco":1293,"Branca":588,"Preta":529,"Amarela":16,"Parda":944,"Indigena":4},"adq_fxet":{"Em branco/IGN":14,"5-9":1,"10-14":24,"15-19":442,"20-39":2157,"40-59":603,"60-64":70,"65-69":38,"70-79":22,"80 e +":3},"adq_clas":{"Ign/Branco":780,"Confirmado":483,"Inconclusivo":2111},"cong_evol":{"Ign/Branco":61,"Vivo":1735,"&Oacute;bito pelo agravo notificado":102,"&Oacute;bito por outra causa":20},"gest_fxet":{"10-14":101,"15-19":1813,"20-39":4779,"40-59":94}}},"330185":{"nome":"GUAPIMIRIM","adq":[20,32,144,59,72,77,60,3],"cong":[16,21,12,11,6,24,17,7],"gest":[50,42,50,29,26,24,21,9],"demo":{"adq_sexo":{"Masculino":221,"Feminino":246},"adq_raca":{"Ign/Branco":180,"Branca":88,"Preta":50,"Amarela":3,"Parda":146},"adq_fxet":{"10-14":5,"15-19":63,"20-39":267,"40-59":96,"60-64":16,"65-69":12,"70-79":8},"adq_clas":{"Ign/Branco":8,"Confirmado":438,"Descartado":1,"Inconclusivo":20},"cong_evol":{"Ign/Branco":3,"Vivo":106,"&Oacute;bito pelo agravo notificado":3},"gest_fxet":{"10-14":1,"15-19":80,"20-39":246,"40-59":4}}},"330187":{"nome":"IGUABA GRANDE","adq":[15,10,18,7,22,23,23,1],"cong":[7,3,4,10,6,3,4,1],"gest":[9,2,18,17,27,12,19,6],"demo":{"adq_sexo":{"Masculino":60,"Feminino":59},"adq_raca":{"Ign/Branco":12,"Branca":36,"Preta":32,"Parda":37,"Indigena":2},"adq_fxet":{"15-19":21,"20-39":66,"40-59":28,"60-64":2,"65-69":1,"70-79":1},"adq_clas":{"Ign/Branco":3,"Confirmado":106,"Descartado":2,"Inconclusivo":8},"cong_evol":{"Ign/Branco":23,"Vivo":15},"gest_fxet":{"15-19":30,"20-39":95,"40-59":4}}},"330190":{"nome":"ITABORAI","adq":[272,304,234,239,196,231,335,50],"cong":[56,63,104,109,110,101,85,46],"gest":[71,155,184,170,155,163,206,111],"demo":{"adq_sexo":{"Masculino":1043,"Feminino":818},"adq_raca":{"Ign/Branco":1131,"Branca":181,"Preta":160,"Amarela":6,"Parda":380,"Indigena":3},"adq_fxet":{"Em branco/IGN":12,"1-4":5,"5-9":2,"10-14":27,"15-19":276,"20-39":1132,"40-59":329,"60-64":30,"65-69":28,"70-79":15,"80 e +":5},"adq_clas":{"Ign/Branco":141,"Confirmado":152,"Inconclusivo":1568},"cong_evol":{"Ign/Branco":123,"Vivo":454,"&Oacute;bito pelo agravo notificado":24,"&Oacute;bito por outra causa":4},"gest_fxet":{"10-14":13,"15-19":403,"20-39":1003,"40-59":13,"80 e +":2}}},"330200":{"nome":"ITAGUAI","adq":[45,109,125,34,91,106,81,6],"cong":[12,20,14,27,39,28,33,7],"gest":[15,54,65,90,135,59,63,18],"demo":{"adq_sexo":{"Masculino":324,"Feminino":273},"adq_raca":{"Ign/Branco":97,"Branca":102,"Preta":100,"Amarela":6,"Parda":292},"adq_fxet":{"Em branco/IGN":7,"5-9":1,"15-19":60,"20-39":356,"40-59":143,"60-64":14,"65-69":6,"70-79":8,"80 e +":2},"adq_clas":{"Ign/Branco":40,"Confirmado":538,"Descartado":18,"Inconclusivo":1},"cong_evol":{"Ign/Branco":20,"Vivo":143,"&Oacute;bito por outra causa":4},"gest_fxet":{"10-14":4,"15-19":151,"20-39":474,"40-59":13}}},"330210":{"nome":"ITAOCARA","adq":[1,0,0,0,4,3,1,0],"cong":[0,0,1,0,1,2,0,0],"gest":[3,2,0,0,6,3,2,1],"demo":{"adq_sexo":{"Masculino":5,"Feminino":4},"adq_raca":{"Ign/Branco":1,"Branca":5,"Preta":1,"Parda":2},"adq_fxet":{"15-19":4,"20-39":4,"40-59":1},"adq_clas":{"Confirmado":9},"cong_evol":{"Vivo":4},"gest_fxet":{"15-19":4,"20-39":21,"80 e +":1}}},"330205":{"nome":"ITALVA","adq":[1,0,0,0,1,0,2,0],"cong":[0,0,3,3,1,0,0,0],"gest":[0,0,1,0,2,1,0,1],"demo":{"adq_sexo":{"Feminino":4},"adq_raca":{"Branca":2,"Preta":1,"Parda":1},"adq_fxet":{"15-19":2,"20-39":2},"adq_clas":{"Confirmado":3,"Inconclusivo":1},"cong_evol":{"Vivo":7},"gest_fxet":{"15-19":1,"20-39":3,"40-59":1}}},"330225":{"nome":"ITATIAIA","adq":[6,4,12,10,10,6,35,3],"cong":[5,5,4,2,2,6,4,1],"gest":[8,14,14,8,17,13,23,6],"demo":{"adq_sexo":{"Masculino":60,"Feminino":26},"adq_raca":{"Ign/Branco":30,"Branca":19,"Preta":11,"Parda":26},"adq_fxet":{"Em branco/IGN":1,"15-19":10,"20-39":54,"40-59":15,"60-64":3,"65-69":1,"70-79":2},"adq_clas":{"Ign/Branco":2,"Confirmado":50,"Descartado":1,"Inconclusivo":33},"cong_evol":{"Vivo":26},"gest_fxet":{"10-14":1,"15-19":26,"20-39":109,"40-59":4}}},"330220":{"nome":"ITAPERUNA","adq":[3,1,1,0,5,2,4,0],"cong":[3,10,10,13,17,17,11,8],"gest":[21,28,22,43,43,11,26,12],"demo":{"adq_sexo":{"Masculino":12,"Feminino":4},"adq_raca":{"Ign/Branco":2,"Branca":7,"Preta":2,"Parda":5},"adq_fxet":{"20-39":7,"40-59":5,"60-64":2,"65-69":1,"70-79":1},"adq_clas":{"Ign/Branco":3,"Confirmado":12,"Inconclusivo":1},"cong_evol":{"Ign/Branco":5,"Vivo":81,"&Oacute;bito por outra causa":1},"gest_fxet":{"10-14":3,"15-19":51,"20-39":213,"40-59":3}}},"330227":{"nome":"JAPERI","adq":[99,174,89,115,146,870,826,135],"cong":[45,28,49,32,53,37,28,7],"gest":[63,52,85,86,118,90,105,35],"demo":{"adq_sexo":{"Masculino":1955,"Feminino":499},"adq_raca":{"Ign/Branco":471,"Branca":360,"Preta":557,"Amarela":32,"Parda":1032,"Indigena":2},"adq_fxet":{"Em branco/IGN":7,"1-4":1,"10-14":12,"15-19":220,"20-39":1794,"40-59":368,"60-64":26,"65-69":14,"70-79":8,"80 e +":4},"adq_clas":{"Ign/Branco":240,"Confirmado":68,"Inconclusivo":2146},"cong_evol":{"Ign/Branco":13,"Vivo":255,"&Oacute;bito pelo agravo notificado":2},"gest_fxet":{"10-14":10,"15-19":202,"20-39":592,"40-59":14}}},"330245":{"nome":"MACUCO","adq":[2,2,4,0,2,1,2,0],"cong":[1,4,1,0,1,3,0,0],"gest":[4,6,0,1,2,10,2,1],"demo":{"adq_sexo":{"Masculino":7,"Feminino":6},"adq_raca":{"Ign/Branco":2,"Branca":4,"Preta":3,"Parda":3,"Indigena":1},"adq_fxet":{"Em branco/IGN":2,"15-19":3,"20-39":5,"40-59":2,"70-79":1},"adq_clas":{"Confirmado":12,"Inconclusivo":1},"cong_evol":{"Ign/Branco":2,"Vivo":8},"gest_fxet":{"15-19":10,"20-39":19}}},"330240":{"nome":"MACAE","adq":[390,395,482,258,442,397,360,43],"cong":[54,58,85,115,179,72,92,40],"gest":[150,151,199,195,262,161,172,74],"demo":{"adq_sexo":{"Masculino":1553,"Feminino":1214},"adq_raca":{"Ign/Branco":1755,"Branca":361,"Preta":301,"Amarela":12,"Parda":336,"Indigena":2},"adq_fxet":{"Em branco/IGN":10,"1-4":1,"5-9":2,"10-14":25,"15-19":366,"20-39":1743,"40-59":503,"60-64":53,"65-69":25,"70-79":26,"80 e +":13},"adq_clas":{"Ign/Branco":10,"Confirmado":789,"Descartado":1,"Inconclusivo":1967},"cong_evol":{"Ign/Branco":60,"Vivo":617,"&Oacute;bito pelo agravo notificado":14},"gest_fxet":{"10-14":28,"15-19":487,"20-39":1110,"40-59":16}}},"330230":{"nome":"LAJE DO MURIAE","adq":[0,0,0,0,0,9,3,0],"cong":[1,1,1,0,1,0,3,0],"gest":[0,1,0,0,6,4,0,0],"demo":{"adq_sexo":{"Masculino":2,"Feminino":10},"adq_raca":{"Ign/Branco":1,"Branca":5,"Preta":5,"Parda":1},"adq_fxet":{"15-19":1,"20-39":8,"40-59":3},"adq_clas":{"Confirmado":8,"Inconclusivo":4},"cong_evol":{"Vivo":7},"gest_fxet":{"15-19":5,"20-39":6}}},"330250":{"nome":"MAGE","adq":[251,554,399,382,347,430,488,44],"cong":[125,114,156,88,42,40,41,14],"gest":[160,158,201,183,164,245,249,82],"demo":{"adq_sexo":{"Ignorado":5,"Masculino":1664,"Feminino":1226},"adq_raca":{"Ign/Branco":805,"Branca":593,"Preta":632,"Amarela":48,"Parda":790,"Indigena":27},"adq_fxet":{"Em branco/IGN":46,"1-4":2,"5-9":2,"10-14":22,"15-19":403,"20-39":1785,"40-59":522,"60-64":59,"65-69":22,"70-79":25,"80 e +":7},"adq_clas":{"Ign/Branco":283,"Confirmado":2542,"Descartado":3,"Inconclusivo":67},"cong_evol":{"Ign/Branco":121,"Vivo":474,"&Oacute;bito pelo agravo notificado":11,"&Oacute;bito por outra causa":3},"gest_fxet":{"Em branco/IGN":2,"10-14":14,"15-19":485,"20-39":1300,"40-59":21}}},"330270":{"nome":"MARICA","adq":[84,114,157,95,182,205,321,8],"cong":[28,40,51,41,43,48,22,9],"gest":[30,69,73,94,153,171,147,61],"demo":{"adq_sexo":{"Ignorado":1,"Masculino":603,"Feminino":562},"adq_raca":{"Ign/Branco":148,"Branca":326,"Preta":192,"Amarela":23,"Parda":474,"Indigena":3},"adq_fxet":{"Em branco/IGN":13,"5-9":1,"10-14":8,"15-19":163,"20-39":675,"40-59":241,"60-64":34,"65-69":17,"70-79":11,"80 e +":3},"adq_clas":{"Ign/Branco":80,"Confirmado":986,"Descartado":28,"Inconclusivo":72},"cong_evol":{"Ign/Branco":7,"Vivo":249,"&Oacute;bito pelo agravo notificado":6,"&Oacute;bito por outra causa":2},"gest_fxet":{"10-14":2,"15-19":213,"20-39":660,"40-59":19}}},"330290":{"nome":"MIGUEL PEREIRA","adq":[10,5,8,15,7,9,21,2],"cong":[0,0,2,0,1,0,0,0],"gest":[2,3,1,5,1,1,3,3],"demo":{"adq_sexo":{"Masculino":44,"Feminino":33},"adq_raca":{"Ign/Branco":6,"Branca":28,"Preta":13,"Parda":30},"adq_fxet":{"10-14":2,"15-19":13,"20-39":45,"40-59":13,"60-64":4},"adq_clas":{"Ign/Branco":6,"Confirmado":69,"Inconclusivo":2},"cong_evol":{"Vivo":3},"gest_fxet":{"15-19":10,"20-39":19}}},"330260":{"nome":"MANGARATIBA","adq":[4,13,10,17,17,89,61,8],"cong":[4,1,2,1,3,3,2,2],"gest":[12,8,7,14,8,8,14,10],"demo":{"adq_sexo":{"Ignorado":1,"Masculino":116,"Feminino":102},"adq_raca":{"Ign/Branco":36,"Branca":32,"Preta":23,"Amarela":1,"Parda":127},"adq_fxet":{"Em branco/IGN":1,"1-4":1,"15-19":25,"20-39":123,"40-59":59,"60-64":6,"65-69":2,"70-79":2},"adq_clas":{"Ign/Branco":14,"Confirmado":156,"Descartado":6,"Inconclusivo":43},"cong_evol":{"Ign/Branco":2,"Vivo":14,"&Oacute;bito pelo agravo notificado":1},"gest_fxet":{"10-14":2,"15-19":22,"20-39":66,"40-59":1}}},"330280":{"nome":"MENDES","adq":[4,3,0,1,2,0,5,0],"cong":[0,0,0,1,0,0,0,0],"gest":[8,0,3,0,0,0,4,1],"demo":{"adq_sexo":{"Masculino":8,"Feminino":7},"adq_raca":{"Ign/Branco":9,"Branca":2,"Preta":4},"adq_fxet":{"15-19":2,"20-39":12,"60-64":1},"adq_clas":{"Confirmado":14,"Inconclusivo":1},"cong_evol":{"Vivo":1},"gest_fxet":{"10-14":3,"15-19":13,"20-39":23,"40-59":1}}},"330285":{"nome":"MESQUITA","adq":[99,255,274,171,187,221,312,43],"cong":[89,91,134,89,106,73,42,18],"gest":[76,140,157,144,164,130,142,101],"demo":{"adq_sexo":{"Ignorado":4,"Masculino":875,"Feminino":683},"adq_raca":{"Ign/Branco":364,"Branca":265,"Preta":322,"Amarela":16,"Parda":595},"adq_fxet":{"Em branco/IGN":10,"1-4":2,"5-9":1,"10-14":12,"15-19":216,"20-39":951,"40-59":294,"60-64":38,"65-69":22,"70-79":13,"80 e +":3},"adq_clas":{"Ign/Branco":240,"Confirmado":1320,"Inconclusivo":2},"cong_evol":{"Ign/Branco":36,"Vivo":579,"&Oacute;bito pelo agravo notificado":9},"gest_fxet":{"10-14":18,"15-19":327,"20-39":899,"40-59":25}}},"330310":{"nome":"NATIVIDADE","adq":[2,2,2,0,1,0,0,0],"cong":[0,0,0,1,0,0,1,0],"gest":[0,2,0,0,1,0,0,1],"demo":{"adq_sexo":{"Masculino":3,"Feminino":4},"adq_raca":{"Branca":5,"Parda":2},"adq_fxet":{"Em branco/IGN":1,"20-39":4,"40-59":1,"60-64":1},"adq_clas":{"Ign/Branco":1,"Confirmado":5,"Inconclusivo":1},"cong_evol":{"Vivo":2},"gest_fxet":{"15-19":3,"20-39":7}}},"330300":{"nome":"MIRACEMA","adq":[0,1,1,0,5,6,15,1],"cong":[0,0,0,0,0,0,0,0],"gest":[0,2,0,0,1,4,7,2],"demo":{"adq_sexo":{"Masculino":13,"Feminino":16},"adq_raca":{"Ign/Branco":6,"Branca":5,"Preta":5,"Amarela":1,"Parda":12},"adq_fxet":{"15-19":7,"20-39":15,"40-59":6,"70-79":1},"adq_clas":{"Ign/Branco":1,"Confirmado":26,"Inconclusivo":2},"cong_evol":{},"gest_fxet":{"10-14":1,"15-19":2,"20-39":17}}},"330320":{"nome":"NILOPOLIS","adq":[39,72,154,122,89,86,85,6],"cong":[39,56,84,65,73,37,33,15],"gest":[11,30,55,86,77,60,61,32],"demo":{"adq_sexo":{"Ignorado":2,"Masculino":409,"Feminino":242},"adq_raca":{"Ign/Branco":235,"Branca":99,"Preta":108,"Amarela":8,"Parda":201,"Indigena":2},"adq_fxet":{"Em branco/IGN":9,"5-9":1,"10-14":1,"15-19":63,"20-39":398,"40-59":152,"60-64":16,"65-69":7,"70-79":5,"80 e +":1},"adq_clas":{"Ign/Branco":147,"Confirmado":443,"Descartado":14,"Inconclusivo":49},"cong_evol":{"Ign/Branco":21,"Vivo":356,"&Oacute;bito pelo agravo notificado":9,"&Oacute;bito por outra causa":3},"gest_fxet":{"10-14":4,"15-19":148,"20-39":482,"40-59":13}}},"330330":{"nome":"NITEROI","adq":[476,698,626,487,670,919,1022,35],"cong":[115,50,112,137,126,87,62,39],"gest":[146,185,210,201,180,256,263,62],"demo":{"adq_sexo":{"Masculino":3065,"Feminino":1868},"adq_raca":{"Ign/Branco":511,"Branca":1550,"Preta":1105,"Amarela":20,"Parda":1737,"Indigena":10},"adq_fxet":{"Em branco/IGN":13,"1-4":4,"5-9":1,"10-14":36,"15-19":421,"20-39":3072,"40-59":1074,"60-64":133,"65-69":88,"70-79":77,"80 e +":14},"adq_clas":{"Ign/Branco":148,"Confirmado":258,"Descartado":1,"Inconclusivo":4526},"cong_evol":{"Ign/Branco":5,"Vivo":628,"&Oacute;bito pelo agravo notificado":14,"&Oacute;bito por outra causa":6},"gest_fxet":{"10-14":23,"15-19":519,"20-39":1552,"40-59":32}}},"330340":{"nome":"NOVA FRIBURGO","adq":[13,2,13,1,15,2,2,1],"cong":[14,23,31,16,23,14,22,6],"gest":[59,51,81,53,59,47,60,12],"demo":{"adq_sexo":{"Masculino":30,"Feminino":19},"adq_raca":{"Ign/Branco":22,"Branca":13,"Preta":7,"Parda":7},"adq_fxet":{"Em branco/IGN":1,"15-19":5,"20-39":31,"40-59":12},"adq_clas":{"Ign/Branco":9,"Confirmado":22,"Inconclusivo":18},"cong_evol":{"Ign/Branco":37,"Vivo":112},"gest_fxet":{"10-14":5,"15-19":126,"20-39":436,"40-59":13}}},"330350":{"nome":"NOVA IGUACU","adq":[1135,2007,1921,1095,1037,1442,1370,139],"cong":[463,469,425,334,596,344,258,53],"gest":[795,799,911,899,1098,900,770,367],"demo":{"adq_sexo":{"Ignorado":2,"Masculino":5393,"Feminino":4751},"adq_raca":{"Ign/Branco":3991,"Branca":1422,"Preta":1491,"Amarela":100,"Parda":3111,"Indigena":31},"adq_fxet":{"Em branco/IGN":80,"1-4":4,"5-9":6,"10-14":80,"15-19":1375,"20-39":6324,"40-59":1836,"60-64":206,"65-69":141,"70-79":69,"80 e +":25},"adq_clas":{"Ign/Branco":636,"Confirmado":458,"Descartado":6,"Inconclusivo":9046},"cong_evol":{"Ign/Branco":78,"Vivo":2775,"&Oacute;bito pelo agravo notificado":43,"&Oacute;bito por outra causa":9},"gest_fxet":{"Em branco/IGN":1,"10-14":80,"15-19":1762,"20-39":5611,"40-59":109}}},"330390":{"nome":"PETROPOLIS","adq":[2,10,347,635,680,614,694,39],"cong":[105,139,79,33,101,64,73,30],"gest":[46,75,91,39,152,163,215,90],"demo":{"adq_sexo":{"Masculino":1593,"Feminino":1428},"adq_raca":{"Ign/Branco":13,"Branca":1037,"Preta":585,"Amarela":10,"Parda":1369,"Indigena":7},"adq_fxet":{"Em branco/IGN":4,"1-4":1,"5-9":2,"10-14":13,"15-19":258,"20-39":1739,"40-59":763,"60-64":108,"65-69":69,"70-79":54,"80 e +":10},"adq_clas":{"Ign/Branco":55,"Confirmado":59,"Inconclusivo":2907},"cong_evol":{"Ign/Branco":6,"Vivo":523,"&Oacute;bito pelo agravo notificado":12,"&Oacute;bito por outra causa":15},"gest_fxet":{"10-14":5,"15-19":218,"20-39":833,"40-59":27}}},"330385":{"nome":"PATY DO ALFERES","adq":[30,21,11,13,13,18,8,2],"cong":[0,0,0,1,0,0,1,0],"gest":[6,11,3,5,6,5,11,3],"demo":{"adq_sexo":{"Masculino":68,"Feminino":48},"adq_raca":{"Ign/Branco":25,"Branca":32,"Preta":20,"Parda":39},"adq_fxet":{"Em branco/IGN":1,"15-19":13,"20-39":63,"40-59":31,"60-64":4,"65-69":2,"70-79":2},"adq_clas":{"Ign/Branco":6,"Confirmado":50,"Descartado":6,"Inconclusivo":54},"cong_evol":{"Vivo":2},"gest_fxet":{"10-14":1,"15-19":11,"20-39":49,"40-59":1}}},"330360":{"nome":"PARACAMBI","adq":[23,19,34,26,24,21,22,5],"cong":[4,2,4,4,7,2,2,3],"gest":[1,6,16,15,13,18,5,4],"demo":{"adq_sexo":{"Masculino":97,"Feminino":77},"adq_raca":{"Ign/Branco":22,"Branca":41,"Preta":52,"Amarela":1,"Parda":58},"adq_fxet":{"Em branco/IGN":4,"1-4":1,"10-14":3,"15-19":13,"20-39":112,"40-59":36,"60-64":1,"65-69":3,"70-79":1},"adq_clas":{"Ign/Branco":15,"Confirmado":110,"Descartado":2,"Inconclusivo":47},"cong_evol":{"Ign/Branco":3,"Vivo":24},"gest_fxet":{"10-14":1,"15-19":23,"20-39":74}}},"330380":{"nome":"PARATY","adq":[4,2,4,2,1,5,29,7],"cong":[2,4,1,1,0,1,1,0],"gest":[5,7,5,12,8,13,9,7],"demo":{"adq_sexo":{"Masculino":37,"Feminino":17},"adq_raca":{"Ign/Branco":4,"Branca":16,"Preta":6,"Parda":27,"Indigena":1},"adq_fxet":{"15-19":1,"20-39":37,"40-59":12,"60-64":1,"65-69":1,"70-79":2},"adq_clas":{"Ign/Branco":4,"Confirmado":50},"cong_evol":{"Vivo":9,"&Oacute;bito pelo agravo notificado":1},"gest_fxet":{"15-19":21,"20-39":59,"40-59":1}}},"330370":{"nome":"PARAIBA DO SUL","adq":[3,7,6,4,10,17,14,1],"cong":[1,6,6,7,7,2,0,0],"gest":[8,7,5,9,16,8,9,3],"demo":{"adq_sexo":{"Masculino":35,"Feminino":27},"adq_raca":{"Ign/Branco":2,"Branca":22,"Preta":19,"Parda":19},"adq_fxet":{"10-14":2,"15-19":5,"20-39":46,"40-59":7,"60-64":2},"adq_clas":{"Ign/Branco":5,"Confirmado":49,"Inconclusivo":8},"cong_evol":{"Vivo":28,"&Oacute;bito pelo agravo notificado":1},"gest_fxet":{"10-14":2,"15-19":25,"20-39":61}}},"330395":{"nome":"PINHEIRAL","adq":[26,7,1,6,3,16,10,1],"cong":[2,3,1,3,4,1,3,0],"gest":[11,12,10,6,2,8,9,4],"demo":{"adq_sexo":{"Masculino":37,"Feminino":33},"adq_raca":{"Ign/Branco":31,"Branca":13,"Preta":13,"Parda":13},"adq_fxet":{"10-14":1,"15-19":11,"20-39":32,"40-59":23,"60-64":2,"65-69":1},"adq_clas":{"Confirmado":56,"Descartado":1,"Inconclusivo":13},"cong_evol":{"Ign/Branco":1,"Vivo":15,"&Oacute;bito pelo agravo notificado":1},"gest_fxet":{"10-14":3,"15-19":21,"20-39":54}}},"330400":{"nome":"PIRAI","adq":[1,1,3,9,11,28,18,4],"cong":[1,0,0,1,2,5,2,1],"gest":[13,13,5,6,10,15,4,3],"demo":{"adq_sexo":{"Masculino":41,"Feminino":34},"adq_raca":{"Ign/Branco":7,"Branca":17,"Preta":24,"Parda":27},"adq_fxet":{"10-14":1,"15-19":5,"20-39":50,"40-59":16,"60-64":1,"70-79":2},"adq_clas":{"Ign/Branco":4,"Confirmado":14,"Descartado":1,"Inconclusivo":56},"cong_evol":{"Vivo":11,"&Oacute;bito por outra causa":1},"gest_fxet":{"15-19":28,"20-39":67,"40-59":1}}},"330410":{"nome":"PORCIUNCULA","adq":[10,15,17,3,0,7,3,0],"cong":[0,0,2,0,0,0,0,0],"gest":[3,2,3,1,2,5,2,1],"demo":{"adq_sexo":{"Masculino":25,"Feminino":30},"adq_raca":{"Ign/Branco":4,"Branca":15,"Preta":16,"Amarela":5,"Parda":14,"Indigena":1},"adq_fxet":{"10-14":1,"15-19":8,"20-39":30,"40-59":11,"60-64":1,"65-69":2,"70-79":2},"adq_clas":{"Confirmado":41,"Inconclusivo":14},"cong_evol":{"Vivo":2},"gest_fxet":{"10-14":1,"15-19":4,"20-39":18,"40-59":1}}},"330411":{"nome":"PORTO REAL","adq":[20,15,15,17,8,18,20,1],"cong":[3,5,4,2,0,2,0,0],"gest":[8,6,4,9,10,6,5,4],"demo":{"adq_sexo":{"Masculino":53,"Feminino":61},"adq_raca":{"Ign/Branco":50,"Branca":30,"Preta":18,"Parda":16},"adq_fxet":{"Em branco/IGN":1,"15-19":15,"20-39":57,"40-59":32,"60-64":3,"65-69":3,"70-79":3},"adq_clas":{"Ign/Branco":1,"Confirmado":13,"Inconclusivo":100},"cong_evol":{"Vivo":14,"&Oacute;bito pelo agravo notificado":1},"gest_fxet":{"10-14":1,"15-19":17,"20-39":62}}},"330415":{"nome":"QUISSAMA","adq":[7,12,16,7,11,25,20,2],"cong":[0,1,3,4,0,3,1,1],"gest":[1,5,11,10,4,20,7,3],"demo":{"adq_sexo":{"Masculino":51,"Feminino":49},"adq_raca":{"Ign/Branco":26,"Branca":11,"Preta":18,"Parda":45},"adq_fxet":{"10-14":1,"15-19":11,"20-39":57,"40-59":19,"60-64":2,"65-69":4,"70-79":5,"80 e +":1},"adq_clas":{"Ign/Branco":7,"Confirmado":33,"Inconclusivo":60},"cong_evol":{"Ign/Branco":1,"Vivo":12},"gest_fxet":{"10-14":5,"15-19":31,"20-39":51,"40-59":1}}},"330412":{"nome":"QUATIS","adq":[8,2,2,1,0,3,2,0],"cong":[2,2,1,1,1,0,1,0],"gest":[5,3,3,5,1,2,1,2],"demo":{"adq_sexo":{"Masculino":11,"Feminino":7},"adq_raca":{"Ign/Branco":1,"Branca":7,"Preta":7,"Parda":3},"adq_fxet":{"15-19":1,"20-39":10,"40-59":4,"60-64":1,"65-69":2},"adq_clas":{"Ign/Branco":2,"Confirmado":12,"Inconclusivo":4},"cong_evol":{"Vivo":8},"gest_fxet":{"15-19":9,"20-39":23,"40-59":3}}},"330420":{"nome":"RESENDE","adq":[0,5,5,18,36,70,67,5],"cong":[25,34,9,18,25,23,24,0],"gest":[43,53,61,79,93,100,99,16],"demo":{"adq_sexo":{"Masculino":144,"Feminino":62},"adq_raca":{"Ign/Branco":14,"Branca":75,"Preta":48,"Amarela":4,"Parda":64,"Indigena":1},"adq_fxet":{"Em branco/IGN":1,"1-4":1,"10-14":2,"15-19":26,"20-39":122,"40-59":42,"60-64":7,"65-69":4,"70-79":1},"adq_clas":{"Ign/Branco":1,"Confirmado":204,"Descartado":1},"cong_evol":{"Vivo":118,"&Oacute;bito por outra causa":2},"gest_fxet":{"10-14":13,"15-19":182,"20-39":550,"40-59":5}}},"330414":{"nome":"QUEIMADOS","adq":[70,60,72,64,161,198,160,7],"cong":[75,54,69,62,118,66,67,20],"gest":[103,123,151,134,154,140,144,45],"demo":{"adq_sexo":{"Masculino":429,"Feminino":363},"adq_raca":{"Ign/Branco":268,"Branca":68,"Preta":126,"Amarela":7,"Parda":320,"Indigena":3},"adq_fxet":{"Em branco/IGN":3,"5-9":1,"10-14":6,"15-19":97,"20-39":492,"40-59":165,"60-64":13,"65-69":14,"70-79":1},"adq_clas":{"Ign/Branco":269,"Confirmado":518,"Descartado":1,"Inconclusivo":4},"cong_evol":{"Ign/Branco":35,"Vivo":467,"&Oacute;bito pelo agravo notificado":18,"&Oacute;bito por outra causa":2},"gest_fxet":{"Em branco/IGN":1,"10-14":20,"15-19":331,"20-39":966,"40-59":24}}},"330430":{"nome":"RIO BONITO","adq":[4,3,4,2,1,2,0,0],"cong":[13,8,15,5,4,10,5,2],"gest":[12,19,20,14,15,13,12,3],"demo":{"adq_sexo":{"Masculino":11,"Feminino":5},"adq_raca":{"Ign/Branco":14,"Branca":1,"Parda":1},"adq_fxet":{"15-19":1,"20-39":11,"40-59":4},"adq_clas":{"Ign/Branco":12,"Confirmado":4},"cong_evol":{"Ign/Branco":7,"Vivo":52,"&Oacute;bito pelo agravo notificado":1,"&Oacute;bito por outra causa":1},"gest_fxet":{"10-14":4,"15-19":30,"20-39":101,"40-59":1}}},"330440":{"nome":"RIO CLARO","adq":[1,4,16,9,4,2,2,1],"cong":[0,1,0,0,0,0,0,0],"gest":[2,1,1,3,2,0,2,0],"demo":{"adq_sexo":{"Masculino":19,"Feminino":20},"adq_raca":{"Ign/Branco":4,"Branca":22,"Preta":5,"Amarela":2,"Parda":6},"adq_fxet":{"15-19":5,"20-39":26,"40-59":5,"65-69":1,"70-79":1,"80 e +":1},"adq_clas":{"Confirmado":36,"Inconclusivo":3},"cong_evol":{"Vivo":1},"gest_fxet":{"15-19":5,"20-39":10}}},"330450":{"nome":"RIO DAS FLORES","adq":[4,3,6,5,2,5,4,2],"cong":[0,1,1,1,1,0,0,1],"gest":[2,2,4,1,2,0,1,4],"demo":{"adq_sexo":{"Masculino":19,"Feminino":12},"adq_raca":{"Ign/Branco":4,"Branca":1,"Preta":2,"Parda":24},"adq_fxet":{"10-14":1,"15-19":1,"20-39":13,"40-59":15,"60-64":1},"adq_clas":{"Ign/Branco":1,"Confirmado":30},"cong_evol":{"Vivo":5},"gest_fxet":{"15-19":4,"20-39":14}}},"330452":{"nome":"RIO DAS OSTRAS","adq":[108,94,99,89,97,164,246,10],"cong":[20,22,23,42,44,31,18,7],"gest":[51,52,79,94,125,89,86,28],"demo":{"adq_sexo":{"Masculino":558,"Feminino":349},"adq_raca":{"Ign/Branco":228,"Branca":204,"Preta":136,"Amarela":4,"Parda":331,"Indigena":4},"adq_fxet":{"Em branco/IGN":12,"1-4":1,"5-9":1,"10-14":4,"15-19":101,"20-39":557,"40-59":194,"60-64":20,"65-69":10,"70-79":6,"80 e +":1},"adq_clas":{"Ign/Branco":23,"Confirmado":811,"Descartado":1,"Inconclusivo":72},"cong_evol":{"Ign/Branco":64,"Vivo":143,"&Oacute;bito por outra causa":2},"gest_fxet":{"Em branco/IGN":1,"10-14":5,"15-19":157,"20-39":586,"40-59":16}}},"330460":{"nome":"SANTA MARIA MADALENA","adq":[0,1,1,0,1,0,1,1],"cong":[1,0,1,0,1,1,0,1],"gest":[0,3,3,1,0,1,1,3],"demo":{"adq_sexo":{"Masculino":4,"Feminino":1},"adq_raca":{"Preta":2,"Parda":3},"adq_fxet":{"Em branco/IGN":2,"15-19":1,"20-39":1,"40-59":1},"adq_clas":{"Ign/Branco":2,"Confirmado":2,"Inconclusivo":1},"cong_evol":{"Ign/Branco":1,"Vivo":4},"gest_fxet":{"15-19":4,"20-39":8}}},"330455":{"nome":"RIO DE JANEIRO","adq":[6402,7224,7564,8138,10894,13671,12965,1166],"cong":[1454,1171,1177,1479,1443,1446,1233,572],"gest":[4188,4330,4151,5766,5489,5647,5448,2785],"demo":{"adq_sexo":{"Ignorado":29,"Masculino":42001,"Feminino":25994},"adq_raca":{"Ign/Branco":10599,"Branca":16627,"Preta":14697,"Amarela":650,"Parda":25337,"Indigena":114},"adq_fxet":{"Em branco/IGN":277,"1-4":29,"5-9":27,"10-14":605,"15-19":8463,"20-39":42441,"40-59":13117,"60-64":1397,"65-69":826,"70-79":663,"80 e +":179},"adq_clas":{"Ign/Branco":482,"Confirmado":57628,"Descartado":136,"Inconclusivo":9778},"cong_evol":{"Ign/Branco":379,"Vivo":8817,"&Oacute;bito pelo agravo notificado":70,"&Oacute;bito por outra causa":68},"gest_fxet":{"Em branco/IGN":102,"10-14":663,"15-19":12622,"20-39":39070,"40-59":1063,"60-64":4,"65-69":2,"70-79":1,"80 e +":5}}},"330470":{"nome":"SANTO ANTONIO DE PADUA","adq":[11,5,39,10,9,5,14,1],"cong":[0,1,0,0,0,0,0,1],"gest":[9,6,6,2,3,9,6,2],"demo":{"adq_sexo":{"Masculino":67,"Feminino":27},"adq_raca":{"Ign/Branco":4,"Branca":52,"Preta":20,"Parda":18},"adq_fxet":{"15-19":3,"20-39":50,"40-59":32,"60-64":7,"65-69":2},"adq_clas":{"Ign/Branco":1,"Confirmado":93},"cong_evol":{"Vivo":2},"gest_fxet":{"10-14":1,"15-19":15,"20-39":39,"40-59":1}}},"330475":{"nome":"SAO FRANCISCO DE ITABAPOANA","adq":[3,1,5,10,3,4,4,0],"cong":[0,2,3,1,2,12,1,3],"gest":[0,11,3,2,2,14,9,4],"demo":{"adq_sexo":{"Masculino":17,"Feminino":13},"adq_raca":{"Ign/Branco":9,"Branca":8,"Preta":4,"Amarela":1,"Parda":8},"adq_fxet":{"15-19":4,"20-39":21,"40-59":2,"60-64":1,"70-79":1,"80 e +":1},"adq_clas":{"Ign/Branco":2,"Confirmado":12,"Descartado":1,"Inconclusivo":15},"cong_evol":{"Ign/Branco":1,"Vivo":22,"&Oacute;bito por outra causa":1},"gest_fxet":{"10-14":1,"15-19":12,"20-39":39}}},"330490":{"nome":"SAO GONCALO","adq":[593,934,1328,741,560,437,737,16],"cong":[455,453,449,606,507,330,231,122],"gest":[397,554,651,667,553,564,605,269],"demo":{"adq_sexo":{"Ignorado":1,"Masculino":3146,"Feminino":2199},"adq_raca":{"Ign/Branco":1306,"Branca":959,"Preta":827,"Amarela":37,"Parda":2203,"Indigena":14},"adq_fxet":{"Em branco/IGN":43,"1-4":1,"5-9":5,"10-14":33,"15-19":713,"20-39":3421,"40-59":938,"60-64":86,"65-69":53,"70-79":43,"80 e +":10},"adq_clas":{"Ign/Branco":920,"Confirmado":4002,"Descartado":10,"Inconclusivo":414},"cong_evol":{"Ign/Branco":182,"Vivo":2702,"&Oacute;bito pelo agravo notificado":39,"&Oacute;bito por outra causa":18},"gest_fxet":{"Em branco/IGN":2,"10-14":45,"15-19":1305,"20-39":3593,"40-59":48}}},"330480":{"nome":"SAO FIDELIS","adq":[10,3,1,0,1,3,3,1],"cong":[0,1,0,1,0,1,2,0],"gest":[1,13,7,10,7,10,3,3],"demo":{"adq_sexo":{"Masculino":16,"Feminino":6},"adq_raca":{"Ign/Branco":4,"Branca":12,"Preta":4,"Parda":2},"adq_fxet":{"15-19":2,"20-39":9,"40-59":5,"60-64":3,"65-69":3},"adq_clas":{"Confirmado":17,"Inconclusivo":5},"cong_evol":{"Vivo":4,"&Oacute;bito pelo agravo notificado":1},"gest_fxet":{"15-19":14,"20-39":64,"40-59":4}}},"330500":{"nome":"SAO JOAO DA BARRA","adq":[5,1,3,0,5,4,6,1],"cong":[1,2,1,1,1,6,2,1],"gest":[2,3,1,0,1,6,20,3],"demo":{"adq_sexo":{"Masculino":15,"Feminino":10},"adq_raca":{"Ign/Branco":12,"Branca":9,"Preta":1,"Parda":3},"adq_fxet":{"15-19":2,"20-39":17,"40-59":5,"65-69":1},"adq_clas":{"Ign/Branco":1,"Confirmado":22,"Descartado":1,"Inconclusivo":1},"cong_evol":{"Vivo":15},"gest_fxet":{"15-19":11,"20-39":31,"40-59":1}}},"330510":{"nome":"SAO JOAO DE MERITI","adq":[389,622,441,213,465,601,683,8],"cong":[236,367,343,272,371,187,128,63],"gest":[139,441,410,420,707,635,540,217],"demo":{"adq_sexo":{"Ignorado":22,"Masculino":1966,"Feminino":1434},"adq_raca":{"Ign/Branco":825,"Branca":641,"Preta":718,"Amarela":20,"Parda":1212,"Indigena":6},"adq_fxet":{"Em branco/IGN":31,"1-4":2,"5-9":3,"10-14":26,"15-19":482,"20-39":2173,"40-59":587,"60-64":61,"65-69":36,"70-79":18,"80 e +":3},"adq_clas":{"Ign/Branco":478,"Confirmado":482,"Descartado":2,"Inconclusivo":2460},"cong_evol":{"Ign/Branco":149,"Vivo":1697,"&Oacute;bito pelo agravo notificado":14,"&Oacute;bito por outra causa":6},"gest_fxet":{"Em branco/IGN":5,"10-14":40,"15-19":1054,"20-39":2940,"40-59":50}}},"330513":{"nome":"SAO JOSE DE UBA","adq":[1,0,0,0,2,3,3,1],"cong":[0,0,1,0,2,1,0,1],"gest":[2,0,1,0,1,3,3,0],"demo":{"adq_sexo":{"Masculino":9,"Feminino":1},"adq_raca":{"Ign/Branco":1,"Branca":2,"Preta":1,"Amarela":1,"Parda":5},"adq_fxet":{"Em branco/IGN":1,"15-19":1,"20-39":5,"40-59":3},"adq_clas":{"Ign/Branco":1,"Confirmado":9},"cong_evol":{"Vivo":5},"gest_fxet":{"20-39":10}}},"330515":{"nome":"SAO JOSE DO VALE DO RIO PRETO","adq":[0,2,2,6,9,29,17,0],"cong":[1,0,2,2,1,5,3,1],"gest":[0,0,1,2,1,6,8,0],"demo":{"adq_sexo":{"Ignorado":1,"Masculino":34,"Feminino":30},"adq_raca":{"Ign/Branco":2,"Branca":25,"Preta":14,"Amarela":1,"Parda":23},"adq_fxet":{"15-19":3,"20-39":41,"40-59":18,"65-69":2,"70-79":1},"adq_clas":{"Ign/Branco":15,"Confirmado":32,"Descartado":2,"Inconclusivo":16},"cong_evol":{"Vivo":15},"gest_fxet":{"20-39":19}}},"330530":{"nome":"SAO SEBASTIAO DO ALTO","adq":[1,0,1,0,0,0,0,0],"cong":[0,0,0,0,0,0,0,0],"gest":[0,0,0,0,0,1,1,0],"demo":{"adq_sexo":{"Masculino":2},"adq_raca":{"Preta":1,"Parda":1},"adq_fxet":{"20-39":1,"40-59":1},"adq_clas":{"Confirmado":1,"Inconclusivo":1},"cong_evol":{},"gest_fxet":{"15-19":1,"20-39":2}}},"330520":{"nome":"SAO PEDRO DA ALDEIA","adq":[2,27,9,15,37,22,100,11],"cong":[8,28,30,34,50,47,13,7],"gest":[23,39,50,68,139,117,89,29],"demo":{"adq_sexo":{"Masculino":147,"Feminino":76},"adq_raca":{"Ign/Branco":35,"Branca":64,"Preta":49,"Amarela":1,"Parda":74},"adq_fxet":{"10-14":2,"15-19":23,"20-39":155,"40-59":37,"60-64":2,"70-79":4},"adq_clas":{"Ign/Branco":88,"Confirmado":126,"Inconclusivo":9},"cong_evol":{"Ign/Branco":15,"Vivo":198,"&Oacute;bito pelo agravo notificado":5},"gest_fxet":{"10-14":7,"15-19":146,"20-39":428,"40-59":9}}},"330540":{"nome":"SAPUCAIA","adq":[5,0,1,4,4,6,3,2],"cong":[0,0,0,2,0,1,0,1],"gest":[0,3,1,3,3,7,1,3],"demo":{"adq_sexo":{"Masculino":16,"Feminino":9},"adq_raca":{"Ign/Branco":4,"Branca":4,"Preta":9,"Amarela":1,"Parda":7},"adq_fxet":{"15-19":1,"20-39":12,"40-59":9,"60-64":2,"65-69":1},"adq_clas":{"Confirmado":23,"Inconclusivo":2},"cong_evol":{"Vivo":4},"gest_fxet":{"15-19":4,"20-39":24}}},"330550":{"nome":"SAQUAREMA","adq":[13,40,87,28,39,32,52,5],"cong":[16,12,29,25,18,6,21,11],"gest":[16,43,62,36,30,21,23,12],"demo":{"adq_sexo":{"Masculino":151,"Feminino":145},"adq_raca":{"Ign/Branco":117,"Branca":55,"Preta":40,"Amarela":2,"Parda":81,"Indigena":1},"adq_fxet":{"Em branco/IGN":2,"10-14":1,"15-19":24,"20-39":171,"40-59":66,"60-64":13,"65-69":10,"70-79":8,"80 e +":1},"adq_clas":{"Ign/Branco":21,"Confirmado":23,"Descartado":2,"Inconclusivo":250},"cong_evol":{"Ign/Branco":74,"Vivo":63,"&Oacute;bito pelo agravo notificado":1},"gest_fxet":{"10-14":2,"15-19":78,"20-39":236,"40-59":8}}},"330555":{"nome":"SEROPEDICA","adq":[16,21,35,17,26,35,32,4],"cong":[8,5,4,11,19,4,10,6],"gest":[17,37,31,57,43,30,47,19],"demo":{"adq_sexo":{"Masculino":108,"Feminino":78},"adq_raca":{"Ign/Branco":46,"Branca":35,"Preta":31,"Parda":74},"adq_fxet":{"Em branco/IGN":4,"1-4":1,"10-14":1,"15-19":25,"20-39":105,"40-59":43,"60-64":4,"65-69":3},"adq_clas":{"Ign/Branco":43,"Confirmado":131,"Descartado":9,"Inconclusivo":3},"cong_evol":{"Ign/Branco":6,"Vivo":55,"&Oacute;bito pelo agravo notificado":1},"gest_fxet":{"10-14":4,"15-19":84,"20-39":244,"40-59":3}}},"330570":{"nome":"SUMIDOURO","adq":[3,0,1,1,1,1,0,0],"cong":[0,0,1,1,1,0,0,0],"gest":[1,1,2,2,6,1,1,1],"demo":{"adq_sexo":{"Masculino":4,"Feminino":3},"adq_raca":{"Branca":4,"Parda":3},"adq_fxet":{"15-19":1,"20-39":3,"40-59":3},"adq_clas":{"Confirmado":7},"cong_evol":{"Vivo":3},"gest_fxet":{"15-19":6,"20-39":12,"40-59":1}}},"330560":{"nome":"SILVA JARDIM","adq":[2,6,7,2,3,5,20,1],"cong":[1,3,5,4,1,0,2,1],"gest":[9,1,2,6,5,4,15,6],"demo":{"adq_sexo":{"Masculino":21,"Feminino":25},"adq_raca":{"Ign/Branco":12,"Branca":8,"Preta":12,"Amarela":1,"Parda":13},"adq_fxet":{"Em branco/IGN":1,"10-14":1,"15-19":4,"20-39":26,"40-59":10,"65-69":4},"adq_clas":{"Ign/Branco":3,"Confirmado":40,"Inconclusivo":3},"cong_evol":{"Ign/Branco":3,"Vivo":14},"gest_fxet":{"15-19":16,"20-39":38}}},"330575":{"nome":"TANGUA","adq":[1,8,14,6,13,19,29,3],"cong":[5,5,7,6,6,4,1,1],"gest":[3,3,14,10,17,13,20,3],"demo":{"adq_sexo":{"Ignorado":1,"Masculino":55,"Feminino":37},"adq_raca":{"Ign/Branco":24,"Branca":21,"Preta":16,"Amarela":1,"Parda":31},"adq_fxet":{"Em branco/IGN":1,"1-4":1,"10-14":1,"15-19":7,"20-39":48,"40-59":27,"60-64":5,"70-79":2,"80 e +":1},"adq_clas":{"Ign/Branco":15,"Confirmado":66,"Inconclusivo":12},"cong_evol":{"Ign/Branco":3,"Vivo":27,"&Oacute;bito pelo agravo notificado":3},"gest_fxet":{"Em branco/IGN":1,"10-14":1,"15-19":20,"20-39":70,"40-59":1}}},"330580":{"nome":"TERESOPOLIS","adq":[2,5,5,4,7,4,5,0],"cong":[36,19,38,25,6,5,22,5],"gest":[43,75,83,105,83,64,90,23],"demo":{"adq_sexo":{"Masculino":22,"Feminino":10},"adq_raca":{"Ign/Branco":14,"Branca":10,"Preta":1,"Parda":7},"adq_fxet":{"20-39":19,"40-59":11,"65-69":2},"adq_clas":{"Ign/Branco":19,"Confirmado":13},"cong_evol":{"Ign/Branco":1,"Vivo":160},"gest_fxet":{"10-14":7,"15-19":131,"20-39":566,"40-59":12}}},"330590":{"nome":"TRAJANO DE MORAES","adq":[0,4,0,0,0,0,2,0],"cong":[0,0,1,0,0,0,0,0],"gest":[0,3,1,0,0,1,1,0],"demo":{"adq_sexo":{"Masculino":3,"Feminino":3},"adq_raca":{"Ign/Branco":1,"Branca":2,"Preta":3},"adq_fxet":{"20-39":5,"40-59":1},"adq_clas":{"Ign/Branco":1,"Confirmado":2,"Inconclusivo":3},"cong_evol":{"Vivo":1},"gest_fxet":{"15-19":1,"20-39":6,"40-59":1}}},"330600":{"nome":"TRES RIOS","adq":[7,7,18,8,10,18,11,0],"cong":[12,42,14,4,3,4,4,4],"gest":[17,12,12,8,27,74,35,0],"demo":{"adq_sexo":{"Masculino":32,"Feminino":47},"adq_raca":{"Ign/Branco":4,"Branca":12,"Preta":29,"Parda":34},"adq_fxet":{"Em branco/IGN":1,"15-19":7,"20-39":44,"40-59":23,"60-64":2,"70-79":2},"adq_clas":{"Ign/Branco":47,"Confirmado":31,"Inconclusivo":1},"cong_evol":{"Vivo":86},"gest_fxet":{"10-14":1,"15-19":83,"20-39":232,"40-59":2}}},"330615":{"nome":"VARRE-SAI","adq":[0,0,1,0,0,0,1,0],"cong":[0,0,0,0,0,0,0,0],"gest":[0,0,2,0,0,1,2,1],"demo":{"adq_sexo":{"Masculino":1,"Feminino":1},"adq_raca":{"Preta":2},"adq_fxet":{"20-39":1,"40-59":1},"adq_clas":{"Confirmado":1,"Inconclusivo":1},"cong_evol":{},"gest_fxet":{"20-39":7}}},"330610":{"nome":"VALENCA","adq":[85,189,196,144,164,214,122,12],"cong":[8,12,18,15,16,9,16,9],"gest":[7,37,24,24,27,15,27,17],"demo":{"adq_sexo":{"Masculino":552,"Feminino":574},"adq_raca":{"Ign/Branco":177,"Branca":42,"Preta":15,"Amarela":1,"Parda":879,"Indigena":12},"adq_fxet":{"Em branco/IGN":1,"1-4":1,"10-14":6,"15-19":138,"20-39":765,"40-59":176,"60-64":17,"65-69":11,"70-79":6,"80 e +":5},"adq_clas":{"Ign/Branco":1,"Confirmado":1122,"Descartado":3},"cong_evol":{"Ign/Branco":2,"Vivo":100},"gest_fxet":{"10-14":3,"15-19":40,"20-39":154,"40-59":5}}},"330620":{"nome":"VASSOURAS","adq":[4,5,0,0,8,2,17,2],"cong":[1,2,0,2,0,2,0,1],"gest":[5,12,16,10,12,14,12,4],"demo":{"adq_sexo":{"Masculino":15,"Feminino":23},"adq_raca":{"Ign/Branco":7,"Branca":13,"Preta":10,"Parda":8},"adq_fxet":{"15-19":4,"20-39":20,"40-59":12,"60-64":2},"adq_clas":{"Confirmado":16,"Descartado":1,"Inconclusivo":21},"cong_evol":{"Vivo":7,"&Oacute;bito por outra causa":1},"gest_fxet":{"15-19":29,"20-39":83,"40-59":3}}},"330630":{"nome":"VOLTA REDONDA","adq":[149,187,153,134,113,209,402,44],"cong":[54,67,39,36,24,27,13,5],"gest":[94,96,106,87,87,161,154,61],"demo":{"adq_sexo":{"Masculino":804,"Feminino":587},"adq_raca":{"Ign/Branco":139,"Branca":496,"Preta":322,"Amarela":24,"Parda":409,"Indigena":1},"adq_fxet":{"Em branco/IGN":19,"1-4":1,"5-9":1,"10-14":10,"15-19":177,"20-39":840,"40-59":269,"60-64":29,"65-69":28,"70-79":14,"80 e +":3},"adq_clas":{"Ign/Branco":13,"Confirmado":1358,"Descartado":8,"Inconclusivo":12},"cong_evol":{"Ign/Branco":17,"Vivo":230,"&Oacute;bito pelo agravo notificado":1,"&Oacute;bito por outra causa":4},"gest_fxet":{"10-14":12,"15-19":238,"20-39":705,"40-59":12}}}};
+const ANOS=['2017','2018','2019','2020','2021','2022','2023','2024*'];
+const A7=['2017','2018','2019','2020','2021','2022','2023'];
+const LISTA=Object.entries(D).map(([i,d])=>({i,n:d.nome})).sort((a,b)=>a.n.localeCompare(b.n));
+const CO={az:'#38bdf8',ro:'#f472b6',ve:'#34d399',la:'#fb923c',rx:'#a78bfa',ci:'#64748b',am:'#fbbf24',vm:'#f87171'};
+const AX={grid:{color:'#1e293b'},ticks:{color:'#94a3b8',font:{size:10}}};
+let CH={};
+function mk(id){if(CH[id])CH[id].destroy();return id;}
+function bar(id,lb,dt,c){CH[id]=new Chart(document.getElementById(mk(id)),{type:'bar',data:{labels:lb,datasets:[{data:dt,backgroundColor:c+'55',borderColor:c,borderWidth:1,borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:AX,y:{...AX,beginAtZero:true}}}});}
+function hb(id,lb,dt,c){CH[id]=new Chart(document.getElementById(mk(id)),{type:'bar',data:{labels:lb,datasets:[{data:dt,backgroundColor:c+'55',borderColor:c,borderWidth:1,borderRadius:3}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:AX,y:AX}}});}
+function dn(id,lb,vl,cs){CH[id]=new Chart(document.getElementById(mk(id)),{type:'doughnut',data:{labels:lb,datasets:[{data:vl,backgroundColor:cs,borderWidth:2,borderColor:'#0f172a'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{color:'#94a3b8',font:{size:10},boxWidth:12}}}}});}
+function ln(id,lb,ds){CH[id]=new Chart(document.getElementById(mk(id)),{type:'line',data:{labels:lb,datasets:ds},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,labels:{color:'#cbd5e1',font:{size:11}}}},scales:{x:AX,y:{...AX,beginAtZero:true}}}});}
+function fmt(n){return n.toLocaleString('pt-BR');}
+function sm(a){return a.reduce((s,v)=>s+v,0);}
+function decHtml(s){return s.replace(/&[A-Za-z]+;/g,e=>({'&Oacute;':'Ó','&oacute;':'ó','&Aacute;':'Á','&aacute;':'á','&Eacute;':'É','&eacute;':'é','&Ccedil;':'Ç','&ccedil;':'ç','&atilde;':'ã','&Atilde;':'Ã','&otilde;':'õ'}[e]||e));}
 
-const ANOS = ['2017','2018','2019','2020','2021','2022','2023','2024*'];
-const ANOS_COMP = ['2017','2018','2019','2020','2021','2022','2023'];
-
-// Build searchable list
-const LISTA = Object.entries(DADOS).map(([ibge, d]) => ({ibge, nome: d.nome}));
-LISTA.sort((a,b) => a.nome.localeCompare(b.nome));
-
-let charts = {};
-
-// ── Search ────────────────────────────────────────────────────────────────────
-const input = document.getElementById('searchInput');
-const dropdown = document.getElementById('dropdown');
-
-function normalizar(s){ return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase(); }
-
-input.addEventListener('input', () => {
-  const q = normalizar(input.value.trim());
-  if(!q){ dropdown.classList.remove('open'); return; }
-  const matches = LISTA.filter(m => normalizar(m.nome).includes(q)).slice(0,12);
-  if(!matches.length){ dropdown.classList.remove('open'); return; }
-  dropdown.innerHTML = matches.map(m =>
-    `<div class="dropdown-item" onclick="selectMun('${m.ibge}','${m.nome}')">${m.nome} <span class="ibge">${m.ibge}</span></div>`
-  ).join('');
-  dropdown.classList.add('open');
-});
-
-input.addEventListener('blur', () => setTimeout(()=>dropdown.classList.remove('open'),200));
-
-function selectMun(ibge, nome){
-  dropdown.classList.remove('open');
-  input.value = nome;
-  render(ibge, nome);
+function render(ibge,nome){
+  const d=D[ibge];
+  document.getElementById('ml').textContent=nome+' ('+ibge+')';
+  if(sm(d.adq)+sm(d.cong)+sm(d.gest)===0){
+    document.getElementById('mc').style.display='none';
+    document.getElementById('nd').style.display='block'; return;
+  }
+  document.getElementById('nd').style.display='none';
+  document.getElementById('mc').style.display='block';
+  document.getElementById('ka').textContent=fmt(sm(d.adq));
+  document.getElementById('kc').textContent=fmt(sm(d.cong));
+  document.getElementById('kg').textContent=fmt(sm(d.gest));
+  bar('cA',ANOS,d.adq,CO.az); bar('cC',ANOS,d.cong,CO.ro); bar('cG',ANOS,d.gest,CO.ve);
+  ln('cL',A7,[
+    {label:'Adquirida',data:d.adq.slice(0,7),borderColor:CO.az,backgroundColor:CO.az+'15',fill:true,tension:.3,pointRadius:4},
+    {label:'Gestante', data:d.gest.slice(0,7),borderColor:CO.ve,backgroundColor:CO.ve+'15',fill:true,tension:.3,pointRadius:4},
+    {label:'Congênita',data:d.cong.slice(0,7),borderColor:CO.ro,backgroundColor:CO.ro+'15',fill:true,tension:.3,pointRadius:4},
+  ]);
+  // table
+  const tb=document.getElementById('tb');
+  tb.innerHTML=[{l:'Adquirida',c:'azul',v:d.adq},{l:'Congênita',c:'rosa',v:d.cong},{l:'Gestante',c:'verde',v:d.gest}]
+    .map(r=>`<tr><td class="l ${r.c}">${r.l}</td>${r.v.map(x=>`<td class="${r.c}">${x||'—'}</td>`).join('')}<td class="b ${r.c}">${fmt(sm(r.v))}</td></tr>`).join('');
+  // demo
+  const dm=d.demo||{};
+  const sx=dm.adq_sexo||{};
+  if(Object.keys(sx).length) dn('dAs',['Masculino','Feminino','Ignorado'],[sx.Masculino||0,sx.Feminino||0,sx.Ignorado||0],[CO.az,CO.ro,CO.ci]);
+  const ra=dm.adq_raca||{};
+  const rak=Object.keys(ra).filter(k=>k!=='Ign/Branco');
+  if(rak.length) dn('dAr',rak,rak.map(k=>ra[k]),[CO.la,CO.az,CO.vm,CO.am,CO.rx,CO.ve]);
+  const cl=dm.adq_clas||{};
+  const clk=Object.keys(cl);
+  if(clk.length) dn('dAc',clk,clk.map(k=>cl[k]),[CO.la,CO.ve,CO.ci,CO.az]);
+  const af=dm.adq_fxet||{};
+  const afk=Object.keys(af).filter(k=>k!=='Em branco/IGN');
+  if(afk.length) hb('dAf',afk,afk.map(k=>af[k]),CO.az);
+  const ce=dm.cong_evol||{};
+  const cek=Object.keys(ce);
+  if(cek.length) dn('dCe',cek.map(decHtml),cek.map(k=>ce[k]),[CO.ve,CO.vm,CO.ci,CO.la]);
+  const gf=dm.gest_fxet||{};
+  const gfk=Object.keys(gf);
+  if(gfk.length) hb('dGf',gfk,gfk.map(k=>gf[k]),CO.ve);
+  const cf=dm.cong_fxet||{};
+  const cfk=Object.keys(cf);
+  if(cfk.length) hb('dCf',cfk,cfk.map(k=>cf[k]),CO.ro);
 }
 
-// ── Render ────────────────────────────────────────────────────────────────────
-function fmt(n){ return n.toLocaleString('pt-BR'); }
-
-function render(ibge, nome){
-  const d = DADOS[ibge];
-  document.getElementById('munLabel').textContent = nome + ' (' + ibge + ')';
-
-  const adqTotal  = d.adq.reduce((a,b)=>a+b,0);
-  const congTotal = d.cong.reduce((a,b)=>a+b,0);
-  const gestTotal = d.gest.reduce((a,b)=>a+b,0);
-
-  if(adqTotal + congTotal + gestTotal === 0){
-    document.getElementById('kpiGrid').style.display = 'none';
-    document.getElementById('chartsArea').style.display = 'none';
-    document.getElementById('noData').style.display = 'block';
-    return;
-  }
-  document.getElementById('noData').style.display = 'none';
-  document.getElementById('kpiGrid').style.display = 'grid';
-  document.getElementById('chartsArea').style.display = 'grid';
-
-  document.getElementById('kpiAdq').textContent  = fmt(adqTotal);
-  document.getElementById('kpiCong').textContent = fmt(congTotal);
-  document.getElementById('kpiGest').textContent = fmt(gestTotal);
-  document.getElementById('tabelaMun').textContent = nome;
-
-  // Table
-  const tb = document.getElementById('tabelaBody');
-  const rows = [
-    {label:'Adquirida',  cls:'azul',  vals:d.adq},
-    {label:'Congênita',  cls:'rosa',  vals:d.cong},
-    {label:'Gestante',   cls:'verde', vals:d.gest},
-  ];
-  tb.innerHTML = rows.map(r => {
-    const tot = r.vals.reduce((a,b)=>a+b,0);
-    const cells = r.vals.map((v,i)=>`<td class="${r.cls}">${v||'—'}</td>`).join('');
-    return `<tr><td class="lbl ${r.cls}">${r.label}</td>${cells}<td class="tot ${r.cls}">${fmt(tot)}</td></tr>`;
-  }).join('');
-
-  // Charts
-  const axCfg = { grid:{color:'#1e293b'}, ticks:{color:'#94a3b8', font:{size:10}} };
-  const baseCfg = { responsive:true, maintainAspectRatio:false,
-    plugins:{legend:{display:false}}, scales:{x:axCfg, y:{...axCfg, beginAtZero:true}} };
-
-  function mkBar(id, data, bg, border){
-    if(charts[id]) charts[id].destroy();
-    charts[id] = new Chart(document.getElementById(id),{
-      type:'bar',
-      data:{ labels:ANOS, datasets:[{data, backgroundColor:bg, borderColor:border, borderWidth:1, borderRadius:4}] },
-      options:baseCfg
-    });
-  }
-  mkBar('chartAdq',  d.adq,  '#1d4ed8','#38bdf8');
-  mkBar('chartCong', d.cong, '#9d174d','#f472b6');
-  mkBar('chartGest', d.gest, '#065f46','#34d399');
-
-  if(charts.chartComp) charts.chartComp.destroy();
-  charts.chartComp = new Chart(document.getElementById('chartComp'),{
-    type:'line',
-    data:{ labels:ANOS_COMP, datasets:[
-      {label:'Adquirida', data:d.adq.slice(0,7), borderColor:'#38bdf8', backgroundColor:'rgba(56,189,248,.08)', fill:true, tension:.3, pointRadius:4},
-      {label:'Gestante',  data:d.gest.slice(0,7), borderColor:'#34d399', backgroundColor:'rgba(52,211,153,.08)', fill:true, tension:.3, pointRadius:4},
-      {label:'Congênita', data:d.cong.slice(0,7), borderColor:'#f472b6', backgroundColor:'rgba(244,114,182,.08)', fill:true, tension:.3, pointRadius:4},
-    ]},
-    options:{
-      responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{display:true, labels:{color:'#cbd5e1', font:{size:11}}}},
-      scales:{x:axCfg, y:{...axCfg, beginAtZero:true}}
-    }
-  });
-}
-
-// Auto-select Duque de Caxias on load
-window.addEventListener('DOMContentLoaded', () => {
-  selectMun('330170','DUQUE DE CAXIAS');
-  input.value = 'DUQUE DE CAXIAS';
+const inp=document.getElementById('si'),dd=document.getElementById('dd');
+function norm(s){return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase();}
+inp.addEventListener('input',()=>{
+  const q=norm(inp.value.trim());
+  if(!q){dd.classList.remove('open');return;}
+  const h=LISTA.filter(m=>norm(m.n).includes(q)).slice(0,12);
+  if(!h.length){dd.classList.remove('open');return;}
+  dd.innerHTML=h.map(m=>`<div class="dropdown-item" onclick="pick('${m.i}','${m.n}')">${m.n}<span class="ibge">${m.i}</span></div>`).join('');
+  dd.classList.add('open');
 });
+inp.addEventListener('blur',()=>setTimeout(()=>dd.classList.remove('open'),200));
+function pick(i,n){dd.classList.remove('open');inp.value=n;render(i,n);}
+window.addEventListener('DOMContentLoaded',()=>pick('330170','DUQUE DE CAXIAS'));
 </script>
-
 </body>
 </html>
