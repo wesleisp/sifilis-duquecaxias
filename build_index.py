@@ -62,7 +62,7 @@ footer a { color:#3b82f6; text-decoration:none; }
 <body>
 <header>
   <h1>Sífilis — Estado do Rio de Janeiro</h1>
-  <p>Notificações registradas no SINAN · 2017–2024 · Município de residência</p>
+  <p>Notificações registradas no SINAN · 2017–2025 · Município de residência</p>
   <span class="fonte-badge">SINAN / DATASUS — dados oficiais</span>
 </header>
 <div class="search-area">
@@ -75,18 +75,18 @@ footer a { color:#3b82f6; text-decoration:none; }
 </div>
 <div id="mc" style="display:none">
   <div class="kpi-row">
-    <div class="kpi"><div class="kpi-label">Sífilis Adquirida</div><div class="kpi-val azul" id="ka">—</div><div class="kpi-sub">notificações · 2017–2024</div></div>
-    <div class="kpi"><div class="kpi-label">Sífilis Congênita</div><div class="kpi-val rosa" id="kc">—</div><div class="kpi-sub">casos confirmados · 2017–2024</div></div>
-    <div class="kpi"><div class="kpi-label">Sífilis em Gestante</div><div class="kpi-val verde" id="kg">—</div><div class="kpi-sub">notificações · 2017–2024</div></div>
+    <div class="kpi"><div class="kpi-label">Sífilis Adquirida</div><div class="kpi-val azul" id="ka">—</div><div class="kpi-sub">notificações · 2017–2025</div></div>
+    <div class="kpi"><div class="kpi-label">Sífilis Congênita</div><div class="kpi-val rosa" id="kc">—</div><div class="kpi-sub">casos confirmados · 2017–2025</div></div>
+    <div class="kpi"><div class="kpi-label">Sífilis em Gestante</div><div class="kpi-val verde" id="kg">—</div><div class="kpi-sub">notificações · 2017–2025</div></div>
   </div>
-  <div class="sec">Série Histórica 2017–2024</div>
+  <div class="sec">Série Histórica 2017–2025</div>
   <div class="g3">
     <div class="cc"><div class="ct">Adquirida · por ano</div><div class="cw"><canvas id="cA"></canvas></div></div>
     <div class="cc"><div class="ct">Congênita · por ano</div><div class="cw"><canvas id="cC"></canvas></div></div>
     <div class="cc"><div class="ct">Gestante · por ano</div><div class="cw"><canvas id="cG"></canvas></div></div>
   </div>
   <div class="g3">
-    <div class="cc sp3"><div class="ct">Evolução comparativa 2017–2023</div><div class="cw t"><canvas id="cL"></canvas></div></div>
+    <div class="cc sp3"><div class="ct">Evolução comparativa 2017–2024</div><div class="cw t"><canvas id="cL"></canvas></div></div>
   </div>
   <div class="sec">Perfil Demográfico — Adquirida</div>
   <div class="g4">
@@ -104,20 +104,20 @@ footer a { color:#3b82f6; text-decoration:none; }
   <div class="sec">Série Histórica Completa</div>
   <div class="tw">
     <table>
-      <thead><tr><th>Tipo</th><th>2017</th><th>2018</th><th>2019</th><th>2020</th><th>2021</th><th>2022</th><th>2023</th><th>2024*</th><th>Total</th></tr></thead>
+      <thead><tr><th>Tipo</th><th>2017</th><th>2018</th><th>2019</th><th>2020</th><th>2021</th><th>2022</th><th>2023</th><th>2024</th><th>2025*</th><th>Total</th></tr></thead>
       <tbody id="tb"></tbody>
     </table>
-    <p style="font-size:.68rem;color:#475569;margin-top:8px;">* 2024: dados parciais. Fonte: <a href="http://tabnet.datasus.gov.br/cgi/tabcgi.exe?sinannet/cnv/SifilisAdquiridaRJ.def" target="_blank">SINAN Adquirida</a> · <a href="http://tabnet.datasus.gov.br/cgi/tabcgi.exe?sinannet/cnv/sifilisRJ.def" target="_blank">Congênita</a> · <a href="http://tabnet.datasus.gov.br/cgi/tabcgi.exe?sinannet/cnv/SifilisGestanteRJ.def" target="_blank">Gestante</a></p>
+    <p style="font-size:.68rem;color:#475569;margin-top:8px;">* 2025: dados parciais. Fonte: <a href="http://tabnet.datasus.gov.br/cgi/tabcgi.exe?sinannet/cnv/SifilisAdquiridaRJ.def" target="_blank">SINAN Adquirida</a> · <a href="http://tabnet.datasus.gov.br/cgi/tabcgi.exe?sinannet/cnv/sifilisRJ.def" target="_blank">Congênita</a> · <a href="http://tabnet.datasus.gov.br/cgi/tabcgi.exe?sinannet/cnv/SifilisGestanteRJ.def" target="_blank">Gestante</a></p>
   </div>
 </div>
-<div id="nd" style="display:none"><p class="nd">Nenhum dado encontrado para este município no período 2017–2024.</p></div>
+<div id="nd" style="display:none"><p class="nd">Nenhum dado encontrado para este município no período 2017–2025.</p></div>
 <footer>
   Fonte: Ministério da Saúde / SVSA — SINAN via DATASUS Tabnet · RJ · 92 municípios · Abril/2026
 </footer>
 <script>
 const D=__DADOS__;
-const ANOS=['2017','2018','2019','2020','2021','2022','2023','2024*'];
-const A7=['2017','2018','2019','2020','2021','2022','2023'];
+const ANOS=['2017','2018','2019','2020','2021','2022','2023','2024','2025*'];
+const A8=['2017','2018','2019','2020','2021','2022','2023','2024'];
 const LISTA=Object.entries(D).map(([i,d])=>({i,n:d.nome})).sort((a,b)=>a.n.localeCompare(b.n));
 const CO={az:'#38bdf8',ro:'#f472b6',ve:'#34d399',la:'#fb923c',rx:'#a78bfa',ci:'#64748b',am:'#fbbf24',vm:'#f87171'};
 const AX={grid:{color:'#1e293b'},ticks:{color:'#94a3b8',font:{size:10}}};
@@ -144,10 +144,10 @@ function render(ibge,nome){
   document.getElementById('kc').textContent=fmt(sm(d.cong));
   document.getElementById('kg').textContent=fmt(sm(d.gest));
   bar('cA',ANOS,d.adq,CO.az); bar('cC',ANOS,d.cong,CO.ro); bar('cG',ANOS,d.gest,CO.ve);
-  ln('cL',A7,[
-    {label:'Adquirida',data:d.adq.slice(0,7),borderColor:CO.az,backgroundColor:CO.az+'15',fill:true,tension:.3,pointRadius:4},
-    {label:'Gestante', data:d.gest.slice(0,7),borderColor:CO.ve,backgroundColor:CO.ve+'15',fill:true,tension:.3,pointRadius:4},
-    {label:'Congênita',data:d.cong.slice(0,7),borderColor:CO.ro,backgroundColor:CO.ro+'15',fill:true,tension:.3,pointRadius:4},
+  ln('cL',A8,[
+    {label:'Adquirida',data:d.adq.slice(0,8),borderColor:CO.az,backgroundColor:CO.az+'15',fill:true,tension:.3,pointRadius:4},
+    {label:'Gestante', data:d.gest.slice(0,8),borderColor:CO.ve,backgroundColor:CO.ve+'15',fill:true,tension:.3,pointRadius:4},
+    {label:'Congênita',data:d.cong.slice(0,8),borderColor:CO.ro,backgroundColor:CO.ro+'15',fill:true,tension:.3,pointRadius:4},
   ]);
   // table
   const tb=document.getElementById('tb');
