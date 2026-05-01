@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sífilis RJ — SINAN / DATASUS</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
 * { box-sizing:border-box; margin:0; padding:0; }
 body { font-family:'Segoe UI',sans-serif; background:#0f172a; color:#e2e8f0; min-height:100vh; }
@@ -52,6 +54,16 @@ td.b { font-weight:700; background:#0f172a !important; }
 footer { text-align:center; padding:18px 28px; font-size:.7rem; color:#475569; border-top:1px solid #1e293b; margin-top:4px; }
 footer a { color:#3b82f6; text-decoration:none; }
 .nd { color:#ef4444; font-size:.82rem; padding:24px 28px; }
+.btn-trabalho{display:inline-block;background:#1e40af;color:#bfdbfe;font-size:.72rem;padding:4px 14px;border-radius:20px;text-decoration:none;font-weight:600;border:1px solid #3b82f6;margin-left:10px;vertical-align:middle;}
+.btn-trabalho:hover{background:#2563eb;}
+.kpi-rank{font-size:.67rem;color:#64748b;margin-top:3px;}
+.kpi-var{font-size:.72rem;font-weight:700;margin-top:2px;}
+.kpi-vs{font-size:.67rem;margin-top:1px;}
+.up{color:#f87171;}.dn{color:#34d399;}
+#mapa{height:300px;border-radius:10px;margin:0 28px 6px;border:1px solid #334155;}
+.legenda-mapa{display:flex;gap:12px;flex-wrap:wrap;padding:4px 28px 14px;font-size:.68rem;color:#94a3b8;}
+.leg-item{display:flex;align-items:center;gap:5px;}
+.leg-dot{width:11px;height:11px;border-radius:2px;display:inline-block;}
 </style>
 </head>
 <body>
@@ -59,6 +71,7 @@ footer a { color:#3b82f6; text-decoration:none; }
   <h1>Sífilis — Estado do Rio de Janeiro</h1>
   <p>Notificações registradas no SINAN · 2017–2025 · Município de residência</p>
   <span class="fonte-badge">SINAN / DATASUS — dados oficiais</span>
+  <a href="trabalho.html" class="btn-trabalho">📄 Trabalho Acadêmico</a>
 </header>
 <div class="search-area">
   <div class="search-wrap">
@@ -70,9 +83,41 @@ footer a { color:#3b82f6; text-decoration:none; }
 </div>
 <div id="mc" style="display:none">
   <div class="kpi-row">
-    <div class="kpi"><div class="kpi-label">Sífilis Adquirida</div><div class="kpi-val azul" id="ka">—</div><div class="kpi-sub">notificações · 2017–2025</div></div>
-    <div class="kpi"><div class="kpi-label">Sífilis Congênita</div><div class="kpi-val rosa" id="kc">—</div><div class="kpi-sub">casos confirmados · 2017–2025</div></div>
-    <div class="kpi"><div class="kpi-label">Sífilis em Gestante</div><div class="kpi-val verde" id="kg">—</div><div class="kpi-sub">notificações · 2017–2025</div></div>
+    <div class="kpi">
+      <div class="kpi-label">Sífilis Adquirida</div>
+      <div class="kpi-val azul" id="ka">—</div>
+      <div class="kpi-sub">notificações · 2017–2025</div>
+      <div class="kpi-rank" id="ka-rank"></div>
+      <div class="kpi-var" id="ka-var"></div>
+      <div class="kpi-vs" id="ka-vs"></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Sífilis Congênita</div>
+      <div class="kpi-val rosa" id="kc">—</div>
+      <div class="kpi-sub">casos confirmados · 2017–2025</div>
+      <div class="kpi-rank" id="kc-rank"></div>
+      <div class="kpi-var" id="kc-var"></div>
+      <div class="kpi-vs" id="kc-vs"></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Sífilis em Gestante</div>
+      <div class="kpi-val verde" id="kg">—</div>
+      <div class="kpi-sub">notificações · 2017–2025</div>
+      <div class="kpi-rank" id="kg-rank"></div>
+      <div class="kpi-var" id="kg-var"></div>
+      <div class="kpi-vs" id="kg-vs"></div>
+    </div>
+  </div>
+  <div class="sec">Mapa — Sífilis em Gestantes por Município (total 2017–2025)</div>
+  <div id="mapa"></div>
+  <div class="legenda-mapa">
+    <span class="leg-item"><span class="leg-dot" style="background:#c62828"></span>&gt;700</span>
+    <span class="leg-item"><span class="leg-dot" style="background:#e65100"></span>401–700</span>
+    <span class="leg-item"><span class="leg-dot" style="background:#fb8c00"></span>201–400</span>
+    <span class="leg-item"><span class="leg-dot" style="background:#fdd835"></span>101–200</span>
+    <span class="leg-item"><span class="leg-dot" style="background:#aed581"></span>51–100</span>
+    <span class="leg-item"><span class="leg-dot" style="background:#334155"></span>≤50</span>
+    <span style="color:#475569;margin-left:6px">· Clique no município para selecionar</span>
   </div>
   <div class="sec">Série Histórica 2017–2025</div>
   <div class="g3">
@@ -114,6 +159,18 @@ const D={"330015": {"nome": "APERIBE", "adq": [0, 0, 3, 1, 0, 4, 9, 0, 0], "cong
 const ANOS=['2017','2018','2019','2020','2021','2022','2023','2024','2025*'];
 const A8=['2017','2018','2019','2020','2021','2022','2023','2024'];
 const LISTA=Object.entries(D).map(([i,d])=>({i,n:d.nome})).sort((a,b)=>a.n.localeCompare(b.n));
+const TOTS=Object.entries(D).map(([i,d])=>({i,a:sm(d.adq),c:sm(d.cong),g:sm(d.gest)}));
+const N92=TOTS.length;
+const MA=TOTS.reduce((s,t)=>s+t.a,0)/N92;
+const MC=TOTS.reduce((s,t)=>s+t.c,0)/N92;
+const MG=TOTS.reduce((s,t)=>s+t.g,0)/N92;
+const RA=[...TOTS].sort((a,b)=>b.a-a.a);
+const RC=[...TOTS].sort((a,b)=>b.c-a.c);
+const RG=[...TOTS].sort((a,b)=>b.g-a.g);
+function el(id){return document.getElementById(id);}
+function gestCor(v){return v>700?'#c62828':v>400?'#e65100':v>200?'#fb8c00':v>100?'#fdd835':v>50?'#aed581':'#334155';}
+function varStr(arr){const p=arr[5],c=arr[6];if(!p)return '';const pct=(c-p)/p*100;return `<span class="${pct>0?'up':'dn'}">${pct>0?'↑':'↓'} ${Math.abs(pct).toFixed(1)}% vs 2022</span>`;}
+function vsMedia(tot,med){const p=(tot/med-1)*100;return p>0?`<span class="up">+${p.toFixed(0)}% acima da média</span>`:`<span class="dn">${Math.abs(p).toFixed(0)}% abaixo da média</span>`;}
 const CO={az:'#38bdf8',ro:'#f472b6',ve:'#34d399',la:'#fb923c',rx:'#a78bfa',ci:'#64748b',am:'#fbbf24',vm:'#f87171'};
 const AX={grid:{color:'#1e293b'},ticks:{color:'#94a3b8',font:{size:10}}};
 let CH={};
@@ -135,9 +192,29 @@ function render(ibge,nome){
   }
   document.getElementById('nd').style.display='none';
   document.getElementById('mc').style.display='block';
-  document.getElementById('ka').textContent=fmt(sm(d.adq));
-  document.getElementById('kc').textContent=fmt(sm(d.cong));
-  document.getElementById('kg').textContent=fmt(sm(d.gest));
+  el('ka').textContent=fmt(sm(d.adq));
+  el('kc').textContent=fmt(sm(d.cong));
+  el('kg').textContent=fmt(sm(d.gest));
+  // Ranking
+  el('ka-rank').textContent=(RA.findIndex(t=>t.i===ibge)+1)+'º entre 92 municípios';
+  el('kc-rank').textContent=(RC.findIndex(t=>t.i===ibge)+1)+'º entre 92 municípios';
+  el('kg-rank').textContent=(RG.findIndex(t=>t.i===ibge)+1)+'º entre 92 municípios';
+  // Variação anual 2022→2023
+  el('ka-var').innerHTML=varStr(d.adq);
+  el('kc-var').innerHTML=varStr(d.cong);
+  el('kg-var').innerHTML=varStr(d.gest);
+  // % vs média estadual
+  el('ka-vs').innerHTML=vsMedia(sm(d.adq),MA);
+  el('kc-vs').innerHTML=vsMedia(sm(d.cong),MC);
+  el('kg-vs').innerHTML=vsMedia(sm(d.gest),MG);
+  // Destaque mapa
+  if(window.GEO_LAYER){
+    window.GEO_LAYER.eachLayer(l=>{
+      const cod=String(l.feature.properties.id||l.feature.properties.codarea||'').slice(0,6);
+      const v=sm(D[cod]?.gest||[]);
+      l.setStyle(cod===ibge?{weight:2.5,color:'#f8fafc',fillOpacity:1,fillColor:gestCor(v)}:{weight:0.5,color:'#475569',fillOpacity:0.75,fillColor:gestCor(v)});
+    });
+  }
   bar('cA',ANOS,d.adq,CO.az); bar('cC',ANOS,d.cong,CO.ro); bar('cG',ANOS,d.gest,CO.ve);
   ln('cL',A8,[
     {label:'Adquirida',data:d.adq.slice(0,8),borderColor:CO.az,backgroundColor:CO.az+'15',fill:true,tension:.3,pointRadius:4},
@@ -184,7 +261,35 @@ inp.addEventListener('input',()=>{
 });
 inp.addEventListener('blur',()=>setTimeout(()=>dd.classList.remove('open'),200));
 function pick(i,n){dd.classList.remove('open');inp.value=n;render(i,n);}
-window.addEventListener('DOMContentLoaded',()=>pick('330170','DUQUE DE CAXIAS'));
+window.addEventListener('DOMContentLoaded',()=>{
+  pick('330170','DUQUE DE CAXIAS');
+  // Mapa Leaflet
+  const MAP=L.map('mapa',{zoomSnap:0.5,scrollWheelZoom:false}).setView([-22.5,-43.2],7);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap © CARTO',maxZoom:18}).addTo(MAP);
+  fetch('https://raw.githubusercontent.com/tbrugz/geodata-br/master/geojson/geojs-33-mun.json')
+    .then(r=>r.json())
+    .then(gj=>{
+      window.GEO_LAYER=L.geoJSON(gj,{
+        style:feat=>{
+          const cod=String(feat.properties.id||'').slice(0,6);
+          const v=sm(D[cod]?.gest||[]);
+          return {fillColor:gestCor(v),weight:0.5,color:'#475569',fillOpacity:0.75};
+        },
+        onEachFeature:(feat,layer)=>{
+          const cod=String(feat.properties.id||'').slice(0,6);
+          const nom=D[cod]?D[cod].nome:(feat.properties.name||cod);
+          const vg=sm(D[cod]?.gest||[]);
+          const va=sm(D[cod]?.adq||[]);
+          const vc=sm(D[cod]?.cong||[]);
+          layer.bindTooltip(`<strong>${nom}</strong><br>Gestante: ${fmt(vg)}<br>Adquirida: ${fmt(va)}<br>Congênita: ${fmt(vc)}`,{sticky:true,className:'leaflet-tooltip'});
+          layer.on('click',()=>{if(D[cod])pick(cod,D[cod].nome);});
+        }
+      }).addTo(MAP);
+      // Re-highlight o município padrão
+      setTimeout(()=>render('330170','DUQUE DE CAXIAS'),100);
+    })
+    .catch(()=>{});
+});
 </script>
 </body>
 </html>
