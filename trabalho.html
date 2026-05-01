@@ -403,7 +403,13 @@
 <div class="secao-pagina">
   <h2 class="secao">Discusión</h2>
 
-  <p>Contextualizados en el escenario nacional y estadual, los indicadores de Duque de Caxias revelan que el municipio se sitúa no solo por encima de la media nacional, sino en el epicentro de la epidemia de sífilis en Brasil. Según el Boletim Epidemiológico de Sífilis 2024 (BRASIL, 2024) y el Painel de Indicadores Sífilis do DATHI/MS (2026), en 2023 Brasil registró una tasa de detección de sífilis en gestantes de <strong>34,0 casos por 1.000 nascidos vivos (NV)</strong> y una incidencia de sífilis congénita de <strong>9,9/1.000 NV</strong>. El estado de Río de Janeiro, sin embargo, registró los índices más elevados del país en ambos indicadores: <strong>69,5/1.000 NV</strong> para sífilis en gestantes y <strong>18,5/1.000 NV</strong> para congénita en 2023 — más del doble de la media nacional. En 2022, el escenario era aún más crítico: el estado presentó 81,8/1.000 NV para sífilis gestacional y 22,0/1.000 NV para congénita, mientras que la Región Metropolitana I (RMI), donde se localiza Duque de Caxias, alcanzó <strong>103,0/1.000 NV para sífilis en gestantes</strong> — exactamente el triple del promedio brasileño — y 23,6/1.000 NV para congénita. Estos datos posicionan al municipio en el territorio de mayor vulnerabilidad epidemiológica del estado con mayor carga de sífilis del país, lo que confiere especial urgencia a las estrategias de intervención identificadas en este estudio.</p>
+  <p>Contextualizados en el escenario nacional y estadual, los indicadores de Duque de Caxias revelan que el municipio se sitúa no solo por encima de la media nacional, sino en el epicentro de la epidemia de sífilis en Brasil (Gráfico 8). Según el Boletim Epidemiológico de Sífilis 2024 (BRASIL, 2024) y el Painel de Indicadores Sífilis do DATHI/MS (2026), en 2023 Brasil registró una tasa de detección de sífilis en gestantes de <strong>34,0 casos por 1.000 nacidos vivos (NV)</strong> y una incidencia de sífilis congénita de <strong>9,9/1.000 NV</strong>. El estado de Río de Janeiro presentó los índices más elevados del país: <strong>69,5/1.000 NV</strong> para sífilis en gestantes en 2023 — <strong>2,0 veces superior a la media nacional</strong> — y <strong>18,5/1.000 NV</strong> para congénita — <strong>1,9 veces por encima del promedio brasileño</strong>. En 2022, la Región Metropolitana I (RMI), donde se localiza Duque de Caxias, alcanzó <strong>103,0/1.000 NV para sífilis en gestantes</strong> — <strong>3,0 veces la media nacional</strong> — y <strong>23,6/1.000 NV</strong> para sífilis congénita — <strong>2,4 veces superior al promedio del país</strong>. Estos datos posicionan al municipio en el territorio de mayor vulnerabilidad epidemiológica del estado con mayor carga de sífilis del país, conferiendo especial urgencia a las estrategias de intervención identificadas en este estudio.</p>
+
+  <div class="grafico-container">
+    <p class="grafico-titulo">Gráfico 8 — Tasas de detección de sífilis en gestantes e incidencia de sífilis congénita: Brasil, Río de Janeiro y Región Metropolitana I (2022–2023)</p>
+    <canvas id="g8" height="160"></canvas>
+    <p class="grafico-fonte">Fuente: Boletim Epidemiológico de Sífilis 2024 (BRASIL, 2024); Painel de Indicadores Sífilis, DATHI/MS (2026). * RMI = Región Metropolitana I de RJ (incluye Duque de Caxias), dato de 2022; Brasil y RJ = 2023.</p>
+  </div>
 
   <p>Los datos analizados evidencian que Duque de Caxias enfrenta una carga epidemiológica elevada de sífilis, con tendencias que divergen según la modalidad de notificación. La sífilis adquirida mostró comportamiento bimodal — pico en 2019 seguido de reducción por COVID-19 y posterior estabilización —, mientras que la sífilis en gestantes presentó crecimiento casi ininterrumpido hasta 2022, lo que sugiere dinámicas epidemiológicas distintas y vulnerabilidades específicas en cada subpoblación.</p>
 
@@ -539,6 +545,52 @@
     ['≤6 días (92,2%)', '7-27 días', '28d-<1 año', '1 año', '2-4 años', '5-12 años'],
     [1897, 30, 18, 100, 4, 8],
     ['#c62828','#e65100','#fb8c00','#fdd835','#9e9e9e','#9e9e9e']);
+
+  // G8 — Comparativo Brasil / RJ / RMI (Duque de Caxias) por 1.000 NV
+  new Chart(document.getElementById('g8'), {
+    type: 'bar',
+    data: {
+      labels: ['Brasil (2023)', 'Río de Janeiro (2023)', 'RMI — DC (2022)'],
+      datasets: [
+        {
+          label: 'Gestantes (por 1.000 NV)',
+          data: [34.0, 69.5, 103.0],
+          backgroundColor: '#1565c099',
+          borderColor: '#1565c0',
+          borderWidth: 1.5,
+          borderRadius: 4
+        },
+        {
+          label: 'Congénita (por 1.000 NV)',
+          data: [9.9, 18.5, 23.6],
+          backgroundColor: '#c6282899',
+          borderColor: '#c62828',
+          borderWidth: 1.5,
+          borderRadius: 4
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { labels: { color: '#333', font: { size: 10 }, boxWidth: 14 } },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}/1.000 NV`
+          }
+        }
+      },
+      scales: {
+        x: { ticks: { color: '#333', font: { size: 10 } }, grid: { color: '#eee' } },
+        y: {
+          ticks: { color: '#333', font: { size: 10 } },
+          grid: { color: '#eee' },
+          beginAtZero: true,
+          title: { display: true, text: 'casos por 1.000 nascidos vivos', color: '#555', font: { size: 9 } }
+        }
+      }
+    }
+  });
 </script>
 </body>
 </html>
