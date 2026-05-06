@@ -1,2 +1,7 @@
 *.dbc
 *.dbf
+
+.vercel
+__pycache__/
+debug_*.py
+debug_*.html
