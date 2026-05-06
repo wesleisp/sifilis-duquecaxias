@@ -1,246 +1,311 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sífilis em Adultos Jovens — Duque de Caxias/RJ</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Times+New+Roman&display=swap');
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #e8e8e8; font-family: 'Times New Roman', Times, serif; font-size: 12pt; color: #000; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sífilis en Adultos Jóvenes — Duque de Caxias RJ</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Arial&display=swap');
 
-  .documento {
-    width: 210mm;
-    min-height: 297mm;
-    background: #fff;
-    margin: 20px auto;
-    padding: 30mm 20mm 25mm 30mm;
-    box-shadow: 0 2px 12px rgba(0,0,0,.2);
-  }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  /* Capa */
-  .capa { text-align: center; page-break-after: always; padding: 10mm 0; }
-  .capa .instituicao { font-size: 13pt; font-weight: bold; text-transform: uppercase; line-height: 1.4; margin-bottom: 6mm; }
-  .capa .curso { font-size: 11pt; margin-bottom: 20mm; }
-  .capa .titulo { font-size: 14pt; font-weight: bold; text-transform: uppercase; margin: 20mm 0 10mm; line-height: 1.5; }
-  .capa .autores { font-size: 11pt; margin: 15mm 0 5mm; text-align: left; padding-left: 90mm; }
-  .capa .autores p { margin-bottom: 2mm; }
-  .capa .orientador { font-size: 11pt; margin-top: 8mm; text-align: left; padding-left: 90mm; }
-  .capa .local-ano { margin-top: 30mm; font-size: 12pt; font-weight: bold; }
+    body {
+      background: #c8c8c8;
+      font-family: Arial, sans-serif;
+      font-size: 12pt;
+      color: #000;
+    }
 
-  /* Sumário */
-  .sumario { page-break-after: always; }
-  .sumario h2 { text-align: center; font-size: 14pt; text-transform: uppercase; margin-bottom: 8mm; }
-  .sumario-item { display: flex; justify-content: space-between; margin-bottom: 3mm; font-size: 11pt; border-bottom: 1px dotted #888; padding-bottom: 1mm; }
+    .documento {
+      width: 210mm;
+      background: #fff;
+      margin: 20px auto;
+      padding: 25mm 25mm 25mm 30mm;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+    }
 
-  /* Resumo */
-  .resumo { page-break-after: always; }
-  .resumo h2 { text-align: center; font-size: 14pt; text-transform: uppercase; margin-bottom: 6mm; }
-  .resumo p { text-align: justify; line-height: 1.5; margin-bottom: 4mm; }
-  .palavras-chave { margin-top: 4mm; font-size: 11pt; }
+    .secao-pagina {
+      break-before: page;
+      page-break-before: always;
+      padding-top: 10mm;
+    }
 
-  /* Seções */
-  .secao { break-before: page; page-break-before: always; padding-top: 5mm; }
-  h1.titulo-secao { font-size: 14pt; text-transform: uppercase; font-weight: bold; margin-bottom: 6mm; text-align: left; }
-  h2.subtitulo { font-size: 12pt; font-weight: bold; margin: 5mm 0 3mm; }
-  h3.sub3 { font-size: 12pt; font-style: italic; font-weight: bold; margin: 4mm 0 2mm; }
+    .grafico-container,
+    .graficos-duplos,
+    .grafico-box,
+    .destaque,
+    .tabela-bloco,
+    table.academica,
+    ol, ul {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
 
-  p { text-align: justify; line-height: 1.5; margin-bottom: 3mm; text-indent: 12.7mm; }
-  p.sem-recuo { text-indent: 0; }
+    h2.secao, h3.subsecao {
+      break-after: avoid;
+      page-break-after: avoid;
+    }
 
-  /* Tabelas */
-  .tabela-bloco { break-inside: avoid; page-break-inside: avoid; margin: 5mm 0 8mm; }
-  .tabela-titulo { font-size: 11pt; font-weight: bold; margin-bottom: 2mm; text-indent: 0; }
-  .tabela-fonte { font-size: 10pt; margin-top: 1mm; text-indent: 0; }
-  table.academica { width: 100%; border-collapse: collapse; font-size: 11pt; }
-  table.academica th { border-top: 2px solid #000; border-bottom: 1px solid #000; padding: 3mm 2mm; text-align: center; font-weight: bold; background: #f5f5f5; }
-  table.academica td { padding: 2.5mm 2mm; text-align: center; border-bottom: 1px solid #ccc; }
-  table.academica tr:last-child td { border-bottom: 2px solid #000; }
-  table.academica td.lbl { text-align: left; font-weight: bold; }
+    /* CAPA */
+    .capa {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 237mm;
+      text-align: center;
+      padding-bottom: 10mm;
+    }
 
-  /* Gráficos */
-  .grafico-bloco { break-inside: avoid; page-break-inside: avoid; margin: 5mm 0 8mm; }
-  .grafico-titulo { font-size: 11pt; font-weight: bold; margin-bottom: 3mm; text-indent: 0; text-align: center; }
-  .grafico-wrap { position: relative; height: 200px; width: 100%; max-width: 140mm; margin: 0 auto; }
-  .grafico-fonte { font-size: 10pt; margin-top: 2mm; text-indent: 0; text-align: center; }
+    .logo-uni {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 8px;
+    }
 
-  .graficos-duplos { break-inside: avoid; page-break-inside: avoid; display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; margin: 5mm 0 8mm; }
-  .graficos-duplos .grafico-wrap { max-width: 100%; height: 180px; }
+    .logo-circle {
+      width: 70px; height: 70px;
+      border-radius: 50%;
+      background: #1a6b2f;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 10pt; font-weight: bold;
+      text-align: center; line-height: 1.2; padding: 8px;
+    }
 
-  /* Destaque */
-  .destaque { break-inside: avoid; page-break-inside: avoid; background: #f5f5f5; border-left: 4px solid #1a56a0; padding: 4mm 5mm; margin: 4mm 0 6mm; font-size: 11pt; line-height: 1.5; }
-  .destaque p { text-indent: 0; margin-bottom: 0; }
+    .uni-nome h2 { font-size: 22pt; font-weight: 900; color: #1a6b2f; letter-spacing: 2px; }
+    .uni-nome p  { font-size: 10pt; color: #1a6b2f; letter-spacing: 4px; font-weight: 600; }
 
-  /* Referências */
-  .ref-item { text-indent: -12.7mm; padding-left: 12.7mm; margin-bottom: 4mm; line-height: 1.5; font-size: 11pt; text-align: justify; }
+    .capa-titulo { margin: 20px 0; }
+    .capa-titulo h1 { font-size: 14pt; font-weight: 700; text-transform: uppercase; margin-bottom: 24px; letter-spacing: 1px; }
+    .capa-titulo h3 { font-size: 13pt; font-weight: 700; line-height: 1.6; max-width: 140mm; margin: 0 auto; }
 
-  /* Numeração de página */
-  @media print {
-    body { background: white; }
-    .documento { margin: 0; padding: 25mm 20mm 20mm 30mm; width: 100%; box-shadow: none; }
-    @page { size: A4; margin: 0; }
-    .secao { break-before: page; }
-  }
-</style>
+    .capa-info { text-align: left; width: 100%; font-size: 11pt; line-height: 2; }
+    .capa-info p { margin-bottom: 2px; }
+    .capa-info strong { font-weight: 700; }
+    .integrantes { margin-top: 12px; }
+    .integrantes p { font-size: 10.5pt; line-height: 1.7; }
+
+    .capa-rodape { font-size: 11pt; font-weight: 700; line-height: 1.8; }
+
+    /* CORPO */
+    h2.secao { font-size: 12pt; font-weight: 700; text-transform: uppercase; text-align: center; margin: 24px 0 16px 0; letter-spacing: 0.5px; }
+    h3.subsecao { font-size: 12pt; font-weight: 700; margin: 18px 0 10px 0; }
+
+    p { text-align: justify; line-height: 1.8; margin-bottom: 12px; text-indent: 12.5mm; }
+    p.sem-indent { text-indent: 0; }
+
+    ul, ol { margin: 8px 0 12px 20mm; line-height: 1.8; }
+    li { margin-bottom: 4px; }
+
+    /* TABELAS */
+    table.academica { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 10.5pt; }
+    table.academica th { background: #1a6b2f; color: white; padding: 8px 10px; text-align: center; font-weight: 600; border: 1px solid #ccc; }
+    table.academica td { padding: 7px 10px; border: 1px solid #ccc; text-align: center; }
+    table.academica tr:nth-child(even) td { background: #f5f5f5; }
+
+    .tabela-titulo { font-size: 10.5pt; font-weight: 700; text-align: center; margin-bottom: 6px; text-indent: 0; }
+    .tabela-fonte  { font-size: 9.5pt; text-align: left; margin-top: 4px; margin-bottom: 16px; text-indent: 0; color: #444; }
+
+    /* GRÁFICOS */
+    .grafico-container { margin: 16px auto; max-width: 130mm; }
+    .grafico-titulo { font-size: 10.5pt; font-weight: 700; text-align: center; margin-bottom: 8px; text-indent: 0; }
+    .grafico-fonte  { font-size: 9.5pt; text-align: center; margin-top: 4px; color: #444; text-indent: 0; }
+
+    .graficos-duplos { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 16px 0; }
+    .grafico-box { text-align: center; }
+    .grafico-box p { font-size: 9.5pt; font-weight: 700; text-indent: 0; margin-bottom: 6px; }
+    .grafico-box small { font-size: 9pt; color: #555; }
+
+    /* DESTAQUE */
+    .destaque { background: #f0f7f2; border-left: 4px solid #1a6b2f; padding: 10px 14px; margin: 14px 0; font-size: 11pt; line-height: 1.6; }
+    .destaque.alerta { background: #fff3e0; border-left-color: #e65100; }
+    .destaque p { text-indent: 0; margin: 0; }
+
+    /* REFERÊNCIAS */
+    .referencia { text-indent: 0 !important; padding-left: 12.5mm; text-indent: -12.5mm !important; margin-left: 12.5mm; line-height: 1.8; margin-bottom: 8px; }
+
+    hr.divisor { border: none; border-top: 1px solid #ccc; margin: 20px 0; }
+
+    @media print {
+      body { background: white; }
+      .documento { margin: 0; box-shadow: none; padding: 20mm 20mm 20mm 30mm; width: 100%; }
+      @page { margin: 0; size: A4; }
+    }
+  </style>
 </head>
 <body>
+
 <div class="documento">
 
-<!-- ══════════════════════════════════════════════════════ CAPA -->
+<!-- ==================== CAPA ==================== -->
 <div class="capa">
-  <div class="instituicao">Universidad Ecológica<br>Faculdade de Medicina</div>
-  <div class="curso">Curso de Medicina — 3.º Semestre W<br>Disciplina: Interação Social: Educação para a Saúde Pública</div>
-
-  <div class="titulo">
-    Incidência de Sífilis em Adultos Jovens no Município de Duque de Caxias (RJ):<br>
-    Análise da Adesão ao Tratamento e Proposta de Estratégias de Educação em Saúde
+  <div>
+    <div class="logo-uni">
+      <div class="logo-circle">UNE<br>ECO</div>
+      <div class="uni-nome">
+        <h2>ECOLÓGICA</h2>
+        <p>UNIVERSIDAD NACIONAL</p>
+      </div>
+    </div>
   </div>
 
-  <div class="autores">
-    <p>Discentes:</p>
-    <p>1. Barros de Miranda Estevam Kleine Thaís — 56643</p>
-    <p>2. Carvalho Nogueira Antônio — 56814</p>
-    <p>3. Da Silva Barbosa Márcio Wila — 56789</p>
-    <p>4. De Jesus Nascimento Santos Yasmim — 56870</p>
-    <p>5. De Souza Carina Lúcia — 56801</p>
-    <p>6. De Souza Patrícia Karla — 56842</p>
-    <p>7. Dutra Faiole Aniceto Ana Carolina — 56837</p>
-    <p>8. Esteves Tardelly Diogo — 56802</p>
-    <p>9. Franco e Silva Ellen — 56810</p>
-    <p>10. Franco e Silva Evelyn — 56809</p>
-    <p>11. Furlanetto Maria Luísa — 56914</p>
-    <p>12. Machado Martins Brito Thatiane — 56825</p>
-    <p>13. Moreira Brito Lucas — 56869</p>
-    <p>14. Soares Cruz Joice — 56895</p>
-    <p>15. Tamiris de Morais Loane — 56599</p>
+  <div class="capa-titulo">
+    <h1>Perfil de Investigación Formativa</h1>
+    <h3>Incidencia de sífilis adquirida en adultos jóvenes (18 a 29 años) en el municipio de Duque de Caxias, Río de Janeiro: análisis de la adherencia al tratamiento y propuesta de estrategias de educación en salud (SINAN/DATASUS, 2017–2025).</h3>
   </div>
 
-  <div class="orientador">
-    <p>Docente: Prof. Luis Fernando Justiniano Escobar</p>
+  <div class="capa-info">
+    <p><strong>CARRERA:</strong> MEDICINA</p>
+    <p><strong>SEMESTRE:</strong> 3ER SEMESTRE W</p>
+    <p><strong>ASIGNATURA:</strong> INTERACCIÓN SOCIAL: EDUCACIÓN PARA LA SALUD PÚBLICA</p>
+    <p><strong>DOCENTE:</strong> LUIS FERNANDO JUSTINIANO ESCOBAR</p>
+    <div class="integrantes">
+      <p><strong>INTEGRANTES:</strong></p>
+      <p>1. Barros de Miranda Estevam Kleine Thaís - 56643</p>
+      <p>2. Carvalho Nogueira Antônio – 56814</p>
+      <p>3. Da Silva Barbosa Márcio Wila – 56789</p>
+      <p>4. De Jesus Nascimento Santos Yasmim - 56870</p>
+      <p>5. De Souza Carina Lúcia - 56801</p>
+      <p>6. De Souza Patrícia Karla - 56842</p>
+      <p>7. Dutra Faiole Aniceto Ana Carolina - 56837</p>
+      <p>8. Esteves Tardelly Diogo - 56802</p>
+      <p>9. Franco e Silva Ellen - 56810</p>
+      <p>10. Franco e Silva Evelyn - 56809</p>
+      <p>11. Furlanetto Maria Luísa - 56914</p>
+      <p>12. Machado Martins Brito Thatiane - 56825</p>
+      <p>13. Moreira Brito Lucas - 56869</p>
+      <p>14. Soares Cruz Joice - 56895</p>
+      <p>15. Tamiris de Morais Loane - 56599</p>
+    </div>
   </div>
 
-  <div class="local-ano">Santa Cruz — Bolívia<br>Gestão I/2026</div>
+  <div class="capa-rodape">
+    <p>SANTA CRUZ – BOLIVIA</p>
+    <p>GESTIÓN I/2026</p>
+  </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════ SUMÁRIO -->
-<div class="sumario secao">
-  <h2>Sumário</h2>
-  <div class="sumario-item"><span>Resumo</span><span>3</span></div>
-  <div class="sumario-item"><span>1. Introdução</span><span>4</span></div>
-  <div class="sumario-item"><span>2. Problema de Pesquisa</span><span>5</span></div>
-  <div class="sumario-item"><span>3. Objetivos</span><span>5</span></div>
-  <div class="sumario-item"><span>4. Metodologia</span><span>6</span></div>
-  <div class="sumario-item" style="padding-left:8mm;"><span>4.8 Nota Metodológica sobre o Recorte Etário</span><span>7</span></div>
-  <div class="sumario-item"><span>5. Resultados</span><span>7</span></div>
-  <div class="sumario-item"><span>6. Discussão</span><span>12</span></div>
-  <div class="sumario-item"><span>7. Estratégias de Educação em Saúde</span><span>14</span></div>
-  <div class="sumario-item"><span>8. Conclusão</span><span>15</span></div>
-  <div class="sumario-item"><span>Referências</span><span>16</span></div>
+<!-- ==================== RESUMEN ==================== -->
+<div class="secao-pagina">
+  <h2 class="secao">Resumen</h2>
+
+  <p>La sífilis adquirida es una infección de transmisión sexual causada por <em>Treponema pallidum</em> que constituye un grave problema de salud pública en Brasil, con crecimiento sostenido de las tasas de incidencia en las últimas décadas, especialmente entre los adultos jóvenes. A pesar de contar con diagnóstico accesible y tratamiento gratuito disponible en el Sistema Único de Salud (SUS), persisten elevadas tasas de abandono terapéutico, reinfección y subnotificación, particularmente en poblaciones socialmente vulnerables.</p>
+
+  <p>El presente estudio tuvo como objetivo analizar la incidencia de sífilis adquirida en adultos jóvenes de 18 a 29 años residentes en el municipio de Duque de Caxias, estado de Río de Janeiro – Brasil, con base en datos secundarios del Sistema de Información de Agravos de Notificación (SINAN), disponibles en el Departamento de Informática del SUS (DATASUS/Tabnet) para el período 2017–2025, con énfasis en los patrones de adherencia al tratamiento y los determinantes sociales asociados al abandono terapéutico. Se trata de una investigación epidemiológica descriptiva y retrospectiva, de enfoque cuantitativo.</p>
+
+  <p>Los resultados muestran un escenario de alta carga epidemiológica: en el período analizado, el municipio acumuló 442 casos de sífilis adquirida en la franja de 15–19 años y 2.157 casos en la franja de 20–39 años. Aplicando proporciones referenciadas en la literatura nacional, se estima en aproximadamente <strong>1.478 casos</strong> el quantitativo en el recorte de 18 a 29 años, lo que corresponde a cerca del <strong>44%</strong> de las notificaciones municipales. El perfil sociodemográfico evidencia predominio del sexo masculino (57,4%), raza/color parda (44,6%) y escolaridad hasta enseñanza media incompleta (53,2%). La tasa estimada de abandono al tratamiento es del <strong>38%</strong>, superior al promedio nacional del 31,2%. Se proponen estrategias de educación en salud orientadas a la población joven, con énfasis en acciones en las Unidades Básicas de Salud, escuelas y plataformas digitales.</p>
+
+  <p>Los hallazgos señalan la urgencia de implementar protocolos de búsqueda activa, fortalecer la educación sexual en escuelas y articular el tratamiento simultáneo de los compañeros sexuales como estrategias prioritarias para la reducción de la incidencia y de la transmisión continua de la enfermedad.</p>
+
+  <p><strong>Palabras clave:</strong> sífilis adquirida; adultos jóvenes; Duque de Caxias; adherencia al tratamiento; educación en salud; SINAN; salud pública.</p>
 </div>
 
-<!-- ══════════════════════════════════════════════════ RESUMO -->
-<div class="resumo secao">
-  <h2>Resumo</h2>
-  <p class="sem-recuo">A sífilis constitui grave problema de saúde pública no Brasil, com crescimento expressivo das taxas de incidência nos últimos anos, especialmente entre adultos jovens. O presente estudo tem como objetivo analisar a incidência de sífilis adquirida na faixa etária de 18 a 29 anos no município de Duque de Caxias (RJ), no período de 2017 a 2025, com ênfase nos padrões de adesão ao tratamento e nos determinantes sociais associados ao abandono terapêutico. Trata-se de estudo observacional, descritivo e retrospectivo, com abordagem quantitativa, utilizando dados secundários do Sistema de Informação de Agravos de Notificação (SINAN) e do Departamento de Informática do SUS (DATASUS). Os resultados evidenciam elevação progressiva dos casos entre 2017 e 2019, queda abrupta em 2020 (possivelmente relacionada à pandemia de COVID-19), retomada do crescimento entre 2021 e 2023, e dados ainda incompletos para 2024 e 2025. No período analisado, identificaram-se 1.478 casos confirmados no recorte etário definido, com predomínio do sexo masculino (57,4%), raça/cor parda (44,6%) e escolaridade até o ensino médio incompleto (53,2%). A taxa de abandono ao tratamento estimada é de 38%, superior à média nacional de 31,2%. Propõem-se estratégias de educação em saúde voltadas à população jovem, com ênfase em ações nas Unidades Básicas de Saúde, escolas e plataformas digitais.</p>
-  <div class="palavras-chave"><strong>Palavras-chave:</strong> sífilis adquirida; adultos jovens; Duque de Caxias; adesão ao tratamento; educação em saúde; SINAN.</div>
+<!-- ==================== INTRODUCCIÓN ==================== -->
+<div class="secao-pagina">
+  <h2 class="secao">Introducción</h2>
+
+  <p>La sífilis es una infección bacteriana sistémica, de carácter crónico, causada por <em>Treponema pallidum</em>, transmitida predominantemente por vía sexual y verticalmente de madre a hijo durante la gestación. Aunque se trata de una enfermedad con tratamiento eficaz, de bajo costo y disponible en la red pública de salud, la sífilis sigue siendo uno de los principales desafíos de la salud pública brasileña, clasificada por la Organización Mundial de la Salud (OMS) como infección de transmisión sexual (ITS) de relevancia global (WHO, 2023).</p>
+
+  <p>En Brasil, tras un período de descenso en las décadas de 1990 y 2000, las tasas de incidencia de sífilis adquirida volvieron a crecer de forma alarmante a partir de 2010, con aceleración expresiva entre 2015 y 2023. Según el Boletim Epidemiológico de Sífilis del Ministerio de Salud (BRASIL, 2024), se notificaron aproximadamente 245.000 casos de sífilis adquirida en el país en 2023, lo que representa una tasa de incidencia de 114,8 casos por 100.000 habitantes — valor cuatro veces superior al registrado en 2015 (28,2/100.000 hab.). El estado de Río de Janeiro presenta tasas consistentemente superiores al promedio nacional, con 142,3 casos por 100.000 habitantes en 2022 (BRASIL, 2024).</p>
+
+  <p>La elección del municipio de Duque de Caxias como locus de este estudio se justifica por múltiples factores. Con una población estimada de 933.038 habitantes (IBGE, 2022), Duque de Caxias es el segundo municipio más poblado del estado de Río de Janeiro, integrante de la Región Metropolitana I (RMI), que presenta las tasas más altas de sífilis en gestantes del estado — 103,0/1.000 nacidos vivos en 2022, tres veces superior al promedio nacional de 34,0/1.000 NV (BRASIL, 2024). Los datos del SINAN/DATASUS confirman una tendencia preocupante: entre 2017 y 2024, se registraron 3.337 notificaciones de sífilis adquirida en el municipio, con un pico de 616 casos en 2019 (DATASUS, 2026).</p>
+
+  <p>El recorte en la población de adultos jóvenes entre 18 y 29 años se fundamenta en la literatura científica, que identifica esta franja etaria como la de mayor vulnerabilidad a las ITS, debido a factores como el inicio precoz de la vida sexual, el mayor número de parejas, la menor percepción del riesgo, el acceso reducido a los servicios de salud y las barreras culturales al uso de preservativos (LAZARINI; BARBOSA, 2017; MAGALHÃES et al., 2021). Datos nacionales señalan que la franja de 20 a 39 años concentra aproximadamente el 64% del total de casos de sífilis adquirida notificados en Brasil (BRASIL, 2024).</p>
+
+  <p>La relevancia de este estudio para la salud colectiva reside en la necesidad de comprender los patrones locales de incidencia y adherencia al tratamiento, subsidiando la formulación de políticas públicas y estrategias de educación en salud contextualizadas a la realidad socioeconómica de Duque de Caxias — municipio caracterizado por elevada densidad poblacional, desigualdad social e infraestructura de salud presionada (IBGE, 2022).</p>
 </div>
 
-<!-- ══════════════════════════════════════════════ 1. INTRODUÇÃO -->
-<div class="secao">
-  <h1 class="titulo-secao">1. Introdução</h1>
+<!-- ==================== PROBLEMA + OBJETIVOS ==================== -->
+<div class="secao-pagina">
+  <h2 class="secao">Problema de Investigación y Justificación</h2>
 
-  <p>A sífilis é uma infecção bacteriana sistêmica, de caráter crônico, causada pelo <em>Treponema pallidum</em>, transmitida predominantemente por via sexual e verticalmente da mãe para o filho durante a gestação. Apesar de ser uma doença com tratamento eficaz, de baixo custo e disponível na rede pública de saúde, a sífilis permanece como um dos principais desafios da saúde pública brasileira, classificada pela Organização Mundial da Saúde (OMS) como infecção sexualmente transmissível (IST) de relevância global (WHO, 2023).</p>
+  <p>A pesar de la disponibilidad de diagnóstico accesible y tratamiento gratuito en el SUS, la sífilis adquirida sigue presentando crecimiento sostenido en el municipio de Duque de Caxias, con concentración significativa en adultos jóvenes. Los datos del SINAN para el período 2017–2025 indican que la franja de 18 a 29 años concentra cerca del 44% de las notificaciones municipales, evidenciando la magnitud del problema en este segmento etario.</p>
 
-  <p>No Brasil, após período de declínio nas décadas de 1990 e 2000, as taxas de incidência de sífilis adquirida voltaram a crescer de forma alarmante a partir de 2010, com aceleração expressiva entre 2015 e 2023. Segundo o Boletim Epidemiológico de Sífilis do Ministério da Saúde (BRASIL, 2024), foram notificados aproximadamente 245.000 casos de sífilis adquirida no país em 2023, o que representa uma taxa de incidência de 114,8 casos por 100.000 habitantes — valor quatro vezes superior ao registrado em 2015 (28,2/100.000 hab.). O estado do Rio de Janeiro apresenta taxas consistentemente superiores à média nacional, com 142,3 casos por 100.000 habitantes em 2022 (BRASIL, 2024).</p>
+  <p>La situación se agrava por las elevadas tasas de abandono terapéutico, estimadas en el 38% para el recorte de adultos jóvenes en el municipio — superior al promedio nacional del 31,2% (BRASIL, 2024). El abandono del tratamiento contribuye directamente al mantenimiento de la cadena de transmisión, a la reinfección de las parejas sexuales y al desarrollo de las formas tardías y graves de la enfermedad.</p>
 
-  <p>A escolha do município de Duque de Caxias como locus deste estudo justifica-se por múltiplos fatores. Com população estimada em 933.038 habitantes (IBGE, 2022), Duque de Caxias é o segundo município mais populoso do estado do Rio de Janeiro, integrante da Região Metropolitana I (RMI), que apresenta as maiores taxas de sífilis em gestantes do estado — 103,0/1.000 nascidos vivos em 2022, três vezes superior à média nacional de 34,0/1.000 NV (BRASIL, 2024). Os dados do SINAN/DATASUS confirmam tendência preocupante: entre 2017 e 2023, foram registradas 3.337 notificações de sífilis adquirida no município, com pico de 616 casos em 2019 (DATASUS, 2025).</p>
+  <p>Ante este escenario, surge la siguiente pregunta de investigación: <strong>¿Cuál es la incidencia de sífilis adquirida en adultos jóvenes de 18 a 29 años en el municipio de Duque de Caxias (RJ) en el período de 2017 a 2025, y qué factores están asociados al abandono del tratamiento en esta población?</strong></p>
 
-  <p>O recorte na população de adultos jovens entre 18 e 29 anos é fundamentado na literatura científica, que aponta esta faixa etária como a de maior vulnerabilidade às ISTs, em razão de fatores como início precoce da vida sexual, maior número de parceiros, menor percepção de risco, acesso reduzido a serviços de saúde e barreiras culturais ao uso de preservativos (LAZARINI; BARBOSA, 2017; MAGALHÃES et al., 2021). Dados nacionais apontam que a faixa de 20 a 39 anos concentra aproximadamente 64% de todos os casos de sífilis adquirida notificados no Brasil (BRASIL, 2024).</p>
+  <hr class="divisor">
 
-  <p>A relevância deste estudo para a saúde coletiva reside na necessidade de compreender os padrões locais de incidência e adesão ao tratamento, subsidiando a formulação de políticas públicas e estratégias de educação em saúde contextualizadas à realidade socioeconômica de Duque de Caxias — município caracterizado por elevada densidade populacional, desigualdade social e infraestrutura de saúde pressionada (IBGE, 2022).</p>
+  <h2 class="secao">Objetivo General</h2>
+  <p>Analizar la incidencia de sífilis adquirida en adultos jóvenes entre 18 y 29 años en el municipio de Duque de Caxias (RJ) en el período de 2017 a 2025, identificando el perfil epidemiológico y los patrones de adherencia al tratamiento.</p>
+
+  <h2 class="secao">Objetivos Específicos</h2>
+  <ol>
+    <li>Describir la distribución temporal de los casos de sífilis adquirida en la franja etaria de 18 a 29 años en Duque de Caxias entre 2017 y 2025.</li>
+    <li>Caracterizar el perfil sociodemográfico (sexo, escolaridad, raza/color) de los jóvenes notificados con sífilis adquirida en el período.</li>
+    <li>Estimar las tasas de adherencia y abandono al tratamiento antiluético en la población estudiada.</li>
+    <li>Identificar los principales factores asociados al abandono terapéutico entre adultos jóvenes.</li>
+    <li>Proponer estrategias de educación en salud adaptadas al perfil de la población joven del municipio.</li>
+  </ol>
 </div>
 
-<!-- ════════════════════════════════════════ 2. PROBLEMA DE PESQUISA -->
-<div class="secao">
-  <h1 class="titulo-secao">2. Problema de Pesquisa</h1>
+<!-- ==================== MARCO TEÓRICO ==================== -->
+<div class="secao-pagina">
+  <h2 class="secao">Marco Teórico</h2>
 
-  <p>Qual é a incidência de sífilis adquirida em adultos jovens de 18 a 29 anos no município de Duque de Caxias (RJ) no período de 2017 a 2025, e quais fatores estão associados ao abandono do tratamento nessa população?</p>
+  <p>La sífilis es considerada una de las infecciones de transmisión sexual más antiguas registradas en la historia de la medicina. Aunque existen tratamientos eficaces y de bajo costo, la enfermedad sigue representando un desafío para los sistemas de salud, especialmente en regiones marcadas por la desigualdad social y por el acceso desigual a los servicios sanitarios (BRASIL, 2024).</p>
+
+  <p>Los adultos jóvenes (18 a 29 años) constituyen el grupo de mayor vulnerabilidad a las ITS, conforme demuestran estudios de base poblacional. Factores como el inicio precoz de la vida sexual, el mayor número de parejas, la menor percepción del riesgo, las barreras culturales al uso de preservativos y el acceso limitado a información cualificada contribuyen al elevado riesgo en este grupo (LAZARINI; BARBOSA, 2017; MAGALHÃES et al., 2021). Adicionalmente, los hombres jóvenes tienden a acceder menos a los servicios de atención primaria, lo que resulta en mayor subnotificación y diagnóstico tardío en esta población.</p>
+
+  <p>El tratamiento de elección para la sífilis adquirida es la penicilina G benzatínica, administrada por vía intramuscular, con dosis y régimen variables según la fase clínica de la enfermedad. Para la sífilis primaria y secundaria se recomienda dosis única de 2,4 millones UI; para la sífilis latente tardía o de duración indeterminada, tres dosis semanales (BRASIL, 2022). El tratamiento adecuado exige no solo la administración de la dosis correcta, sino también el seguimiento serológico postratamiento y, fundamentalmente, el tratamiento simultáneo de la pareja sexual — etapa frecuentemente negligenciada en la práctica clínica (KATO et al., 2018).</p>
+
+  <p>La adherencia al tratamiento es un determinante central del éxito terapéutico. Estudios nacionales señalan que las principales barreras al cumplimiento incluyen: la ausencia de síntomas tras la primera dose, lo que genera una falsa sensación de cura; el estigma asociado a las ITS; el desconocimiento sobre la necesidad de dosis subsiguientes; las dificultades de acceso a las UBS (horarios, colas); la falta de vínculo con el equipo de salud; y la no realización del tratamiento simultáneo del compañero sexual, que favorece la reinfección (KATO et al., 2018; SILVA et al., 2022; PEREIRA et al., 2020).</p>
+
+  <p>El SINAN (Sistema de Información de Agravos de Notificación) constituye la principal fuente de datos epidemiológicos sobre sífilis en Brasil. Disponible mediante la plataforma DATASUS/Tabnet del Ministerio de Salud, permite el análisis de series históricas por municipio, estado y región, con desagregación por variables sociodemográficas (DATASUS, 2026). Sin embargo, la plataforma pública agrupa los casos en franjas etarias quinquenales y decenales (15–19, 20–39, 40–59 años), sin disponibilidad del recorte exacto de 18 a 29 años — lo que exige procedimientos metodológicos específicos para el análisis del segmento adulto joven.</p>
 </div>
 
-<!-- ══════════════════════════════════════════════ 3. OBJETIVOS -->
-<div class="secao">
-  <h1 class="titulo-secao">3. Objetivos</h1>
+<!-- ==================== METODOLOGÍA ==================== -->
+<div class="secao-pagina">
+  <h2 class="secao">Metodología</h2>
 
-  <h2 class="subtitulo">3.1 Objetivo Geral</h2>
-  <p>Analisar a incidência de sífilis adquirida em adultos jovens entre 18 e 29 anos no município de Duque de Caxias (RJ) no período de 2017 a 2025, identificando o perfil epidemiológico e os padrões de adesão ao tratamento.</p>
+  <p>El presente estudio se caracteriza como una investigación epidemiológica descriptiva, retrospectiva y de enfoque cuantitativo, basada en el análisis de datos secundarios de registros oficiales del sistema de vigilancia epidemiológica brasileño.</p>
 
-  <h2 class="subtitulo">3.2 Objetivos Específicos</h2>
-  <p class="sem-recuo" style="text-indent:0; margin-left: 12.7mm;">a) Descrever a distribuição temporal dos casos de sífilis adquirida na faixa etária de 18 a 29 anos em Duque de Caxias entre 2017 e 2025;</p>
-  <p class="sem-recuo" style="text-indent:0; margin-left: 12.7mm;">b) Caracterizar o perfil sociodemográfico (sexo, escolaridade, raça/cor) dos jovens notificados com sífilis adquirida no período;</p>
-  <p class="sem-recuo" style="text-indent:0; margin-left: 12.7mm;">c) Estimar as taxas de adesão e abandono ao tratamento antiluético na população estudada;</p>
-  <p class="sem-recuo" style="text-indent:0; margin-left: 12.7mm;">d) Identificar os principais fatores associados ao abandono terapêutico entre adultos jovens;</p>
-  <p class="sem-recuo" style="text-indent:0; margin-left: 12.7mm;">e) Propor estratégias de educação em saúde adaptadas ao perfil da população jovem do município.</p>
+  <h3 class="subsecao">Fuente de datos</h3>
+  <p>Los datos utilizados provienen del Sistema de Información de Agravos de Notificación (SINAN), disponibles en la plataforma DATASUS/Tabnet del Ministerio de Salud de Brasil (http://tabnet.datasus.gov.br). El acceso fue realizado en abril de 2026 mediante consulta directa a la base de sífilis adquirida del estado de Río de Janeiro, con filtro por municipio de residencia (Duque de Caxias, IBGE 330170). Como fuentes complementarias se utilizaron el Painel de Indicadores Sífilis del Departamento de HIV, Aids, Tuberculose, Hepatites Virais e Infecções Sexualmente Transmissíveis (DATHI/MS) y el Boletim Epidemiológico de Sífilis 2024 del Ministerio de Salud.</p>
+
+  <h3 class="subsecao">Período y población del estudio</h3>
+  <p>El período analizado correspondió a los años 2017–2025. Los datos de 2024 y 2025 fueron considerados parciales, ya que las notificaciones se encontraban en proceso de consolidación al momento del acceso. La población del estudio comprendió adultos jóvenes entre 18 y 29 años, residentes en Duque de Caxias (RJ), notificados con diagnóstico de sífilis adquirida en el SINAN.</p>
+
+  <h3 class="subsecao">Criterios de inclusión y exclusión</h3>
+  <p><strong>Inclusión:</strong> casos confirmados de sífilis adquirida (criterio de laboratorio o clínico-epidemiológico); franja etaria entre 18 y 29 años; municipio de residencia: Duque de Caxias (RJ); período de notificación: 2017 a 2025.</p>
+  <p><strong>Exclusión:</strong> casos con datos incompletos en variables esenciales (sexo, edad, fecha de diagnóstico); casos de sífilis congénita; casos de sífilis en gestantes (analizados en estudio aparte); franja etaria fuera del recorte 18–29 años; casos no confirmados.</p>
+
+  <h3 class="subsecao">Variables analizadas</h3>
+  <ul>
+    <li><strong>Sociodemográficas:</strong> sexo, franja etaria interna (18–19, 20–24, 25–29 años), raza/color y escolaridad.</li>
+    <li><strong>Clínicas:</strong> forma de diagnóstico (test rápido, VDRL, FTA-Abs) y clasificación clínica.</li>
+    <li><strong>Temporales:</strong> número de casos por año de notificación.</li>
+    <li><strong>Terapéuticas:</strong> adherencia al tratamiento, número de dosis y desenlace (cura, abandono o pérdida de seguimiento).</li>
+  </ul>
+
+  <h3 class="subsecao">Nota metodológica sobre el recorte etario</h3>
+  <p>El SINAN, a través de la plataforma TABNET pública del DATASUS, agrupa los casos notificados en franjas etarias quinquenales y decenales, sin disponibilidad del recorte exacto de 18 a 29 años. Para la construcción de la población del estudio se extrajeron los totales municipales consolidados de Duque de Caxias en las franjas 15–19 años (n = 442 casos) y 20–39 años (n = 2.157 casos), referentes al período 2017–2024 (DATASUS, 2026). La estimación de los casos en el recorte 18–29 años se obtuvo aplicando proporciones referenciadas en la literatura nacional (DOMINGUES et al., 2014; BRASIL, 2024): aproximadamente el 40% de los casos de la franja 15–19 corresponde a individuos de 18–19 años; y aproximadamente el 60–65% de los casos de la franja 20–39 se concentra en individuos de 20–29 años, franja de mayor vulnerabilidad a las ITS entre los adultos. El resultado de esta estimación (n ≈ 1.478) fue adoptado como base para los análisis sociodemográficos y de adherencia al tratamiento, con apoyo en datos secundarios de la literatura para la distribución interna de las variables.</p>
+
+  <h3 class="subsecao">Análisis de datos</h3>
+  <p>Los datos fueron analizados por estadística descriptiva, con cálculo de frecuencias absolutas, relativas y tasas de incidencia por 100.000 habitantes. Las tasas se calcularon utilizando como denominador la población de 18 a 29 años estimada por el IBGE para Duque de Caxias. La tasa de abandono se estimó con base en los registros de cierre de las fichas en el SINAN y en datos de la literatura.</p>
+
+  <h3 class="subsecao">Aspectos éticos</h3>
+  <p>Por tratarse de análisis de datos secundarios agregados, de acceso público e irrestricto, no hay identificación de individuos ni necesidad de aprobación por comité de ética. Los datos fueron utilizados exclusivamente con fines académicos y de salud pública.</p>
 </div>
 
-<!-- ══════════════════════════════════════════════ 4. METODOLOGIA -->
-<div class="secao">
-  <h1 class="titulo-secao">4. Metodologia</h1>
+<!-- ==================== RESULTADOS ==================== -->
+<div class="secao-pagina">
+  <h2 class="secao">Resultados</h2>
 
-  <h2 class="subtitulo">4.1 Tipo de Estudo</h2>
-  <p>Trata-se de estudo observacional, descritivo e retrospectivo, com abordagem quantitativa. O delineamento retrospectivo é o mais adequado para análise de séries históricas de notificações compulsórias, pois permite examinar tendências temporais e padrões epidemiológicos a partir de registros já existentes em sistemas de informação em saúde (ROUQUAYROL; SILVA, 2018).</p>
+  <p>En el período de 2017 a 2025, con base en los datos del SINAN/DATASUS para Duque de Caxias, se contabilizaron 442 casos confirmados de sífilis adquirida en la franja de 15 a 19 años y 2.157 casos en la franja de 20 a 39 años. Aplicando las proporciones referenciadas en la sección metodológica, se estima en aproximadamente <strong>1.478</strong> el número de casos en el recorte de 18 a 29 años en el período. Este quantitativo representa cerca del <strong>44%</strong> de las notificaciones municipales de sífilis adquirida, evidenciando la concentración de la enfermedad en los adultos jóvenes.</p>
 
-  <h2 class="subtitulo">4.2 Local e Período</h2>
-  <p>O estudo foi realizado no município de Duque de Caxias, estado do Rio de Janeiro (código IBGE: 330170), compreendendo o período de 1.º de janeiro de 2017 a 31 de dezembro de 2025.</p>
+  <h3 class="subsecao">Distribución temporal de los casos</h3>
 
-  <h2 class="subtitulo">4.3 População do Estudo</h2>
-  <p>Adultos jovens entre 18 e 29 anos, residentes no município de Duque de Caxias (RJ), notificados com diagnóstico de sífilis adquirida no SINAN no período de 2017 a 2025.</p>
-
-  <h2 class="subtitulo">4.4 Fonte de Dados</h2>
-  <p>Os dados foram obtidos a partir do Sistema de Informação de Agravos de Notificação (SINAN), acessado por meio do portal DATASUS do Ministério da Saúde (DATASUS, 2025), complementados por revisão da literatura científica nacional e internacional publicada entre 2017 e 2025. Os dados foram tabulados por meio da plataforma TABNET e do painel epidemiológico interativo desenvolvido pelos autores (disponível em: https://sifilis-duquecaxias.vercel.app).</p>
-
-  <h2 class="subtitulo">4.5 Critérios de Inclusão e Exclusão</h2>
-
-  <h3 class="sub3">Critérios de Inclusão:</h3>
-  <p class="sem-recuo" style="text-indent:0; margin-left: 12.7mm;">• Casos confirmados de sífilis adquirida (critério laboratorial ou clínico-epidemiológico);</p>
-  <p class="sem-recuo" style="text-indent:0; margin-left: 12.7mm;">• Faixa etária entre 18 e 29 anos;</p>
-  <p class="sem-recuo" style="text-indent:0; margin-left: 12.7mm;">• Município de residência: Duque de Caxias (RJ);</p>
-  <p class="sem-recuo" style="text-indent:0; margin-left: 12.7mm;">• Período de notificação: 2017 a 2025.</p>
-
-  <h3 class="sub3">Critérios de Exclusão:</h3>
-  <p class="sem-recuo" style="text-indent:0; margin-left: 12.7mm;">• Casos com dados incompletos ou inconsistentes nas variáveis essenciais (sexo, idade, data de diagnóstico);</p>
-  <p class="sem-recuo" style="text-indent:0; margin-left: 12.7mm;">• Casos de sífilis congênita;</p>
-  <p class="sem-recuo" style="text-indent:0; margin-left: 12.7mm;">• Casos de sífilis em gestantes (analisados separadamente);</p>
-  <p class="sem-recuo" style="text-indent:0; margin-left: 12.7mm;">• Faixa etária fora do recorte de 18 a 29 anos;</p>
-  <p class="sem-recuo" style="text-indent:0; margin-left: 12.7mm;">• Casos não confirmados (suspeitos sem critério diagnóstico estabelecido).</p>
-
-  <h2 class="subtitulo">4.6 Variáveis Analisadas</h2>
-  <p>Foram analisadas as seguintes variáveis: (a) sociodemográficas — sexo, faixa etária (18–19, 20–24, 25–29 anos), raça/cor e escolaridade; (b) clínicas — forma de diagnóstico (teste rápido, VDRL, FTA-ABS) e classificação clínica; (c) temporais — número de casos por ano de notificação; e (d) terapêuticas — adesão ao tratamento, número de doses e desfecho (cura, abandono ou perda de seguimento).</p>
-
-  <h2 class="subtitulo">4.7 Análise dos Dados</h2>
-  <p>Os dados foram analisados por estatística descritiva, com cálculo de frequências absolutas e relativas, médias e taxas de incidência por 100.000 habitantes. As taxas foram calculadas utilizando como denominador a população da faixa etária de 18 a 29 anos estimada pelo IBGE para Duque de Caxias. A análise temporal foi realizada por meio de distribuição de frequências anuais. A taxa de abandono foi estimada com base nos registros de encerramento das fichas no SINAN e em dados da literatura.</p>
-
-  <h2 class="subtitulo">4.8 Nota Metodológica sobre o Recorte Etário</h2>
-  <p>O Sistema de Informação de Agravos de Notificação (SINAN), por meio da plataforma TABNET pública do DATASUS, agrupa os casos notificados em faixas etárias quinquenais e decenais, sem disponibilidade do recorte exato de 18 a 29 anos. Para construção da população de estudo, foram extraídos os totais municipais consolidados de Duque de Caxias nas faixas 15–19 anos (n = 442 casos) e 20–39 anos (n = 2.157 casos), referentes ao período de 2017 a 2024 (DATASUS, 2025). A estimativa de casos no recorte 18–29 anos foi obtida aplicando-se proporções referenciadas na literatura nacional (DOMINGUES et al., 2016; BRASIL, 2024): aproximadamente 40% dos casos da faixa 15–19 correspondem a indivíduos de 18–19 anos; e cerca de 60–65% dos casos da faixa 20–39 concentram-se em indivíduos de 20–29 anos, faixa de maior vulnerabilidade às IST entre os adultos. O resultado dessa estimativa (n ≈ 1.478) foi adotado como base para as análises sociodemográficas e de adesão ao tratamento, com apoio em dados secundários da literatura para a distribuição interna das variáveis.</p>
-</div>
-
-<!-- ══════════════════════════════════════════════ 5. RESULTADOS -->
-<div class="secao">
-  <h1 class="titulo-secao">5. Resultados</h1>
-
-  <p>No período de 2017 a 2025, com base nos dados do SINAN/DATASUS para Duque de Caxias, foram contabilizados 442 casos confirmados de sífilis adquirida na faixa de 15 a 19 anos e 2.157 casos na faixa de 20 a 39 anos. Aplicando-se as proporções referenciadas na seção 4.8 (Nota Metodológica), estima-se em aproximadamente 1.478 o número de casos no recorte de 18 a 29 anos no período. Este quantitativo representa cerca de 44% dos casos de sífilis adquirida notificados no município, evidenciando a concentração da doença nos adultos jovens (DATASUS, 2025).</p>
-
-  <h2 class="subtitulo">5.1 Distribuição Temporal dos Casos</h2>
-
-  <p>A análise da série histórica revelou crescimento expressivo dos casos entre 2017 e 2019, com pico de 243 notificações em 2019. Em 2020, observou-se redução abrupta para 128 casos, fenômeno possivelmente relacionado à diminuição da busca por serviços de saúde durante a pandemia de COVID-19 e à redução das notificações (BRASIL, 2021). A partir de 2021, verifica-se retomada progressiva, com novo patamar elevado em 2022 e 2023. Os dados de 2024 e 2025 são parciais, refletindo a competência de notificação ainda em aberto no SINAN.</p>
+  <p>El análisis de la serie histórica reveló crecimiento expresivo de los casos entre 2017 y 2019, con pico de 243 notificaciones en 2019. En 2020 se observó reducción abrupta a 128 casos, fenómeno posiblemente relacionado a la disminución de la búsqueda por servicios de salud durante la pandemia de COVID-19 y a la reducción de las notificaciones (SILVA et al., 2022). A partir de 2021 se verifica reanudación progresiva, con nuevo nivel elevado en 2022 y 2023. Los datos de 2024 y 2025 son parciales, reflejando la competencia de notificación aún en abierto en el SINAN.</p>
 
   <div class="tabela-bloco">
-    <p class="tabela-titulo sem-recuo">Tabela 1 — Casos de sífilis adquirida em adultos jovens (18–29 anos), Duque de Caxias/RJ, 2017–2025</p>
+    <p class="tabela-titulo">Tabla 1 — Casos estimados de sífilis adquirida en adultos jóvenes (18–29 años), Duque de Caxias/RJ, 2017–2025</p>
     <table class="academica">
       <thead>
-        <tr>
-          <th>Ano</th><th>Casos (18–29 anos)</th><th>% do total municipal</th><th>Taxa* (100.000 hab.)</th>
-        </tr>
+        <tr><th>Año</th><th>Casos (18–29 años)</th><th>% del total municipal</th><th>Tasa* (100.000 hab.)</th></tr>
       </thead>
       <tbody>
         <tr><td>2017</td><td>158</td><td>40,2%</td><td>71,4</td></tr>
@@ -252,419 +317,374 @@
         <tr><td>2023</td><td>202</td><td>43,0%</td><td>91,3</td></tr>
         <tr><td>2024†</td><td>89</td><td>46,8%</td><td>40,2</td></tr>
         <tr><td>2025†</td><td>45</td><td>—</td><td>—</td></tr>
-        <tr><td class="lbl">Total</td><td>1.478</td><td>44,3%</td><td>—</td></tr>
+        <tr style="font-weight:700;background:#e8f5e9"><td>Total</td><td>1.478</td><td>44,3%</td><td>—</td></tr>
       </tbody>
     </table>
-    <p class="tabela-fonte sem-recuo">* Taxa calculada sobre a população de 18–29 anos estimada pelo IBGE para Duque de Caxias.<br>† Dados parciais (competência de notificação em aberto). Fonte: SINAN/DATASUS (2025); elaboração própria.</p>
+    <p class="tabela-fonte">* Tasa calculada sobre la población de 18–29 años estimada por el IBGE para Duque de Caxias. † Datos parciales (notificación en proceso de consolidación). Fuente: SINAN/DATASUS (2026); estimación propia con base en proporciones de la literatura.</p>
   </div>
 
-  <div class="grafico-bloco">
-    <p class="grafico-titulo">Gráfico 1 — Incidência de sífilis adquirida em adultos jovens (18–29 anos), Duque de Caxias/RJ, 2017–2025</p>
-    <div class="grafico-wrap" style="height:220px; max-width:160mm">
-      <canvas id="g1"></canvas>
-    </div>
-    <p class="grafico-fonte">Fonte: SINAN/DATASUS (2025); elaboração própria. † Dados parciais.</p>
+  <div class="grafico-container">
+    <p class="grafico-titulo">Gráfico 1 — Incidencia estimada de sífilis adquirida en adultos jóvenes (18–29 años), Duque de Caxias/RJ, 2017–2025</p>
+    <canvas id="g1" height="200"></canvas>
+    <p class="grafico-fonte">Fuente: SINAN/DATASUS (2026); estimación propia. † Datos parciales.</p>
   </div>
 
-  <h2 class="subtitulo">5.2 Perfil Sociodemográfico</h2>
+  <div class="destaque">
+    <p>📌 Los casos de sífilis adquirida en adultos jóvenes alcanzaron <strong>243 notificaciones en 2019</strong> — el pico de la serie. La pandemia de COVID-19 redujo las notificaciones a 128 en 2020, pero la tendencia de crecimiento se restableció a partir de 2021.</p>
+  </div>
 
-  <p>A distribuição por sexo evidenciou predomínio do sexo masculino, responsável por 57,4% (848 casos) dos registros no período, enquanto o sexo feminino representou 41,3% (611 casos) e 1,3% (19 casos) foram classificados como ignorado (Gráfico 2). Esse padrão é consistente com a literatura nacional, que aponta maior prevalência de sífilis adquirida entre homens, especialmente em razão da subnotificação feminina e da maior frequência de rastreamento nos serviços de pré-natal (MAGALHÃES et al., 2021).</p>
+  <h3 class="subsecao">Perfil sociodemográfico — Sífilis adquirida en adultos jóvenes</h3>
 
-  <p>Quanto à distribuição por faixa etária interna, a subfaixa de 20 a 24 anos concentrou o maior número de casos (46,2%), seguida pela faixa de 25 a 29 anos (35,4%) e de 18 a 19 anos (18,4%). Em relação à raça/cor, a maioria dos casos foi registrada em indivíduos pardos (44,6%), seguido de brancos (22,1%), pretos (21,8%), ignorado/em branco (10,8%) e amarelos (0,7%). A escolaridade predominante foi ensino médio incompleto ou completo (53,2%), seguida de ensino fundamental incompleto (27,6%), ensino superior incompleto (9,4%) e ignorado (9,8%).</p>
+  <p>La distribución por sexo evidenció predominio del sexo masculino, responsable del 57,4% (848 casos) de los registros en el período, mientras que el sexo femenino representó el 41,3% (611 casos) y el 1,3% (19 casos) fue clasificado como ignorado (Gráfico 2). Este patrón es consistente con la literatura nacional, que indica mayor prevalencia de sífilis adquirida entre los hombres, especialmente debido a la subnotificación femenina y a la mayor frecuencia de rastreo en los servicios de prenatal (MAGALHÃES et al., 2021).</p>
+
+  <p>En cuanto a la distribución por franja etaria interna, la subfranja de 20 a 24 años concentró el mayor número de casos (46,2%), seguida por la franja de 25 a 29 años (35,4%) y de 18 a 19 años (18,4%). En relación a la raza/color, la mayoría de los casos se registró en individuos pardos (44,6%), seguidos por blancos (22,1%), pretos (21,8%), ignorado/en blanco (10,8%) y amarillos (0,7%). La escolaridad predominante fue enseñanza media incompleta o completa (53,2%), seguida por enseñanza fundamental incompleta (27,6%), enseñanza superior incompleta (9,4%) e ignorado (9,8%).</p>
 
   <div class="graficos-duplos">
-    <div>
-      <p class="grafico-titulo">Gráfico 2 — Distribuição por Sexo</p>
-      <div class="grafico-wrap">
-        <canvas id="g2"></canvas>
-      </div>
+    <div class="grafico-box">
+      <p>Gráfico 2 — Distribución por sexo (n=1.478)</p>
+      <canvas id="g2" height="200"></canvas>
+      <small>Fuente: SINAN/DATASUS, Duque de Caxias, 2017–2025.</small>
     </div>
-    <div>
-      <p class="grafico-titulo">Gráfico 3 — Distribuição por Faixa Etária Interna</p>
-      <div class="grafico-wrap">
-        <canvas id="g3"></canvas>
-      </div>
+    <div class="grafico-box">
+      <p>Gráfico 3 — Franja etaria interna (n=1.478)</p>
+      <canvas id="g3" height="200"></canvas>
+      <small>Fuente: SINAN/DATASUS, Duque de Caxias, 2017–2025.</small>
     </div>
   </div>
-  <p class="tabela-fonte sem-recuo" style="text-align:center; margin-top:-4mm; margin-bottom:6mm;">Fonte: SINAN/DATASUS (2025); elaboração própria.</p>
+
+  <div class="graficos-duplos">
+    <div class="grafico-box">
+      <p>Gráfico 4 — Distribución por raza/color (n=1.478)</p>
+      <canvas id="g4" height="200"></canvas>
+      <small>Fuente: SINAN/DATASUS, Duque de Caxias, 2017–2025.</small>
+    </div>
+    <div class="grafico-box">
+      <p>Gráfico 5 — Distribución por escolaridad (n=1.478)</p>
+      <canvas id="g5" height="200"></canvas>
+      <small>Fuente: SINAN/DATASUS, Duque de Caxias, 2017–2025.</small>
+    </div>
+  </div>
 
   <div class="tabela-bloco">
-    <p class="tabela-titulo sem-recuo">Tabela 2 — Perfil sociodemográfico dos casos de sífilis adquirida em adultos jovens (18–29 anos), Duque de Caxias/RJ, 2017–2025</p>
+    <p class="tabela-titulo">Tabla 2 — Perfil sociodemográfico de los casos de sífilis adquirida en adultos jóvenes (18–29 años), Duque de Caxias/RJ, 2017–2025</p>
     <table class="academica">
-      <thead><tr><th>Variável</th><th>n</th><th>%</th></tr></thead>
+      <thead><tr><th>Variable</th><th>n</th><th>%</th></tr></thead>
       <tbody>
-        <tr><td class="lbl">Sexo</td><td></td><td></td></tr>
+        <tr style="background:#e8f5e9;font-weight:600"><td colspan="3" style="text-align:left;padding-left:14px">Sexo</td></tr>
         <tr><td>Masculino</td><td>848</td><td>57,4</td></tr>
-        <tr><td>Feminino</td><td>611</td><td>41,3</td></tr>
+        <tr><td>Femenino</td><td>611</td><td>41,3</td></tr>
         <tr><td>Ignorado</td><td>19</td><td>1,3</td></tr>
-        <tr><td class="lbl">Faixa Etária</td><td></td><td></td></tr>
-        <tr><td>18–19 anos</td><td>272</td><td>18,4</td></tr>
-        <tr><td>20–24 anos</td><td>683</td><td>46,2</td></tr>
-        <tr><td>25–29 anos</td><td>523</td><td>35,4</td></tr>
-        <tr><td class="lbl">Raça/Cor</td><td></td><td></td></tr>
+        <tr style="background:#e8f5e9;font-weight:600"><td colspan="3" style="text-align:left;padding-left:14px">Franja etaria</td></tr>
+        <tr><td>18–19 años</td><td>272</td><td>18,4</td></tr>
+        <tr><td>20–24 años</td><td>683</td><td>46,2</td></tr>
+        <tr><td>25–29 años</td><td>523</td><td>35,4</td></tr>
+        <tr style="background:#e8f5e9;font-weight:600"><td colspan="3" style="text-align:left;padding-left:14px">Raza/color</td></tr>
         <tr><td>Parda</td><td>659</td><td>44,6</td></tr>
-        <tr><td>Branca</td><td>327</td><td>22,1</td></tr>
+        <tr><td>Blanca</td><td>327</td><td>22,1</td></tr>
         <tr><td>Preta</td><td>322</td><td>21,8</td></tr>
-        <tr><td>Amarela</td><td>10</td><td>0,7</td></tr>
-        <tr><td>Ignorado/Em branco</td><td>160</td><td>10,8</td></tr>
-        <tr><td class="lbl">Escolaridade</td><td></td><td></td></tr>
+        <tr><td>Amarilla</td><td>10</td><td>0,7</td></tr>
+        <tr><td>Ignorado/En blanco</td><td>160</td><td>10,8</td></tr>
+        <tr style="background:#e8f5e9;font-weight:600"><td colspan="3" style="text-align:left;padding-left:14px">Escolaridad</td></tr>
         <tr><td>Fundamental incompleto</td><td>408</td><td>27,6</td></tr>
-        <tr><td>Médio incompleto/completo</td><td>787</td><td>53,2</td></tr>
+        <tr><td>Medio incompleto/completo</td><td>787</td><td>53,2</td></tr>
         <tr><td>Superior incompleto/completo</td><td>139</td><td>9,4</td></tr>
         <tr><td>Ignorado</td><td>144</td><td>9,8</td></tr>
       </tbody>
     </table>
-    <p class="tabela-fonte sem-recuo">Fonte: SINAN/DATASUS (2025); elaboração própria.</p>
+    <p class="tabela-fonte">Fuente: SINAN/DATASUS (2026); estimación propia.</p>
+  </div>
+
+  <h3 class="subsecao">Forma de diagnóstico</h3>
+
+  <p>El test rápido fue el método diagnóstico más frecuente, utilizado en el 58,3% de los casos, seguido por el VDRL (30,7%) y por el FTA-Abs o test treponémico confirmatorio (11,0%). El predominio del test rápido refleja la ampliación de esta estrategia en las Unidades Básicas de Salud (UBS) y en las Unidades de Salud de la Familia (USF) del municipio, en conformidad con las directrices del Departamento de Doenças de Condições Crônicas e Infecções Sexualmente Transmissíveis (DCCI/MS).</p>
+
+  <h3 class="subsecao">Adherencia al tratamiento</h3>
+
+  <p>El análisis de los datos de cierre de las fichas en el SINAN reveló una tasa de abandono estimada en el <strong>38,0%</strong> de los casos con seguimiento documentado, tasa superior al promedio nacional del 31,2% reportado por el Boletim Epidemiológico de Sífilis (BRASIL, 2024). El tratamiento completo se registró en el 34,2% de los casos, mientras que el 27,8% recibió tratamiento parcial (una o dos dosis de Penicilina G Benzatínica) sin confirmación de cura serológica (Tabla 3; Gráfico 6).</p>
+
+  <div class="tabela-bloco">
+    <p class="tabela-titulo">Tabla 3 — Desenlace terapéutico de los casos de sífilis adquirida en adultos jóvenes (18–29 años), Duque de Caxias/RJ, 2017–2023</p>
+    <table class="academica">
+      <thead><tr><th>Desenlace</th><th>n</th><th>%</th></tr></thead>
+      <tbody>
+        <tr><td>Tratamiento completo (cura confirmada)</td><td>382</td><td>34,2</td></tr>
+        <tr><td>Tratamiento parcial (sin confirmación de cura)</td><td>310</td><td>27,8</td></tr>
+        <tr><td>Abandono del tratamiento</td><td>424</td><td>38,0</td></tr>
+        <tr style="font-weight:700;background:#e8f5e9"><td>Total con desenlace documentado</td><td>1.116</td><td>100,0</td></tr>
+      </tbody>
+    </table>
+    <p class="tabela-fonte">Nota: 362 casos (24,5%) no presentaban desenlace documentado en el SINAN. Fuente: SINAN/DATASUS (2026); estimación propia.</p>
   </div>
 
   <div class="graficos-duplos">
-    <div>
-      <p class="grafico-titulo">Gráfico 6 — Distribuição por Raça/Cor</p>
-      <div class="grafico-wrap">
-        <canvas id="g6"></canvas>
-      </div>
+    <div class="grafico-box">
+      <p>Gráfico 6 — Adherencia vs abandono al tratamiento</p>
+      <canvas id="g6" height="200"></canvas>
+      <small>Fuente: SINAN/DATASUS, Duque de Caxias, 2017–2023.</small>
     </div>
-    <div>
-      <p class="grafico-titulo">Gráfico 7 — Distribuição por Escolaridade</p>
-      <div class="grafico-wrap">
-        <canvas id="g7"></canvas>
-      </div>
+    <div class="grafico-box">
+      <p>Gráfico 7 — Evolución anual: tratamiento completo vs abandono</p>
+      <canvas id="g7" height="200"></canvas>
+      <small>Fuente: SINAN/DATASUS, Duque de Caxias, 2017–2023.</small>
     </div>
   </div>
-  <p class="tabela-fonte sem-recuo" style="text-align:center; margin-top:-4mm; margin-bottom:6mm;">Fonte: SINAN/DATASUS (2025); elaboração própria.</p>
 
-  <h2 class="subtitulo">5.3 Forma de Diagnóstico</h2>
+  <p>El análisis de la adherencia al tratamiento por año reveló tendencia de empeoramiento progresivo del abandono a lo largo del período, con las tasas más bajas de tratamiento completo registradas en 2021 y 2022, posiblemente reflejo de la desorganización de los servicios de salud durante y después de la pandemia de COVID-19 (SILVA et al., 2022).</p>
 
-  <p>O teste rápido foi o método diagnóstico mais frequente, utilizado em 58,3% dos casos, seguido pelo VDRL (30,7%) e pelo FTA-ABS ou teste treponêmico confirmatório (11,0%). A predominância do teste rápido reflete a ampliação desta estratégia nas Unidades Básicas de Saúde (UBS) e nas Unidades de Saúde da Família (USF) do município, em conformidade com as diretrizes do Departamento de Doenças de Condições Crônicas e Infecções Sexualmente Transmissíveis (DCCI/MS).</p>
-
-  <h2 class="subtitulo">5.4 Adesão ao Tratamento</h2>
-
-  <p>A análise dos dados de encerramento das fichas no SINAN revelou taxa de abandono estimada em 38,0% dos casos com seguimento documentado, taxa superior à média nacional de 31,2% reportada pelo Boletim Epidemiológico de Sífilis (BRASIL, 2024). O tratamento completo foi registrado em 34,2% dos casos, enquanto 27,8% receberam tratamento parcial (uma ou duas doses de Penicilina G Benzatina) sem confirmação de cura sorológica (Tabela 3; Gráfico 4).</p>
-
-  <div class="tabela-bloco">
-    <p class="tabela-titulo sem-recuo">Tabela 3 — Desfecho terapêutico dos casos de sífilis adquirida em adultos jovens (18–29 anos), Duque de Caxias/RJ, 2017–2023</p>
-    <table class="academica">
-      <thead><tr><th>Desfecho</th><th>n</th><th>%</th></tr></thead>
-      <tbody>
-        <tr><td>Tratamento completo (cura confirmada)</td><td>382</td><td>34,2</td></tr>
-        <tr><td>Tratamento parcial (sem confirmação de cura)</td><td>310</td><td>27,8</td></tr>
-        <tr><td>Abandono do tratamento</td><td>424</td><td>38,0</td></tr>
-        <tr><td class="lbl">Total com desfecho documentado</td><td>1.116</td><td>100,0</td></tr>
-      </tbody>
-    </table>
-    <p class="tabela-fonte sem-recuo">Nota: 362 casos (24,5%) não possuíam desfecho documentado no SINAN. Fonte: SINAN/DATASUS (2025); elaboração própria.</p>
-  </div>
-
-  <div class="grafico-bloco">
-    <p class="grafico-titulo">Gráfico 4 — Adesão versus abandono do tratamento de sífilis adquirida em adultos jovens (18–29 anos), Duque de Caxias/RJ, 2017–2023</p>
-    <div class="grafico-wrap" style="height:220px; max-width:160mm">
-      <canvas id="g4"></canvas>
-    </div>
-    <p class="grafico-fonte">Fonte: SINAN/DATASUS (2025); elaboração própria.</p>
-  </div>
-
-  <p>A análise da adesão ao tratamento por ano revelou tendência de piora progressiva do abandono ao longo do período, com as menores taxas de tratamento completo registradas em 2021 e 2022, possivelmente reflexo da desorganização dos serviços de saúde durante e após a pandemia de COVID-19 (SILVA et al., 2022).</p>
-
-  <div class="grafico-bloco">
-    <p class="grafico-titulo">Gráfico 5 — Evolução das taxas de tratamento completo e abandono por ano, adultos jovens (18–29 anos), Duque de Caxias/RJ, 2017–2023</p>
-    <div class="grafico-wrap" style="height:220px; max-width:160mm">
-      <canvas id="g5"></canvas>
-    </div>
-    <p class="grafico-fonte">Fonte: SINAN/DATASUS (2025); elaboração própria.</p>
+  <div class="destaque alerta">
+    <p>⚠ La tasa de abandono al tratamiento en adultos jóvenes en Duque de Caxias se estima en <strong>38,0%</strong> — superior en 21,8% al promedio nacional del 31,2%. Este indicador apunta a fallas en los mecanismos de vinculación del paciente al servicio de salud y favorece la reinfección y la persistencia de la cadena de transmisión.</p>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════ 6. DISCUSSÃO -->
-<div class="secao">
-  <h1 class="titulo-secao">6. Discussão</h1>
+<!-- ==================== DISCUSIÓN ==================== -->
+<div class="secao-pagina">
+  <h2 class="secao">Discusión</h2>
 
-  <p>Os resultados deste estudo evidenciam que a sífilis adquirida em adultos jovens representa grave e crescente problema de saúde pública em Duque de Caxias (RJ), com 1.478 casos confirmados na faixa de 18 a 29 anos entre 2017 e 2025, equivalentes a 44,3% de todas as notificações municipais do período. Esses achados são consistentes com a literatura nacional, que aponta os adultos jovens como a população de maior risco para ISTs (MAGALHÃES et al., 2021; BRASIL, 2024).</p>
+  <p>Los resultados de este estudio evidencian que la sífilis adquirida en adultos jóvenes representa un grave y creciente problema de salud pública en Duque de Caxias (RJ), con aproximadamente 1.478 casos estimados en la franja de 18 a 29 años entre 2017 y 2025, equivalentes al 44% del total de las notificaciones municipales del período. Estos hallazgos son consistentes con la literatura nacional, que identifica a los adultos jóvenes como la población de mayor riesgo para ITS (MAGALHÃES et al., 2021; BRASIL, 2024).</p>
 
-  <p>O pico de casos observado em 2019 (243 casos) e a queda em 2020 (128 casos) replicam padrão verificado em âmbito nacional, onde a pandemia de COVID-19 impactou negativamente a busca por serviços de saúde e a capacidade de notificação das equipes de saúde (SILVA et al., 2022). A retomada progressiva entre 2021 e 2023 indica que a tendência de crescimento epidêmico da sífilis não foi revertida, apenas temporariamente suprimida pela pandemia.</p>
+  <p>El pico de casos observado en 2019 (243 casos) y la caída en 2020 (128 casos) replica el patrón verificado a nivel nacional, donde la pandemia de COVID-19 impactó negativamente la búsqueda por servicios de salud y la capacidad de notificación de los equipos sanitarios (SILVA et al., 2022). La reanudación progresiva entre 2021 y 2023 indica que la tendencia de crecimiento epidémico de la sífilis no fue revertida, sino apenas temporalmente suprimida por la pandemia.</p>
 
-  <p>A predominância do sexo masculino (57,4%) no presente estudo difere dos dados nacionais para a população geral, onde as mulheres representam proporção mais equilibrada, mas é consistente com padrões observados especificamente na faixa jovem adulta (LAZARINI; BARBOSA, 2017). Essa diferença pode refletir maior subnotificação entre mulheres jovens não gestantes, que têm menor frequência de rastreamento ativo para ISTs em comparação com gestantes, grupo com protocolos de triagem obrigatórios no pré-natal.</p>
+  <p>El predominio del sexo masculino (57,4%) en este estudio difiere de los datos nacionales para la población general, donde las mujeres representan una proporción más equilibrada, pero es consistente con patrones observados específicamente en la franja joven adulta (LAZARINI; BARBOSA, 2017). Esta diferencia puede reflejar mayor subnotificación entre mujeres jóvenes no gestantes, que tienen menor frecuencia de rastreo activo para ITS en comparación con gestantes — grupo con protocolos de cribado obligatorios en el prenatal.</p>
 
-  <p>A concentração de casos em indivíduos com baixa escolaridade (80,8% com até o ensino médio) corrobora a literatura que associa menor escolaridade a maior vulnerabilidade às ISTs, em razão de menor acesso à informação qualificada sobre saúde sexual e menor capacidade de negociação do uso de preservativos (PEREIRA et al., 2020). A predominância de pardos e pretos (66,4%) reflete as desigualdades estruturais em saúde que afetam desproporcionalmente a população negra no Brasil (GOES; NASCIMENTO, 2013).</p>
+  <p>La concentración de casos en individuos con baja escolaridad (80,8% con hasta enseñanza media) corrobora la literatura que asocia menor escolaridad a mayor vulnerabilidad a las ITS, debido a menor acceso a información cualificada sobre salud sexual y a menor capacidad de negociación del uso de preservativos (PEREIRA et al., 2020). El predominio de pardos y pretos (66,4%) refleja las desigualdades estructurales en salud que afectan desproporcionadamente a la población negra en Brasil (GOES; NASCIMENTO, 2013).</p>
 
-  <div class="destaque">
-    <p>A taxa de abandono ao tratamento identificada neste estudo (38,0%) é preocupante, pois supera em 21,8% a média nacional (31,2%) e indica falha nos mecanismos de vinculação do paciente ao serviço de saúde. O abandono contribui diretamente para a manutenção da cadeia de transmissão, a reinfecção de parceiros sexuais e o desenvolvimento das formas tardias e graves da doença (BRASIL, 2024; PEREIRA et al., 2020).</p>
+  <p>La comparación entre las tasas de incidencia de Duque de Caxias, del estado de Río de Janeiro y de Brasil refuerza la magnitud del problema local: el municipio presenta tasa de incidencia en adultos jóvenes (18–29 años) cerca de <strong>2,1 veces superior</strong> al promedio nacional para la misma franja etaria y <strong>1,4 veces superior</strong> al promedio estadual. Este patrón configura a Duque de Caxias como territorio prioritario para intervenciones específicas dirigidas al público joven (BRASIL, 2024).</p>
+
+  <div class="grafico-container">
+    <p class="grafico-titulo">Gráfico 8 — Comparativo de la incidencia de sífilis adquirida en adultos jóvenes (18–29 años): Brasil × RJ × Duque de Caxias, 2023</p>
+    <canvas id="g8" height="160"></canvas>
+    <p class="grafico-fonte">Fuente: Boletim Epidemiológico de Sífilis 2024 (BRASIL, 2024); SINAN/DATASUS (2026); elaboración propia.</p>
   </div>
 
-  <p>Os fatores associados ao abandono terapêutico identificados na literatura incluem: ausência de sintomas após a primeira dose de Penicilina G Benzatina, gerando falsa sensação de cura; estigma associado às ISTs; desconhecimento sobre a necessidade de doses subsequentes; dificuldades de acesso às UBS (horários, filas); falta de vínculo com a equipe de saúde; e não tratamento simultâneo do parceiro sexual, que favorece a reinfecção (KATO et al., 2018; SILVA et al., 2022). No contexto de Duque de Caxias, fatores socioeconômicos como jornada de trabalho extensa e dependência do transporte público para acesso aos serviços de saúde constituem barreiras adicionais documentadas.</p>
-
-  <p>A alta proporção de diagnósticos por teste rápido (58,3%) evidencia avanço na descentralização do diagnóstico, mas também aponta para necessidade de qualificação dos profissionais de saúde para garantia do seguimento pós-diagnóstico. Estudo realizado por Kato et al. (2018) demonstrou que a entrega do resultado do teste rápido sem aconselhamento adequado reduz em 42% a probabilidade de o paciente completar o tratamento.</p>
-
-  <p>Por fim, a análise dos dados de raça/cor indica necessidade de ações direcionadas à população negra, que enfrenta barreiras adicionais de acesso ao sistema de saúde. Políticas de saúde que considerem a interseccionalidade entre gênero, raça e classe social são fundamentais para o enfrentamento da epidemia de sífilis em municípios de perfil similar ao de Duque de Caxias (GOES; NASCIMENTO, 2013).</p>
-
-  <p>A comparação entre as taxas de incidência de Duque de Caxias, do estado do Rio de Janeiro e do Brasil reforça a magnitude do problema local: o município apresenta taxa de incidência em adultos jovens (18–29 anos) cerca de 2,1 vezes superior à média nacional para a mesma faixa etária e 1,4 vezes superior à média estadual. Esse padrão configura Duque de Caxias como território prioritário para intervenções específicas voltadas ao público jovem (BRASIL, 2024).</p>
-
-  <div class="grafico-bloco">
-    <p class="grafico-titulo">Gráfico 8 — Comparativo da incidência de sífilis adquirida em adultos jovens (18–29 anos): Brasil × RJ × Duque de Caxias, 2023</p>
-    <div class="grafico-wrap" style="height:220px; max-width:160mm">
-      <canvas id="g8"></canvas>
-    </div>
-    <p class="grafico-fonte">Fonte: Boletim Epidemiológico de Sífilis 2024 (BRASIL, 2024); SINAN/DATASUS (2025); elaboração própria.</p>
+  <div class="destaque alerta">
+    <p>⚠ La tasa de abandono al tratamiento identificada en este estudio (<strong>38,0%</strong>) es preocupante, pues supera en 21,8% el promedio nacional (31,2%) e indica fallas en los mecanismos de vinculación del paciente al servicio de salud. El abandono contribuye directamente al mantenimiento de la cadena de transmisión, a la reinfección de las parejas sexuales y al desarrollo de las formas tardías y graves de la enfermedad (BRASIL, 2024; PEREIRA et al., 2020).</p>
   </div>
+
+  <p>Los factores asociados al abandono terapéutico identificados en la literatura incluyen: ausencia de síntomas tras la primera dosis de Penicilina G Benzatínica, generando falsa sensación de cura; estigma asociado a las ITS; desconocimiento sobre la necesidad de dosis subsiguientes; dificultades de acceso a las UBS (horarios, colas); falta de vínculo con el equipo de salud; y no tratamiento simultáneo del compañero sexual, que favorece la reinfección (KATO et al., 2018; SILVA et al., 2022). En el contexto de Duque de Caxias, factores socioeconómicos como jornadas extensas de trabajo y dependencia del transporte público para acceso a los servicios de salud constituyen barreras adicionales documentadas.</p>
+
+  <p>La elevada proporción de diagnósticos por test rápido (58,3%) evidencia un avance en la descentralización del diagnóstico, pero también señala la necesidad de capacitación de los profesionales de salud para garantía del seguimiento postdiagnóstico. El estudio realizado por Kato et al. (2018) demostró que la entrega del resultado del test rápido sin orientación adecuada reduce en un 42% la probabilidad de que el paciente complete el tratamiento.</p>
+
+  <p>Por último, el análisis de los datos de raza/color indica la necesidad de acciones dirigidas a la población negra, que enfrenta barreras adicionales de acceso al sistema de salud. Políticas de salud que consideren la interseccionalidad entre género, raza y clase social son fundamentales para el enfrentamiento de la epidemia de sífilis en municipios de perfil similar al de Duque de Caxias (GOES; NASCIMENTO, 2013).</p>
 </div>
 
-<!-- ═══════════════════════════════ 7. ESTRATÉGIAS DE EDUCAÇÃO EM SAÚDE -->
-<div class="secao">
-  <h1 class="titulo-secao">7. Estratégias de Educação em Saúde</h1>
+<!-- ==================== ESTRATEGIAS DE EDUCACIÓN ==================== -->
+<div class="secao-pagina">
+  <h2 class="secao">Estrategias de Educación en Salud</h2>
 
-  <p>Com base nos achados epidemiológicos e nos fatores associados ao abandono terapêutico identificados, propõem-se as seguintes estratégias de educação em saúde, organizadas por nível de intervenção:</p>
+  <p>Con base en los hallazgos epidemiológicos y en los factores asociados al abandono terapéutico identificados, se proponen las siguientes estrategias de educación en salud, organizadas por nivel de intervención:</p>
 
-  <h2 class="subtitulo">7.1 Ações nas Unidades Básicas de Saúde (UBS)</h2>
-  <p>Implementação de grupos de acolhimento específicos para jovens com ISTs, com foco em desmistificação do diagnóstico e orientação sobre a importância do tratamento completo. Capacitação das equipes de saúde em abordagem humanizada e livre de julgamento, com ênfase no acolhimento de populações vulneráveis (LGBTQIA+, jovens de baixa renda, usuários de álcool e outras drogas). Criação de sistema de busca ativa para pacientes que não retornam para as doses subsequentes de Penicilina G Benzatina, por meio de contato telefônico ou visita domiciliar pelas equipes de Agentes Comunitários de Saúde (ACS).</p>
+  <h3 class="subsecao">Acciones en las Unidades Básicas de Salud (UBS)</h3>
+  <p>Implementación de grupos de acogida específicos para jóvenes con ITS, con enfoque en desmitificación del diagnóstico y orientación sobre la importancia del tratamiento completo. Capacitación de los equipos de salud en abordaje humanizado y libre de juicio, con énfasis en la acogida de poblaciones vulnerables (LGBTQIA+, jóvenes de baja renta, usuarios de alcohol y otras drogas). Creación de un sistema de búsqueda activa para pacientes que no retornan a las dosis subsiguientes de Penicilina G Benzatínica, mediante contacto telefónico o visita domiciliaria por los equipos de Agentes Comunitarios de Salud (ACS).</p>
 
-  <h2 class="subtitulo">7.2 Uso de Redes Sociais e Comunicação Digital</h2>
-  <p>Desenvolvimento de campanha digital direcionada a jovens de 18 a 29 anos, utilizando linguagem acessível, inclusiva e sem estigmatização, nas plataformas Instagram, TikTok e WhatsApp — meios prioritários de comunicação desta faixa etária. Os conteúdos devem abordar: sintomas da sífilis, importância do diagnóstico precoce, regime de tratamento e a necessidade de comunicar e tratar o parceiro sexual simultaneamente. A produção de conteúdo pode ser desenvolvida em parceria com influenciadores digitais locais e jovens da própria comunidade (comunicação entre pares), estratégia com alta efetividade documentada na literatura (WHO, 2023).</p>
+  <h3 class="subsecao">Uso de redes sociales y comunicación digital</h3>
+  <p>Desarrollo de campaña digital orientada a jóvenes de 18 a 29 años, utilizando lenguaje accesible, inclusivo y libre de estigmatización, en las plataformas Instagram, TikTok y WhatsApp — medios prioritarios de comunicación de esta franja etaria. Los contenidos deben abordar: síntomas de la sífilis, importancia del diagnóstico precoz, régimen de tratamiento y la necesidad de comunicar y tratar al compañero sexual simultáneamente. La producción de contenido puede desarrollarse en alianza con influenciadores digitales locales y jóvenes de la propia comunidad (comunicación entre pares), estrategia con alta efectividad documentada en la literatura (WHO, 2023).</p>
 
-  <h2 class="subtitulo">7.3 Educação em Escolas e Espaços Comunitários</h2>
-  <p>Inclusão de ISTs, incluindo a sífilis, nos programas de educação sexual nas escolas públicas do município, com ênfase nas turmas do ensino médio. As ações devem contemplar: distribuição gratuita de preservativos, orientação sobre testagem e locais de atendimento, e discussão sobre relacionamentos saudáveis e consentimento. Realização de feiras de saúde itinerantes nos bairros de maior densidade populacional e menor cobertura de UBS, com oferta de teste rápido gratuito, aconselhamento e início imediato do tratamento.</p>
+  <h3 class="subsecao">Educación en escuelas y espacios comunitarios</h3>
+  <p>Inclusión de las ITS, incluida la sífilis, en los programas de educación sexual de las escuelas públicas del municipio, con énfasis en los grupos de enseñanza media. Las acciones deben contemplar: distribución gratuita de preservativos, orientación sobre testeo y lugares de atención y discusión sobre relaciones saludables y consentimiento. Realización de ferias de salud itinerantes en los barrios de mayor densidad poblacional y menor cobertura de UBS, con oferta de test rápido gratuito, orientación e inicio inmediato del tratamiento.</p>
 
-  <h2 class="subtitulo">7.4 Tratamento do Parceiro Sexual</h2>
-  <p>Implementação de protocolo de notificação expedita do parceiro sexual (<em>expedited partner therapy</em> — EPT), no qual o próprio paciente recebe medicação ou prescrição para o parceiro, sem necessidade de consulta prévia. Essa estratégia, já adotada em outros países e recomendada pela OMS (2023), reduz significativamente as taxas de reinfecção e contribui para a quebra da cadeia de transmissão.</p>
+  <h3 class="subsecao">Tratamiento del compañero sexual</h3>
+  <p>Implementación de protocolo de notificación expedita del compañero sexual (<em>expedited partner therapy</em> — EPT), en el cual el propio paciente recibe medicación o prescripción para el compañero, sin necesidad de consulta previa. Esta estrategia, ya adoptada en otros países y recomendada por la OMS (2023), reduce significativamente las tasas de reinfección y contribuye a la ruptura de la cadena de transmisión.</p>
 
-  <h2 class="subtitulo">7.5 Monitoramento e Avaliação</h2>
-  <p>Criação de indicadores de monitoramento trimestral das ações implementadas, incluindo: número de testes rápidos realizados, taxa de tratamento completo, percentual de parceiros notificados e tratados, e cobertura das ações educativas. O painel epidemiológico interativo disponibilizado em https://sifilis-duquecaxias.vercel.app pode ser utilizado como ferramenta de gestão em tempo real pelas equipes de saúde do município.</p>
+  <h3 class="subsecao">Monitoreo y evaluación</h3>
+  <p>Creación de indicadores de monitoreo trimestral de las acciones implementadas, incluyendo: número de tests rápidos realizados, tasa de tratamiento completo, porcentaje de compañeros notificados y tratados, y cobertura de las acciones educativas. El panel epidemiológico interactivo disponible en https://sifilis-duquecaxias.vercel.app puede ser utilizado como herramienta de gestión en tiempo real por los equipos de salud del municipio.</p>
 </div>
 
-<!-- ══════════════════════════════════════════════ 8. CONCLUSÃO -->
-<div class="secao">
-  <h1 class="titulo-secao">8. Conclusão</h1>
+<!-- ==================== CONCLUSIONES ==================== -->
+<div class="secao-pagina">
+  <h2 class="secao">Conclusiones y Recomendaciones</h2>
 
-  <p>O presente estudo demonstrou que a sífilis adquirida em adultos jovens de 18 a 29 anos constitui problema epidemiológico de grande magnitude em Duque de Caxias (RJ), com 1.478 casos confirmados entre 2017 e 2025 e tendência de crescimento sustentado ao longo do período, interrompida apenas temporariamente pela pandemia de COVID-19.</p>
+  <p>El presente estudio analizó la incidencia de sífilis adquirida en adultos jóvenes (18 a 29 años) en el municipio de Duque de Caxias a partir de los datos del SINAN/DATASUS para el período 2017–2025, identificando tendencias temporales, perfil sociodemográfico y patrones de adherencia al tratamiento.</p>
 
-  <p>O perfil epidemiológico identificado — predomínio do sexo masculino, faixa etária de 20 a 24 anos, baixa escolaridade, raça/cor parda — aponta para concentração da doença em populações socialmente vulneráveis, reforçando a necessidade de abordagens que considerem os determinantes sociais da saúde. A taxa de abandono ao tratamento de 38,0%, superior à média nacional, indica falhas nos mecanismos de vinculação dos pacientes ao serviço de saúde e na educação sobre a importância do tratamento completo.</p>
+  <p>Los principales hallazgos fueron: aproximadamente 1.478 casos estimados de sífilis adquirida en la franja 18–29 años en el período, equivalentes al 44% del total municipal; predominio del sexo masculino (57,4%); concentración de casos en la subfranja 20–24 años (46,2%); baja escolaridad (80,8% con hasta enseñanza media); predominio de pardos y pretos (66,4%); tasa estimada de abandono al tratamiento del 38,0%, superior al promedio nacional del 31,2%; e impacto negativo y transitorio de la pandemia de COVID-19 sobre la captación de casos.</p>
 
-  <p>As estratégias de educação em saúde propostas — centradas na humanização do atendimento, na comunicação digital direcionada ao público jovem, na educação sexual nas escolas e no tratamento simultâneo do parceiro — têm potencial para reduzir de forma significativa as taxas de abandono e, consequentemente, a transmissão da doença. Evidências científicas demonstram que intervenções integradas, que combinam acesso ao diagnóstico, tratamento precoce e educação em saúde contextualizada, são capazes de reduzir em até 40% a incidência de sífilis em populações jovens (WHO, 2023; KATO et al., 2018).</p>
+  <p>Con base en los resultados, se recomiendan las siguientes estrategias de intervención:</p>
 
-  <p>Recomenda-se a continuidade do monitoramento epidemiológico por meio dos sistemas SINAN e DATASUS, com atualização periódica dos dados municipais, e a avaliação sistemática do impacto das intervenções implementadas. O fortalecimento da vigilância epidemiológica local e o investimento em capacitação das equipes de Atenção Primária à Saúde são condições essenciais para o enfrentamento efetivo da epidemia de sífilis em Duque de Caxias.</p>
+  <ol>
+    <li><strong>Implementar búsqueda activa de pacientes faltistas</strong> a las dosis subsiguientes de Penicilina G Benzatínica, mediante contacto telefónico o visita domiciliaria por los Agentes Comunitarios de Salud, como estrategia central para reducir el abandono terapéutico.</li>
+    <li><strong>Desarrollar campañas digitales orientadas al público joven</strong> en plataformas Instagram, TikTok y WhatsApp, con lenguaje accesible y libre de estigma, abordando síntomas, importancia del diagnóstico precoz y necesidad de tratar al compañero sexual simultáneamente.</li>
+    <li><strong>Ampliar la educación sexual en las escuelas públicas</strong> del municipio, especialmente en la enseñanza media, con distribución de preservativos y orientación sobre testeo y locales de atención.</li>
+    <li><strong>Implementar protocolo de notificación expedita del compañero sexual (EPT)</strong>, recomendado por la OMS, con oferta de tratamiento al compañero por intermedio del paciente índice, para romper la cadena de transmisión y prevenir la reinfección.</li>
+    <li><strong>Capacitar a los equipos de salud en abordaje humanizado</strong>, con énfasis en la acogida de poblaciones vulnerables (LGBTQIA+, jóvenes de baja renta, usuarios de alcohol y otras drogas), reduciendo el estigma como barrera al acceso.</li>
+    <li><strong>Articular políticas que consideren la interseccionalidad</strong> entre género, raza y clase social, dirigidas a la población negra y de baja renta, que enfrenta barreras estructurales de acceso al sistema de salud.</li>
+    <li><strong>Crear indicadores de monitoreo trimestral</strong> de las acciones implementadas, utilizando el panel epidemiológico interactivo disponible en https://sifilis-duquecaxias.vercel.app como herramienta de gestión en tiempo real.</li>
+  </ol>
+
+  <p>Se concluye que el enfrentamiento eficaz de la sífilis adquirida en adultos jóvenes en Duque de Caxias requiere una respuesta integrada entre vigilancia epidemiológica, atención primaria, educación en salud y comunicación digital orientada al público joven, con reconocimiento de que el alto abandono terapéutico y la concentración de casos en poblaciones socialmente vulnerables son, ante todo, expresiones de las desigualdades estructurales del territorio.</p>
 </div>
 
-<!-- ══════════════════════════════════════════════ REFERÊNCIAS -->
-<div class="secao">
-  <h1 class="titulo-secao">Referências</h1>
+<!-- ==================== REFERÊNCIAS ==================== -->
+<div class="secao-pagina">
+  <h2 class="secao">Referencias</h2>
 
-  <div class="ref-item">BRASIL. Ministério da Saúde. Secretaria de Vigilância em Saúde e Ambiente. <strong>Boletim Epidemiológico de Sífilis 2024</strong>. Brasília: MS/SVSA, 2024. Disponível em: https://www.gov.br/saude/pt-br/centrais-de-conteudo/publicacoes/boletins/epidemiologicos/especiais/2024. Acesso em: 05 maio 2025.</div>
+  <p class="referencia">BRASIL. Ministério da Saúde. Secretaria de Vigilância em Saúde e Ambiente. <strong>Boletim Epidemiológico de Sífilis 2024</strong>. Brasília: Ministério da Saúde, out. 2024. Disponible en: https://www.gov.br/aids/pt-br/central-de-conteudo/boletins-epidemiologicos/2024/boletim_sifilis_2024_e.pdf. Acceso: abril/2026.</p>
 
-  <div class="ref-item">BRASIL. Ministério da Saúde. Departamento de Informática do SUS (DATASUS). <strong>Sistema de Informação de Agravos de Notificação — SINAN: Sífilis Adquirida — RJ</strong>. Brasília: MS, 2025. Disponível em: http://tabnet.datasus.gov.br/cgi/tabcgi.exe?sinannet/cnv/SifilisAdquiridaRJ.def. Acesso em: 05 maio 2025.</div>
+  <p class="referencia">BRASIL. Ministério da Saúde. Departamento de Informática do SUS (DATASUS). <strong>Sistema de Informação de Agravos de Notificação — SINAN: Sífilis Adquirida — Estado do Rio de Janeiro</strong>. Brasília: DATASUS/Tabnet, 2026. Disponible en: http://tabnet.datasus.gov.br/cgi/tabcgi.exe?sinannet/cnv/SifilisAdquiridaRJ.def. Acceso: abril/2026.</p>
 
-  <div class="ref-item">BRASIL. Ministério da Saúde. <strong>Painel de Indicadores — Sífilis em números</strong>. Brasília: MS/DATHI, 2024. Disponível em: https://indicadoressifilis.aids.gov.br. Acesso em: 05 maio 2025.</div>
+  <p class="referencia">BRASIL. Ministério da Saúde. Departamento de HIV, Aids, Tuberculose, Hepatites Virais e Infecções Sexualmente Transmissíveis (DATHI). <strong>Painel de Indicadores Sífilis</strong>. Brasília: DATHI/MS, 2026. Disponible en: https://indicadoressifilis.aids.gov.br. Acceso: abril/2026.</p>
 
-  <div class="ref-item">BRASIL. Ministério da Saúde. <strong>Protocolo Clínico e Diretrizes Terapêuticas para Atenção Integral às Pessoas com Infecções Sexualmente Transmissíveis (IST)</strong>. Brasília: MS, 2022.</div>
+  <p class="referencia">BRASIL. Ministério da Saúde. <strong>Protocolo Clínico e Diretrizes Terapêuticas para Atenção Integral às Pessoas com Infecções Sexualmente Transmissíveis (IST)</strong>. Brasília: Ministério da Saúde, 2022.</p>
 
-  <div class="ref-item">GOES, E. F.; NASCIMENTO, E. R. <strong>Mulheres negras e brancas e os níveis de acesso aos serviços preventivos de saúde: uma análise sobre as desigualdades</strong>. Saúde em Debate, Rio de Janeiro, v. 37, n. 99, p. 571–579, out./dez. 2013.</div>
+  <p class="referencia">DOMINGUES, R. M. S. M. et al. Prevalência de sífilis na gestação e testagem pré-natal: Estudo Nascer no Brasil. <strong>Revista de Saúde Pública</strong>, São Paulo, v. 48, n. 5, p. 766–774, 2014.</p>
 
-  <div class="ref-item">IBGE. Instituto Brasileiro de Geografia e Estatística. <strong>Censo Demográfico 2022 — Duque de Caxias</strong>. Rio de Janeiro: IBGE, 2022. Disponível em: https://www.ibge.gov.br/cidades-e-estados/rj/duque-de-caxias.html. Acesso em: 05 maio 2025.</div>
+  <p class="referencia">GOES, E. F.; NASCIMENTO, E. R. Mulheres negras e brancas e os níveis de acesso aos serviços preventivos de saúde: uma análise sobre as desigualdades. <strong>Saúde em Debate</strong>, Rio de Janeiro, v. 37, n. 99, p. 571–579, out./dez. 2013.</p>
 
-  <div class="ref-item">KATO, S. K. et al. <strong>Factors associated with syphilis treatment non-adherence among young adults in metropolitan areas of Brazil</strong>. Cadernos de Saúde Pública, Rio de Janeiro, v. 34, n. 8, e00211317, 2018.</div>
+  <p class="referencia">IBGE – Instituto Brasileiro de Geografia e Estatística. <strong>Censo Demográfico 2022 — Duque de Caxias</strong>. Rio de Janeiro: IBGE, 2022. Disponible en: https://www.ibge.gov.br/cidades-e-estados/rj/duque-de-caxias.html</p>
 
-  <div class="ref-item">LAZARINI, F. M.; BARBOSA, D. A. <strong>Educational intervention in primary care for the prevention of congenital syphilis</strong>. Revista Latino-Americana de Enfermagem, Ribeirão Preto, v. 25, e2845, 2017.</div>
+  <p class="referencia">KATO, S. K. et al. Factors associated with syphilis treatment non-adherence among young adults in metropolitan areas of Brazil. <strong>Cadernos de Saúde Pública</strong>, Rio de Janeiro, v. 34, n. 8, e00211317, 2018.</p>
 
-  <div class="ref-item">MAGALHÃES, M. A. F. M. et al. <strong>Análise espacial da incidência de sífilis adquirida por jovens no Brasil, 2010–2017</strong>. Cadernos de Saúde Pública, Rio de Janeiro, v. 37, n. 2, e00048520, 2021.</div>
+  <p class="referencia">LAZARINI, F. M.; BARBOSA, D. A. Educational intervention in primary care for the prevention of congenital syphilis. <strong>Revista Latino-Americana de Enfermagem</strong>, Ribeirão Preto, v. 25, e2845, 2017.</p>
 
-  <div class="ref-item">PEREIRA, G. F. M. et al. <strong>Epidemiology of syphilis in Brazil: an ongoing challenge</strong>. Revista Brasileira de Epidemiologia, São Paulo, v. 23, supl. 1, e200044, 2020.</div>
+  <p class="referencia">MAGALHÃES, M. A. F. M. et al. Análise espacial da incidência de sífilis adquirida por jovens no Brasil, 2010–2017. <strong>Cadernos de Saúde Pública</strong>, Rio de Janeiro, v. 37, n. 2, e00048520, 2021.</p>
 
-  <div class="ref-item">ROUQUAYROL, M. Z.; SILVA, M. G. C. <strong>Epidemiologia e Saúde</strong>. 8. ed. Rio de Janeiro: MedBook, 2018.</div>
+  <p class="referencia">PEREIRA, G. F. M. et al. Epidemiology of syphilis in Brazil: an ongoing challenge. <strong>Revista Brasileira de Epidemiologia</strong>, São Paulo, v. 23, supl. 1, e200044, 2020.</p>
 
-  <div class="ref-item">SILVA, T. M. et al. <strong>Impacto da pandemia de COVID-19 nas notificações de sífilis adquirida no Brasil</strong>. Revista Brasileira de Epidemiologia, São Paulo, v. 25, e220012, 2022.</div>
+  <p class="referencia">SILVA, T. M. et al. Impacto da pandemia de COVID-19 nas notificações de sífilis adquirida no Brasil. <strong>Revista Brasileira de Epidemiologia</strong>, São Paulo, v. 25, e220012, 2022.</p>
 
-  <div class="ref-item">WHO. World Health Organization. <strong>Global progress report on HIV, viral hepatitis and sexually transmitted infections, 2021</strong>. Geneva: WHO, 2021.</div>
+  <p class="referencia">ORGANIZACIÓN PANAMERICANA DE LA SALUD (OPS). <strong>Guía para el tratamiento de las infecciones de transmisión sexual</strong>. Washington, D.C.: OPS, 2022.</p>
 
-  <div class="ref-item">WHO. World Health Organization. <strong>WHO guidelines for the treatment of Treponema pallidum (syphilis)</strong>. 2nd ed. Geneva: WHO, 2023.</div>
+  <p class="referencia">WHO – World Health Organization. <strong>WHO guidelines for the treatment of Treponema pallidum (syphilis)</strong>. 2nd ed. Geneva: WHO, 2023.</p>
 
-  <div class="ref-item">PAINEL INTERATIVO SÍFILIS RJ. <strong>Incidência de sífilis — Estado do Rio de Janeiro: SINAN/DATASUS</strong>. 2025. Disponível em: https://sifilis-duquecaxias.vercel.app. Acesso em: 05 maio 2025.</div>
+  <p class="referencia">FERNANDES, W. S. <strong>Painel Epidemiológico da Sífilis — Estado do Rio de Janeiro (2017–2025)</strong>: base de datos interactiva elaborada a partir del SINAN/DATASUS, con série histórica y perfil sociodemográfico para los 92 municípios fluminenses. 2026. Disponible en: https://sifilis-duquecaxias.vercel.app. Acceso: abril/2026.</p>
 </div>
 
 </div><!-- fim .documento -->
 
 <script>
-// ── Paleta acadêmica ──────────────────────────────────────
-const AZ = '#1a56a0';  // azul principal
-const CZ = '#9ca3af';  // cinza comparação
-const VM = '#dc2626';  // vermelho abandono
-const VD = '#166534';  // verde cura
-
-const fontDefault = { family: 'Times New Roman', size: 11 };
-const gridColor   = '#e5e7eb';
-const tickColor   = '#374151';
-
-function axCfg(){ return { grid:{color:gridColor}, ticks:{color:tickColor, font:fontDefault} }; }
-function legendCfg(){ return { labels:{color:tickColor, font:fontDefault, boxWidth:14} }; }
-
-// ── G1: Incidência por ano ────────────────────────────────
-new Chart(document.getElementById('g1'),{
-  type:'bar',
-  data:{
-    labels:['2017','2018','2019','2020','2021','2022','2023','2024†','2025†'],
-    datasets:[{
-      label:'Casos (18–29 anos)',
-      data:[158,228,243,128,188,197,202,89,45],
-      backgroundColor:[AZ,AZ,AZ,AZ,AZ,AZ,AZ,CZ,CZ],
-      borderColor:[AZ,AZ,AZ,AZ,AZ,AZ,AZ,CZ,CZ],
-      borderWidth:1, borderRadius:3
-    }]
-  },
-  options:{
-    responsive:true, maintainAspectRatio:false,
-    plugins:{ legend:{display:false},
-      tooltip:{ callbacks:{ label: ctx => ' '+ctx.parsed.y+' casos' } }
-    },
-    scales:{
-      x:{ ...axCfg(), title:{display:true,text:'Ano',color:tickColor,font:fontDefault} },
-      y:{ ...axCfg(), beginAtZero:true, title:{display:true,text:'Número de casos',color:tickColor,font:fontDefault} }
-    }
-  }
-});
-
-// ── G2: Sexo (donut) ──────────────────────────────────────
-new Chart(document.getElementById('g2'),{
-  type:'doughnut',
-  data:{
-    labels:['Masculino','Feminino','Ignorado'],
-    datasets:[{ data:[848,611,19], backgroundColor:[AZ,VM,CZ], borderWidth:2, borderColor:'#fff' }]
-  },
-  options:{
-    responsive:true, maintainAspectRatio:false,
-    plugins:{ legend:{ position:'bottom', labels:{...legendCfg().labels, boxWidth:12} } }
-  }
-});
-
-// ── G3: Faixa etária interna ─────────────────────────────
-new Chart(document.getElementById('g3'),{
-  type:'doughnut',
-  data:{
-    labels:['18–19 anos','20–24 anos','25–29 anos'],
-    datasets:[{ data:[272,683,523], backgroundColor:['#93c5fd',AZ,'#1e3a5f'], borderWidth:2, borderColor:'#fff' }]
-  },
-  options:{
-    responsive:true, maintainAspectRatio:false,
-    plugins:{ legend:{ position:'bottom', labels:{...legendCfg().labels, boxWidth:12} } }
-  }
-});
-
-// ── G4: Adesão vs abandono (barras horizontais) ───────────
-new Chart(document.getElementById('g4'),{
-  type:'bar',
-  data:{
-    labels:['Tratamento\ncompleto','Tratamento\nparcial','Abandono'],
-    datasets:[{
-      data:[34.2,27.8,38.0],
-      backgroundColor:[VD,CZ,VM],
-      borderWidth:1, borderRadius:4
-    }]
-  },
-  options:{
-    indexAxis:'y',
-    responsive:true, maintainAspectRatio:false,
-    plugins:{
-      legend:{display:false},
-      tooltip:{ callbacks:{ label: ctx => ' '+ctx.parsed.x.toFixed(1)+'%' } }
-    },
-    scales:{
-      x:{ ...axCfg(), max:50, title:{display:true,text:'Percentual (%)',color:tickColor,font:fontDefault} },
-      y:{ ...axCfg() }
-    }
-  }
-});
-
-// ── G5: Evolução tratamento completo vs abandono por ano ──
-new Chart(document.getElementById('g5'),{
-  type:'line',
-  data:{
-    labels:['2017','2018','2019','2020','2021','2022','2023'],
-    datasets:[
-      {
-        label:'Tratamento completo (%)',
-        data:[38.2,36.5,35.1,34.8,31.4,30.2,32.6],
-        borderColor:VD, backgroundColor:VD+'22', fill:true, tension:.3, pointRadius:5,
-        borderWidth:2
-      },
-      {
-        label:'Abandono (%)',
-        data:[34.1,35.8,36.9,38.2,41.2,42.5,40.3],
-        borderColor:VM, backgroundColor:VM+'22', fill:true, tension:.3, pointRadius:5,
-        borderWidth:2
+  const c = (id, type, labels, data, colors, opts={}) => {
+    new Chart(document.getElementById(id), {
+      type,
+      data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 0, borderRadius: type==='bar'?4:0 }] },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { labels: { color: '#333', font: { size: 10 }, boxWidth: 14 } },
+          ...opts.plugins
+        },
+        scales: type === 'bar' ? {
+          x: { ticks: { color: '#333', font:{size:10} }, grid: { color: '#eee' } },
+          y: { ticks: { color: '#333', font:{size:10} }, grid: { color: '#eee' }, beginAtZero: true }
+        } : undefined
       }
-    ]
-  },
-  options:{
-    responsive:true, maintainAspectRatio:false,
-    plugins:{ legend:legendCfg() },
-    scales:{
-      x:{ ...axCfg() },
-      y:{ ...axCfg(), min:25, max:50, title:{display:true,text:'Percentual (%)',color:tickColor,font:fontDefault} }
-    }
-  }
-});
+    });
+  };
 
-// ── G6: Raça/Cor (donut) ──────────────────────────────────
-new Chart(document.getElementById('g6'),{
-  type:'doughnut',
-  data:{
-    labels:['Parda','Branca','Preta','Amarela','Ignorado'],
-    datasets:[{
-      data:[659,327,322,10,160],
-      backgroundColor:['#92400e','#fbbf24',AZ,'#f59e0b',CZ],
-      borderWidth:2, borderColor:'#fff'
-    }]
-  },
-  options:{
-    responsive:true, maintainAspectRatio:false,
-    plugins:{ legend:{ position:'bottom', labels:{...legendCfg().labels, boxWidth:12} } }
-  }
-});
-
-// ── G7: Escolaridade (barras horizontais) ─────────────────
-new Chart(document.getElementById('g7'),{
-  type:'bar',
-  data:{
-    labels:['Médio incompleto/completo','Fundamental incompleto','Ignorado','Superior incompleto/completo'],
-    datasets:[{
-      data:[787,408,144,139],
-      backgroundColor:[AZ,'#1e3a5f','#9ca3af','#93c5fd'],
-      borderWidth:1, borderRadius:4
-    }]
-  },
-  options:{
-    indexAxis:'y',
-    responsive:true, maintainAspectRatio:false,
-    plugins:{
-      legend:{display:false},
-      tooltip:{ callbacks:{ label: ctx => ' '+ctx.parsed.x+' casos' } }
+  // G1 — Incidencia 18-29 por año
+  new Chart(document.getElementById('g1'), {
+    type: 'bar',
+    data: {
+      labels: ['2017','2018','2019','2020','2021','2022','2023','2024†','2025†'],
+      datasets: [{
+        label: 'Casos (18-29 años)',
+        data: [158,228,243,128,188,197,202,89,45],
+        backgroundColor: ['#1565c0aa','#1565c0aa','#1565c0aa','#1565c0aa','#1565c0aa','#1565c0aa','#1565c0aa','#9e9e9eaa','#9e9e9eaa'],
+        borderColor: '#1565c0',
+        borderWidth: 1.5
+      }]
     },
-    scales:{
-      x:{ ...axCfg(), beginAtZero:true, title:{display:true,text:'Número de casos',color:tickColor,font:fontDefault} },
-      y:{ ...axCfg(), ticks:{...axCfg().ticks, font:{...fontDefault, size:9}} }
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display:false },
+        tooltip:{ callbacks:{ label: ctx => ' '+ctx.parsed.y+' casos' } }
+      },
+      scales: {
+        x: { ticks: { color: '#333', font:{size:10} }, grid: { color: '#eee' } },
+        y: { ticks: { color: '#333', font:{size:10} }, grid: { color: '#eee' }, beginAtZero: true }
+      }
     }
-  }
-});
+  });
 
-// ── G8: Comparativo Brasil × RJ × DC (taxa/100 mil) ───────
-new Chart(document.getElementById('g8'),{
-  type:'bar',
-  data:{
-    labels:['Brasil','RJ','Duque de Caxias'],
-    datasets:[{
-      label:'Taxa de incidência em 18–29 anos (por 100.000 hab.)',
-      data:[42.8,65.2,91.3],
-      backgroundColor:[CZ,'#3b82f6',AZ],
-      borderWidth:1, borderRadius:4
-    }]
-  },
-  options:{
-    responsive:true, maintainAspectRatio:false,
-    plugins:{
-      legend:{display:false},
-      tooltip:{ callbacks:{ label: ctx => ' '+ctx.parsed.y.toFixed(1)+' / 100.000 hab.' } }
+  // G2 — Sexo
+  c('g2','doughnut',
+    ['Masculino (848 — 57,4%)','Femenino (611 — 41,3%)','Ignorado (19)'],
+    [848,611,19],['#0277bd','#6a1b9a','#bdbdbd']);
+
+  // G3 — Franja etaria interna
+  c('g3','doughnut',
+    ['18-19 años (272 — 18,4%)','20-24 años (683 — 46,2%)','25-29 años (523 — 35,4%)'],
+    [272,683,523],['#90caf9','#1565c0','#0d3c6e']);
+
+  // G4 — Raza/color
+  c('g4','doughnut',
+    ['Parda (659 — 44,6%)','Blanca (327 — 22,1%)','Preta (322 — 21,8%)','Amarilla (10)','Ignorado (160)'],
+    [659,327,322,10,160],
+    ['#fb8c00','#fdd835','#424242','#a5d6a7','#9e9e9e']);
+
+  // G5 — Escolaridad
+  c('g5','bar',
+    ['Medio inc/com (787)','Fundamental inc (408)','Ignorado (144)','Superior inc/com (139)'],
+    [787,408,144,139],
+    ['#1565c0','#0277bd','#9e9e9e','#90caf9']);
+
+  // G6 — Adherencia vs abandono (donut)
+  c('g6','doughnut',
+    ['Tratamiento completo (382 — 34,2%)','Tratamiento parcial (310 — 27,8%)','Abandono (424 — 38,0%)'],
+    [382,310,424],
+    ['#2e7d32','#9e9e9e','#c62828']);
+
+  // G7 — Evolução tratamento completo vs abandono
+  new Chart(document.getElementById('g7'), {
+    type:'line',
+    data: {
+      labels:['2017','2018','2019','2020','2021','2022','2023'],
+      datasets:[
+        {
+          label:'Tratamiento completo (%)',
+          data:[38.2,36.5,35.1,34.8,31.4,30.2,32.6],
+          borderColor:'#2e7d32',
+          backgroundColor:'#2e7d3222',
+          fill:true, tension:.3, pointRadius:4, borderWidth:2
+        },
+        {
+          label:'Abandono (%)',
+          data:[34.1,35.8,36.9,38.2,41.2,42.5,40.3],
+          borderColor:'#c62828',
+          backgroundColor:'#c6282822',
+          fill:true, tension:.3, pointRadius:4, borderWidth:2
+        }
+      ]
     },
-    scales:{
-      x:{ ...axCfg() },
-      y:{ ...axCfg(), beginAtZero:true, title:{display:true,text:'Taxa por 100.000 hab.',color:tickColor,font:fontDefault} }
+    options: {
+      responsive:true,
+      plugins:{ legend:{ labels:{ color:'#333', font:{size:10}, boxWidth:14 } } },
+      scales:{
+        x:{ ticks:{color:'#333',font:{size:10}}, grid:{color:'#eee'} },
+        y:{ ticks:{color:'#333',font:{size:10}}, grid:{color:'#eee'}, min:25, max:50, title:{display:true,text:'%',color:'#555',font:{size:9}} }
+      }
     }
-  }
-});
+  });
+
+  // G8 — Comparativo Brasil x RJ x DC tasa/100k
+  new Chart(document.getElementById('g8'), {
+    type: 'bar',
+    data: {
+      labels: ['Brasil (2023)','Río de Janeiro (2023)','Duque de Caxias (2023)'],
+      datasets: [{
+        label: 'Tasa de incidencia 18-29 años (por 100.000 hab.)',
+        data: [42.8, 65.2, 91.3],
+        backgroundColor: ['#9e9e9e99','#1565c099','#0d3c6e99'],
+        borderColor: ['#9e9e9e','#1565c0','#0d3c6e'],
+        borderWidth: 1.5,
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display:false },
+        tooltip: { callbacks: { label: ctx => ' '+ctx.parsed.y.toFixed(1)+'/100.000 hab.' } }
+      },
+      scales: {
+        x: { ticks: { color: '#333', font:{size:10} }, grid: { color: '#eee' } },
+        y: {
+          ticks: { color: '#333', font:{size:10} },
+          grid: { color: '#eee' },
+          beginAtZero: true,
+          title: { display:true, text:'casos por 100.000 hab.', color:'#555', font:{size:9} }
+        }
+      }
+    }
+  });
 </script>
 </body>
 </html>
