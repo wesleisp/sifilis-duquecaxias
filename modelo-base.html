@@ -16,19 +16,19 @@
 
   /* ===== CAPA (ajustada ao modelo) ===== */
   .capa { min-height:243mm; display:flex; flex-direction:column; align-items:center; text-align:center; page-break-after:always; break-after:page; }
-  .capa .logo-big { width:96mm; height:auto; margin:4mm 0 12mm; }
-  .capa .rotulo { font-size:14pt; font-weight:bold; text-transform:uppercase; letter-spacing:.5px; margin-bottom:12mm; }
-  .capa .titulo-es { font-size:14pt; font-weight:bold; font-style:italic; color:var(--verde); line-height:1.35; max-width:155mm; margin:0 auto 4mm; }
-  .capa .titulo-en { font-size:12.5pt; font-weight:bold; font-style:italic; color:var(--verde); line-height:1.35; max-width:155mm; margin:0 auto 12mm; }
-  .capa .info { text-align:left; width:100%; font-size:11.5pt; line-height:1.8; }
+  .capa .logo-big { width:72mm; height:auto; margin:0 0 7mm; }
+  .capa .rotulo { font-size:13pt; font-weight:bold; text-transform:uppercase; letter-spacing:.5px; margin-bottom:7mm; }
+  .capa .titulo-es { font-size:13pt; font-weight:bold; font-style:italic; color:var(--verde); line-height:1.3; max-width:155mm; margin:0 auto 3mm; }
+  .capa .titulo-en { font-size:11.5pt; font-weight:bold; font-style:italic; color:var(--verde); line-height:1.3; max-width:155mm; margin:0 auto 8mm; }
+  .capa .info { text-align:left; width:100%; font-size:11pt; line-height:1.55; }
   .capa .info p { margin-bottom:2px; }
-  .capa .integrantes { margin-top:10px; }
-  .capa .integrantes .tit { font-weight:bold; text-align:center; margin-bottom:8px; }
-  .capa .integrantes ol { margin-left:16mm; line-height:1.4; font-size:10pt; }
-  .capa .integrantes li { margin-bottom:5px; }
+  .capa .integrantes { margin-top:8px; }
+  .capa .integrantes .tit { font-weight:bold; text-align:center; margin-bottom:6px; }
+  .capa .integrantes ol { margin-left:14mm; line-height:1.25; font-size:9pt; }
+  .capa .integrantes li { margin-bottom:2.5px; }
   .capa .integrantes .em { color:#333; }
-  .capa .integrantes .or { color:#666; font-size:9pt; }
-  .capa .rodape { margin-top:auto; padding-top:12mm; font-weight:bold; font-size:11.5pt; line-height:1.7; }
+  .capa .integrantes .or { color:#666; font-size:8.5pt; }
+  .capa .rodape { margin-top:auto; padding-top:8mm; font-weight:bold; font-size:11pt; line-height:1.6; }
 
   /* ===== RESUMEN / ABSTRACT (barra lateral de palavras-chave, estilo modelo) ===== */
   .bloque { display:grid; grid-template-columns:44mm 1fr; gap:14px; margin:16px 0; border-bottom:1px solid #aaa; padding-bottom:14px; }
@@ -80,7 +80,9 @@
     body { background:#fff; }
     @page { size:A4; margin:24mm 20mm 20mm 24mm; }
     .documento { width:auto; margin:0; padding:0; box-shadow:none; }
-    .capa { min-height:0; height:240mm; }
+    .capa { min-height:0; height:auto; }
+    .capa .rodape { margin-top:32px; }
+    .resumo-pagina { break-before:page; page-break-before:always; }
     table.tab, .graf-box, .graf-duplo, .bloco { page-break-inside:avoid; }
     h2.h, h3.hs, .tab-cap, .tab-sub, .graf-cap, .graf-sub { page-break-after:avoid; }
   }
