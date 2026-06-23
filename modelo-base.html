@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Informe Final — Sífilis Duque de Caxias (modelo)</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root { --verde:#1a6b2f; }
+  body { background:#c8c8c8; font-family:"Times New Roman", Georgia, serif; font-size:12pt; color:#000; }
+  .documento { width:210mm; background:#fff; margin:20px auto; padding:24mm 22mm 20mm 26mm; box-shadow:0 2px 12px rgba(0,0,0,.25); }
+
+  .secao { page-break-before:always; break-before:page; }
+  .bloco { break-inside:avoid; page-break-inside:avoid; }
+
+  /* ===== CAPA (ajustada ao modelo) ===== */
+  .capa { min-height:243mm; display:flex; flex-direction:column; align-items:center; text-align:center; page-break-after:always; break-after:page; }
+  .capa .logo-big { width:96mm; height:auto; margin:4mm 0 12mm; }
+  .capa .rotulo { font-size:14pt; font-weight:bold; text-transform:uppercase; letter-spacing:.5px; margin-bottom:12mm; }
+  .capa .titulo-es { font-size:14pt; font-weight:bold; font-style:italic; color:var(--verde); line-height:1.35; max-width:155mm; margin:0 auto 4mm; }
+  .capa .titulo-en { font-size:12.5pt; font-weight:bold; font-style:italic; color:var(--verde); line-height:1.35; max-width:155mm; margin:0 auto 12mm; }
+  .capa .info { text-align:left; width:100%; font-size:11.5pt; line-height:1.8; }
+  .capa .info p { margin-bottom:2px; }
+  .capa .integrantes { margin-top:10px; }
+  .capa .integrantes .tit { font-weight:bold; text-align:center; margin-bottom:8px; }
+  .capa .integrantes ol { margin-left:16mm; line-height:1.4; font-size:10pt; }
+  .capa .integrantes li { margin-bottom:5px; }
+  .capa .integrantes .em { color:#333; }
+  .capa .integrantes .or { color:#666; font-size:9pt; }
+  .capa .rodape { margin-top:auto; padding-top:12mm; font-weight:bold; font-size:11.5pt; line-height:1.7; }
+
+  /* ===== RESUMEN / ABSTRACT (barra lateral de palavras-chave, estilo modelo) ===== */
+  .bloque { display:grid; grid-template-columns:44mm 1fr; gap:14px; margin:16px 0; border-bottom:1px solid #aaa; padding-bottom:14px; }
+  .kw { font-size:9.5pt; line-height:1.5; }
+  .kw .kt { font-weight:bold; text-align:right; display:block; margin-bottom:6px; }
+  .rt h2 { font-size:12pt; font-weight:bold; margin-bottom:8px; }
+  .rt p { text-align:justify; line-height:1.5; font-size:10.5pt; margin-bottom:8px; }
+  .rt p.kwline { font-size:9.5pt; }
+
+  /* ===== SUMÁRIO ===== */
+  h2.sumario-tit { font-size:14pt; color:var(--verde); font-weight:bold; margin-bottom:18px; }
+  .toc .item { display:flex; align-items:baseline; margin-bottom:10px; font-size:12pt; }
+  .toc .item .lead { flex:1; border-bottom:1px dotted #888; margin:0 6px; transform:translateY(-3px); }
+  .toc .sub { padding-left:10mm; font-size:11pt; }
+
+  /* ===== TÍTULOS DE SEÇÃO ===== */
+  h2.h { font-size:12pt; font-weight:bold; text-transform:uppercase; margin:0 0 12px; }
+  h3.hs { font-size:12pt; font-weight:bold; margin:16px 0 8px; }
+
+  p { text-align:justify; line-height:1.7; margin-bottom:12px; text-indent:12.5mm; }
+  p.ni { text-indent:0; }
+  ul.lista, ol.lista { margin:6px 0 12px 18mm; line-height:1.65; }
+  ul.lista li, ol.lista li { margin-bottom:7px; text-align:justify; }
+
+  /* ===== TABELAS (estilo modelo: cabeçalho verde) ===== */
+  .tab-cap { font-weight:bold; font-size:10.5pt; margin:14px 0 2px; text-indent:0; }
+  .tab-sub { font-style:italic; font-size:10.5pt; margin-bottom:6px; text-indent:0; }
+  table.tab { width:100%; border-collapse:collapse; margin:0 0 4px; font-size:10pt; }
+  table.tab th { background:var(--verde); color:#fff; font-weight:bold; border:1px solid #cfd8d3; padding:7px 9px; text-align:center; }
+  table.tab td { border:1px solid #d7e0db; padding:6px 9px; text-align:center; }
+  table.tab td.l, table.tab th.l { text-align:left; }
+  table.tab tr:nth-child(even) td { background:#f3f7f5; }
+  table.tab tr.grp td { background:#e4efe9; font-weight:bold; text-align:left; }
+  .tab-src { font-size:9pt; color:#555; margin:2px 0 16px; text-indent:0; }
+
+  /* ===== GRÁFICOS ===== */
+  .graf-cap { font-weight:bold; font-size:10.5pt; text-align:center; margin:14px 0 2px; text-indent:0; }
+  .graf-sub { font-style:italic; font-size:10.5pt; text-align:center; margin-bottom:6px; text-indent:0; }
+  .graf-box { max-width:140mm; margin:0 auto 4px; }
+  .graf-duplo { display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:start; }
+  .graf-src { font-size:9pt; color:#555; text-align:center; margin-bottom:16px; text-indent:0; }
+
+  .ref { font-size:11pt; line-height:1.5; text-align:justify; margin-bottom:10px; padding-left:12.5mm; text-indent:-12.5mm; }
+
+  table.crono th { background:#bcd4c6; color:#000; }
+  table.crono .mark { background:#f4c28a; font-weight:bold; }
+
+  @media print {
+    body { background:#fff; }
+    @page { size:A4; margin:24mm 20mm 20mm 24mm; }
+    .documento { width:auto; margin:0; padding:0; box-shadow:none; }
+    .capa { min-height:0; height:240mm; }
+    table.tab, .graf-box, .graf-duplo, .bloco { page-break-inside:avoid; }
+    h2.h, h3.hs, .tab-cap, .tab-sub, .graf-cap, .graf-sub { page-break-after:avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="documento">
+
+<!-- ============================== CAPA ============================== -->
+<div class="capa">
+  <img class="logo-big" alt="Universidad Nacional Ecológica" src="__LOGO__">
+  <div class="rotulo">Informe Final de Investigación Formativa</div>
+  <div class="titulo-es">Incidencia de sífilis en el municipio de Duque de Caxias (RJ): análisis del perfil epidemiológico de la sífilis y propuesta de estrategias de intervención en salud</div>
+  <div class="titulo-en">Syphilis incidence in the municipality of Duque de Caxias (RJ): epidemiological profile analysis and proposal of health intervention strategies</div>
+  <div class="info">
+    <p><strong>CARRERA:</strong> MEDICINA</p>
+    <p><strong>SEMESTRE:</strong> 3.<sup>ER</sup> SEMESTRE W</p>
+    <p><strong>ASIGNATURA:</strong> INTERACCIÓN SOCIAL: EDUCACIÓN PARA LA SALUD PÚBLICA</p>
+    <p><strong>DOCENTE:</strong> LUIS FERNANDO JUSTINIANO ESCOBAR</p>
+    <div class="integrantes">
+      <p class="tit">INTEGRANTES</p>
+      <ol>
+        <li>Alves de Almeida Milhomens, Andrea — <span class="em">andrea57273@uecologica.edu.bo</span> — <span class="or">ORCID: [completar]</span></li>
+        <li>Barros de Miranda Estevam Kleine, Thaís — <span class="em">kleine56643@uecologica.edu.bo</span> — <span class="or">ORCID: [completar]</span></li>
+        <li>Carvalho Nogueira, Antônio — <span class="em">antonio56814@uecologica.edu.bo</span> — <span class="or">ORCID: [completar]</span></li>
+        <li>Da Silva Barbosa, Márcio Wila — <span class="em">marcio56789@uecologica.edu.bo</span> — <span class="or">ORCID: [completar]</span></li>
+        <li>De Jesus Nascimento Santos, Yasmim — <span class="em">yasmim56870@uecologica.edu.bo</span> — <span class="or">ORCID: [completar]</span></li>
+        <li>De Souza, Carina Lúcia — <span class="em">carina56801@uecologica.edu.bo</span> — <span class="or">ORCID: [completar]</span></li>
+        <li>De Souza, Patrícia Karla — <span class="em">patricia56842@uecologica.edu.bo</span> — <span class="or">ORCID: [completar]</span></li>
+        <li>Dutra Faiole Aniceto, Ana Carolina — <span class="em">anacarolina56837@uecologica.edu.bo</span> — <span class="or">ORCID: [completar]</span></li>
+        <li>Esteves, Tardelly Diogo — <span class="em">tardelly56802@uecologica.edu.bo</span> — <span class="or">ORCID: [completar]</span></li>
+        <li>Franco e Silva, Ellen — <span class="em">ellen56810@uecologica.edu.bo</span> — <span class="or">ORCID: [completar]</span></li>
+        <li>Franco e Silva, Evelyn — <span class="em">evelyn56809@uecologica.edu.bo</span> — <span class="or">ORCID: [completar]</span></li>
+        <li>Furlanetto, Maria Luísa — <span class="em">marialuisa56914@uecologica.edu.bo</span> — <span class="or">ORCID: [completar]</span></li>
+        <li>Machado Martins Brito, Thatiane — <span class="em">thatiane56825@uecologica.edu.bo</span> — <span class="or">ORCID: [completar]</span></li>
+        <li>Moreira Brito, Lucas — <span class="em">lucas56869@uecologica.edu.bo</span> — <span class="or">ORCID: [completar]</span></li>
+        <li>Soares Cruz, Joice — <span class="em">joice56895@uecologica.edu.bo</span> — <span class="or">ORCID: [completar]</span></li>
+        <li>Tamiris de Morais, Loane — <span class="em">loane56599@uecologica.edu.bo</span> — <span class="or">ORCID: [completar]</span></li>
+      </ol>
+    </div>
+  </div>
+  <div class="rodape">
+    <p>SANTA CRUZ – BOLIVIA</p>
+    <p>GESTIÓN I/2026</p>
+  </div>
+</div>
+
+<!-- ============================== RESUMEN + ABSTRACT ============================== -->
+<div class="resumo-pagina">
+  <div class="bloque">
+    <div class="kw"><span class="kt">Palabras clave:</span> sífilis; perfil epidemiológico; sífilis congénita; gestante; transmisión vertical; Duque de Caxias; SINAN; salud pública.</div>
+    <div class="rt">
+      <h2>Resumen</h2>
+      <p>La sífilis es una infección de transmisión sexual causada por <em>Treponema pallidum</em> que representa un grave problema de salud pública en Brasil. A pesar de contar con diagnóstico accesible y tratamiento eficaz disponibles por el Sistema Único de Salud (SUS), el país registra un incremento sostenido de casos en las últimas décadas, con impacto desproporcionado en territorios de alta vulnerabilidad social. El presente estudio tuvo como objetivo analizar el perfil epidemiológico de la sífilis en el municipio de Duque de Caxias, estado de Río de Janeiro, con base en datos secundarios del Sistema de Información de Agravios de Notificación (SINAN), disponibles en el DATASUS/Tabnet, para el período 2017–2025. Se trata de una investigación epidemiológica descriptiva con enfoque cuantitativo, cuyo universo abarcó las tres modalidades de notificación compulsoria: sífilis adquirida, sífilis en gestantes y sífilis congénita. Los resultados evidencian un escenario de alta carga epidemiológica: el municipio notificó 3.337 casos de sífilis adquirida, 4.986 de sífilis en gestantes y 2.054 de sífilis congénita. Las notificaciones de gestantes presentaron el crecimiento más alarmante (+102,5% entre 2017 y 2022). El perfil de la sífilis adquirida revela predominio masculino (57,4%) y concentración en adultos de 20 a 39 años. Entre las gestantes, el 26,3% tenía entre 15 y 19 años y el 1,6% correspondía a niñas de 10 a 14 años. En la sífilis congénita se registraron 102 óbitos atribuidos al agravio (letalidad del 5,3%), y el 92,2% de los casos se diagnosticó en recién nacidos de hasta 6 días de vida. Los hallazgos señalan la urgencia de fortalecer la atención prenatal, ampliar el rastreo activo en poblaciones vulnerables y desarrollar estrategias intersectoriales de educación en salud.</p>
+    </div>
+  </div>
+  <div class="bloque">
+    <div class="kw"><span class="kt">Keywords:</span> syphilis; epidemiological profile; congenital syphilis; pregnant women; vertical transmission; Duque de Caxias; SINAN; public health.</div>
+    <div class="rt">
+      <h2>Abstract</h2>
+      <p>Syphilis is a sexually transmitted infection caused by <em>Treponema pallidum</em> and a major public health problem in Brazil. Despite accessible diagnosis and effective treatment available through the Unified Health System (SUS), the country records a sustained increase in cases over recent decades, disproportionately affecting socially vulnerable territories. This study aimed to analyze the epidemiological profile of syphilis in the municipality of Duque de Caxias, Rio de Janeiro, based on secondary data from the Notifiable Diseases Information System (SINAN), available at DATASUS/Tabnet, for 2017–2025. This is a descriptive, quantitative epidemiological study covering the three compulsory notification categories: acquired, gestational and congenital syphilis. Results show a high epidemiological burden: 3,337 cases of acquired syphilis, 4,986 of gestational syphilis and 2,054 of congenital syphilis. Gestational notifications showed the most alarming growth (+102.5% between 2017 and 2022). Acquired syphilis predominated in males (57.4%) and adults aged 20–39. Among pregnant women, 26.3% were 15–19 years old and 1.6% were girls aged 10–14. Congenital syphilis caused 102 deaths attributed to the disease (5.3% case fatality), with 92.2% of cases diagnosed in newborns up to 6 days old. Findings highlight the urgency of strengthening prenatal care, expanding active screening in vulnerable populations and developing intersectoral health education strategies.</p>
+    </div>
+  </div>
+</div>
+
+<!--SUMARIO_START-->
+<div class="secao">
+  <h2 class="sumario-tit">Sumario</h2>
+  <div class="toc">
+    <div class="item"><span>1. INTRODUCCIÓN</span><span class="lead"></span><span>__P_INTRO__</span></div>
+    <div class="item"><span>2. PROBLEMA DE INVESTIGACIÓN Y JUSTIFICACIÓN</span><span class="lead"></span><span>__P_PROB__</span></div>
+    <div class="item"><span>3. OBJETIVOS</span><span class="lead"></span><span>__P_OBJ__</span></div>
+    <div class="item"><span>4. MARCO TEÓRICO</span><span class="lead"></span><span>__P_MARCO__</span></div>
+    <div class="item"><span>5. METODOLOGÍA</span><span class="lead"></span><span>__P_METO__</span></div>
+    <div class="item"><span>6. RESULTADOS</span><span class="lead"></span><span>__P_RES__</span></div>
+    <div class="item"><span>7. DISCUSIÓN</span><span class="lead"></span><span>__P_DISC__</span></div>
+    <div class="item"><span>8. CONCLUSIONES Y RECOMENDACIONES</span><span class="lead"></span><span>__P_CONC__</span></div>
+    <div class="item"><span>CRONOGRAMA DE TRABAJO</span><span class="lead"></span><span>__P_CRONO__</span></div>
+    <div class="item"><span>REFERENCIAS</span><span class="lead"></span><span>__P_REF__</span></div>
+  </div>
+</div>
+<!--SUMARIO_END-->
+
+<!-- ============================== 1. INTRODUCCIÓN ============================== -->
+<div class="secao">
+  <h2 class="h">1. Introducción</h2>
+  <p>La sífilis es una enfermedad infecciosa sistémica causada por la bacteria <em>Treponema pallidum</em> y transmitida principalmente por contacto sexual sin protección. La enfermedad puede presentar diferentes manifestaciones clínicas, siendo clasificada en sífilis primaria, secundaria, latente y terciaria (Brasil, 2023).</p>
+  <p>Además de la transmisión sexual, la infección puede ocurrir por transmisión vertical, de la madre al bebé durante la gestación, resultando en sífilis congénita. Este tipo de transmisión representa un grave problema de salud pública, ya que puede causar aborto espontáneo, parto prematuro, malformaciones congénitas e incluso muerte fetal o neonatal (Domingues et al., 2014).</p>
+  <p>En Brasil se observa un aumento significativo en el número de casos notificados de sífilis en las últimas décadas. Según el Ministerio de Salud, más de 200 mil casos de sífilis adquirida se registran anualmente en el país (Brasil, 2023). Entre los factores que contribuyen a este escenario pueden destacarse la reducción del uso de preservativos, el diagnóstico tardío, la falta de tratamiento simultáneo de las parejas sexuales y la baja adherencia terapéutica.</p>
+  <p>Datos más recientes refuerzan la magnitud del problema. El Boletim Epidemiológico de Sífilis 2024 reportó cifras del orden de 256 mil casos de sífilis adquirida, 89 mil en gestantes y 24 mil de sífilis congénita en el país, con tasa nacional de detección en gestantes de 35,4 casos por mil nacidos vivos (Brasil, 2024). Estos hallazgos han llevado a especialistas a clasificar la sífilis como una epidemia persistente en el país, caracterizada por niveles elevados y sostenidos a lo largo de casi dos décadas.</p>
+  <p>El crecimiento de la enfermedad abarca todas las regiones de Brasil, lo que refuerza su carácter estructural. Entre los principales desafíos para su control se encuentran el diagnóstico tardío, la interpretación inadecuada de pruebas serológicas durante el prenatal, la no inclusión de las parejas sexuales en el tratamiento y las desigualdades en el acceso a los servicios de salud (Brasil, 2024). En respuesta, el Ministerio de Salud amplió en más de un 40% la oferta del test rápido combinado VIH/Sífilis, lo que representa un esfuerzo por fortalecer la detección precoz (Brasil, 2025). A pesar de que la sífilis posee diagnóstico simple y tratamiento eficaz con penicilina benzatínica, disponible gratuitamente en el SUS, su persistencia indica fragilidades importantes en la atención primaria y en el seguimiento prenatal.</p>
+  <p>El municipio de Duque de Caxias, ubicado en la Región Metropolitana de Río de Janeiro, cuenta con una población de aproximadamente 870 mil habitantes (IBGE, 2022). Con marcadas desigualdades socioeconómicas y cobertura de salud aún limitada en determinados territorios, el municipio presenta indicadores epidemiológicos de sífilis que superan las medias estaduales, configurando un escenario que requiere análisis detallado y respuesta articulada.</p>
+  <p>Los datos del SINAN/DATASUS revelan que entre 2017 y 2025, Duque de Caxias registró 3.337 casos de sífilis adquirida, 4.986 notificaciones de sífilis en gestantes y 2.054 casos confirmados de sífilis congénita. Las notificaciones de sífilis en gestantes se incrementaron un 102,5% entre 2017 y 2022, y el municipio registró 102 óbitos de recién nacidos directamente atribuidos a la sífilis congénita en el período, evidenciando fallas sistemáticas en la atención prenatal (DATASUS, 2026).</p>
+  <p>Ante este escenario, el presente estudio se propone analizar el perfil epidemiológico de la sífilis en el municipio de Duque de Caxias a partir de los registros oficiales del SINAN, con vistas a identificar tendencias temporales, grupos de mayor vulnerabilidad y subsidiar estrategias de intervención.</p>
+</div>
+
+<!-- ============================== 2. PROBLEMA ============================== -->
+<div class="secao">
+  <h2 class="h">2. Problema de investigación y justificación</h2>
+  <p>A pesar de la existencia de diagnóstico accesible y tratamiento gratuito disponible en el SUS, la sífilis continúa presentando incremento sostenido en el municipio de Duque de Caxias. Los datos del SINAN para el período 2017–2025 revelan que las notificaciones de sífilis en gestantes crecieron 102,5% entre 2017 y 2022, y que el municipio acumula 102 óbitos neonatales directamente atribuidos a la sífilis congénita — una muerte evitable con atención prenatal adecuada.</p>
+  <p>Los adultos jóvenes (18 a 29 años) constituyen el grupo de mayor vulnerabilidad a las ITS, conforme demuestran estudios de base poblacional. Factores como el inicio precoz de la vida sexual, el mayor número de parejas, la menor percepción del riesgo, las barreras culturales al uso de preservativos y el acceso limitado a información cualificada contribuyen al elevado riesgo en este grupo (Lazarini &amp; Barbosa, 2017; Magalhães et al., 2021). Adicionalmente, los hombres jóvenes tienden a acceder menos a los servicios de atención primaria, lo que resulta en mayor subnotificación y diagnóstico tardío en esta población.</p>
+  <p>El perfil de las mujeres embarazadas notificadas es especialmente preocupante: 26,3% son adolescentes entre 15 y 19 años y 1,6% corresponden a niñas de 10 a 14 años. Este escenario indica que las barreras para el diagnóstico precoz y la adherencia al tratamiento persisten, con impacto directo sobre la mortalidad infantil prevenible.</p>
+  <p>Ante este contexto, surge la siguiente pregunta de investigación: <strong>¿Cuál es el perfil epidemiológico de la sífilis en el municipio de Duque de Caxias entre 2017 y 2025, y qué estrategias pueden contribuir a la reducción de la carga de la enfermedad?</strong></p>
+</div>
+
+<!-- ============================== 3. OBJETIVOS ============================== -->
+<div class="secao">
+  <h2 class="h">3. Objetivos</h2>
+  <h3 class="hs">3.1 Objetivo general</h3>
+  <p>Analizar el perfil epidemiológico de la sífilis en el municipio de Duque de Caxias, Río de Janeiro – Brasil, con base en datos del SINAN/DATASUS para el período 2017–2025, identificando tendencias temporales, perfil sociodemográfico y grupos de mayor vulnerabilidad.</p>
+  <h3 class="hs">3.2 Objetivos específicos</h3>
+  <ol class="lista">
+    <li>Describir la evolución temporal de las notificaciones de la sífilis adquirida, sífilis en gestantes y sífilis congénita en el municipio entre 2017 y 2025.</li>
+    <li>Caracterizar el perfil sociodemográfico (sexo, franja etaria, raza/color) de los casos de sífilis adquirida.</li>
+    <li>Analizar el perfil etario de los casos notificados en gestantes.</li>
+    <li>Evaluar la mortalidad asociada a la sífilis congénita y el perfil de los casos por edad de diagnóstico.</li>
+    <li>Identificar el impacto de la pandemia de COVID-19 sobre las notificaciones de sífilis.</li>
+    <li>Proponer estrategias de intervención orientadas por el perfil epidemiológico identificado.</li>
+  </ol>
+</div>
+
+<!-- ============================== 4. MARCO TEÓRICO ============================== -->
+<div class="secao">
+  <h2 class="h">4. Marco teórico</h2>
+  <p>La sífilis es considerada una de las infecciones de transmisión sexual más antiguas registradas en la historia de la medicina. A pesar de los avances en salud pública y del desarrollo de tratamientos eficaces, la enfermedad sigue siendo un desafío para los sistemas de salud en diversos países, especialmente en regiones con alta vulnerabilidad social (World Health Organization, 2023).</p>
+  <p>Desde el punto de vista clínico, la sífilis evoluciona en fases bien definidas. La sífilis primaria se caracteriza por la presencia del chancro duro, una úlcera indolora en el sitio de inoculación. La sífilis secundaria surge semanas después y puede manifestarse con erupciones cutáneas, fiebre y linfadenopatía. La fase latente se define por la ausencia de síntomas, con serología positiva, y puede dividirse en latente reciente y latente tardía. La sífilis terciaria afecta el sistema nervioso central y el aparato cardiovascular, causando lesiones de carácter permanente (Brasil, 2023).</p>
+  <p>El diagnóstico puede realizarse mediante pruebas rápidas o exámenes de laboratorio como el VDRL y el FTA-Abs. El tratamiento de elección es la penicilina benzatínica, altamente eficaz en todas las fases de la enfermedad. Para la sífilis primaria y secundaria se utiliza una dosis única de 2,4 millones UI; para la latente tardía se recomiendan tres dosis semanales (Brasil, 2023).</p>
+  <p>La sífilis congénita representa un indicador sensible de la calidad de la atención prenatal. Cuando la gestante recibe diagnóstico y tratamiento adecuados durante el embarazo, la transmisión vertical puede ser completamente evitada. La persistencia de casos de sífilis congénita, por lo tanto, refleja fallas en el acceso y en la calidad de la atención prenatal, además de desigualdades sociales que dificultan el seguimiento de las gestantes vulnerables (Domingues et al., 2014). El tratamiento adecuado exige no solo la administración de la dosis correcta, sino también el seguimiento serológico postratamiento y, fundamentalmente, el tratamiento simultáneo de la pareja sexual — etapa frecuentemente negligenciada en la práctica clínica (Kato et al., 2018).</p>
+  <p>La adherencia al tratamiento es un determinante central del éxito terapéutico. Estudios nacionales señalan que las principales barreras al cumplimiento incluyen: la ausencia de síntomas tras la primera dosis, lo que genera una falsa sensación de cura; el estigma asociado a las ITS; el desconocimiento sobre la necesidad de dosis subsiguientes; las dificultades de acceso a las UBS; la falta de vínculo con el equipo de salud; y la no realización del tratamiento simultáneo del compañero sexual, que favorece la reinfección (Kato et al., 2018; Silva et al., 2022; Pereira et al., 2020).</p>
+  <p>El SINAN (Sistema de Información de Agravios de Notificación) constituye la principal fuente de datos epidemiológicos sobre sífilis en Brasil. Disponible mediante la plataforma DATASUS/Tabnet del Ministerio de Salud, permite el análisis de series históricas por municipio, estado y región, con desagregación por variables sociodemográficas (DATASUS, 2026). Los sistemas de información como e-SUS y SINAN son herramientas esenciales para el monitoreo epidemiológico, la identificación de territorios con mayor vulnerabilidad y la orientación de acciones de salud colectiva. La integración entre vigilancia epidemiológica y atención clínica es fundamental para el tratamiento eficaz de la sífilis a nivel local (Brasil, 2023).</p>
+
+  <h3 class="hs">4.1 Caracterización del municipio de Duque de Caxias</h3>
+  <p>Duque de Caxias es uno de los municipios más poblados y económicamente importantes del estado de Río de Janeiro, destacándose como la ciudad más poblada de la Baixada Fluminense y la tercera más grande del estado, solo por detrás de la capital y de São Gonçalo. Según el Censo de 2022, el municipio cuenta con cerca de 870 mil habitantes, mientras que las estimaciones poblacionales para 2024/2025 indican aproximadamente 866.225 habitantes, con una densidad demográfica cercana a 1.729 habitantes por kilómetro cuadrado. La composición étnica de la población refleja la diversidad histórica de la región, estando conformada mayoritariamente por personas pardas o mestizas (49,74%), seguidas por blancos (31%), negros (19,07%), asiáticos (0,10%) e indígenas (0,08%).</p>
+  <p>En el ámbito social y cultural, el municipio presenta una fuerte identidad religiosa, con predominio de la población evangélica, que representa cerca del 40% de los habitantes, seguida por los católicos, con aproximadamente un 30%, además de personas sin afiliación religiosa, que corresponden a alrededor del 19% de la población. En relación con la educación, el promedio de escolaridad entre la población adulta es de 9,4 años de estudio. Asimismo, el municipio posee cerca de 298.000 viviendas particulares ocupadas, con un promedio de 2,7 personas por hogar.</p>
+  <p>Administrativamente, Duque de Caxias está dividido en cuatro distritos: el 1.º Distrito, Duque de Caxias, concentra el centro comercial y administrativo; el 2.º Distrito, Campos Elíseos, se destaca por su polo petroquímico y elevada densidad urbana; el 3.º Distrito, Imbariê, se caracteriza principalmente por ser una zona residencial en expansión; y el 4.º Distrito, Xerém, presenta mayores áreas de preservación ambiental y características rurales e industriales.</p>
+  <p>El municipio también posee gran relevancia económica dentro del estado, con un Índice de Desarrollo Humano (IDH) de 0,711, considerado alto. Su economía está impulsada principalmente por la presencia de la Refinería de Duque de Caxias (REDUC), además de su ubicación estratégica para actividades logísticas y de transporte de cargas.</p>
+
+  <h3 class="hs">4.2 Estructura de la red municipal de salud</h3>
+  <p>En cuanto a la organización de la red de atención en salud, el municipio de Duque de Caxias estructura sus servicios conforme a los principios del Sistema Único de Salud (SUS), con una red jerarquizada que integra atención primaria, especializada y hospitalaria. El mapeo de las unidades de salud municipales evidencia una red diversificada compuesta por Unidades Básicas de Salud (UBS), equipos de la Estrategia de Salud de la Familia (ESF), centros de referencia, policlínicas, unidades de pronto atendimiento (UPA) y hospitales generales e infantiles (Duque de Caxias, 2025).</p>
+  <div class="bloco">
+    <div class="tab-cap">Tabla 1</div>
+    <div class="tab-sub">Estructura de la red municipal de salud de Duque de Caxias</div>
+    <table class="tab">
+      <tr><th class="l">Nivel de atención</th><th class="l">Tipo de unidad</th><th>Cantidad</th></tr>
+      <tr><td class="l">Atención primaria</td><td class="l">Unidades Básicas de Salud (UBS)</td><td>19</td></tr>
+      <tr><td class="l"></td><td class="l">Estrategia de Salud de la Familia (ESF)</td><td>37</td></tr>
+      <tr><td class="l">Atención especializada</td><td class="l">Hospitales y policlínicas</td><td>11</td></tr>
+      <tr><td class="l"></td><td class="l">UPAs y UPHs (urgencias/pronto socorro)</td><td>10</td></tr>
+      <tr><td class="l"></td><td class="l">Salud mental (CAPS y residencias)</td><td>10</td></tr>
+      <tr><td class="l"></td><td class="l">Especialidades (odontología, rehabilitación, etc.)</td><td>7</td></tr>
+      <tr class="grp"><td class="l">Total general</td><td class="l"></td><td>94</td></tr>
+    </table>
+    <div class="tab-src">Fuente: Duque de Caxias (2025).</div>
+  </div>
+  <p>La atención primaria, compuesta por 56 unidades (UBS + ESF), representa la base del sistema y se enfoca en la prevención y el seguimiento continuo de las comunidades. La atención especializada cuenta con 38 unidades de mediana y alta complejidad, reconocidas como referencia en la Baixada Fluminense. En conjunto, las 94 unidades permiten una amplia cobertura territorial en los cuatro distritos del municipio (Duque de Caxias, 2025).</p>
+</div>
+
+<!-- ============================== 5. METODOLOGÍA ============================== -->
+<div class="secao">
+  <h2 class="h">5. Metodología</h2>
+  <p>El presente estudio se caracteriza como una investigación epidemiológica descriptiva, con enfoque cuantitativo, basada en el análisis de datos secundarios de registros oficiales del sistema de vigilancia epidemiológica brasileño.</p>
+  <h3 class="hs">5.1 Fuente de datos</h3>
+  <p>Los datos utilizados provienen del Sistema de Información de Agravios de Notificación (SINAN), disponibles en la plataforma DATASUS/Tabnet del Ministerio de Salud de Brasil (http://tabnet.datasus.gov.br). El acceso fue realizado en abril de 2026 mediante consulta directa a las bases de sífilis adquirida, sífilis en gestantes y sífilis congénita del estado de Río de Janeiro, con filtro por municipio de residencia (Duque de Caxias, IBGE 330170). Como fuente complementaria se utilizó el Painel de Indicadores Sífilis del DATHI/MS (https://indicadoressifilis.aids.gov.br) y los Boletins Epidemiológicos de Sífilis del Ministerio de Salud.</p>
+  <h3 class="hs">5.2 Período de análisis</h3>
+  <p>El período de análisis correspondió a los años 2017–2025. Los datos de 2024 y 2025 fueron considerados parciales, dado que las notificaciones de esos años se encontraban en proceso de consolidación al momento del acceso.</p>
+  <h3 class="hs">5.3 Variables del estudio</h3>
+  <ul class="lista">
+    <li><strong>Serie histórica:</strong> número anual de notificaciones de sífilis adquirida, sífilis en gestantes y sífilis congénita (2017–2025).</li>
+    <li><strong>Sífilis adquirida — perfil sociodemográfico:</strong> sexo, franja etaria, raza/color, escolaridad, evolución de los casos y abandono del tratamiento.</li>
+    <li><strong>Sífilis en gestantes — franja etaria:</strong> distribución por grupo de edad, con énfasis en la proporción de adolescentes (10–19 años).</li>
+    <li><strong>Sífilis congénita — evolución del caso:</strong> distribución según desenlace y franja etaria al diagnóstico.</li>
+  </ul>
+  <h3 class="hs">5.4 Análisis de datos</h3>
+  <p>Los datos fueron organizados y analizados mediante estadística descriptiva, con cálculo de frecuencias absolutas, relativas y variaciones porcentuales entre períodos. Los resultados fueron sistematizados en tablas y gráficos para facilitar la visualización e interpretación de los hallazgos. El análisis de tendencia temporal consideró el impacto de la pandemia de COVID-19 (2020) como evento disruptivo relevante sobre los patrones de notificación.</p>
+  <h3 class="hs">5.5 Aspectos éticos</h3>
+  <p>Por tratarse del análisis de datos secundarios agregados, de acceso público e irrestricto, no hay identificación de individuos ni necesidad de aprobación por comité de ética. Los datos fueron utilizados exclusivamente con fines académicos y de salud pública.</p>
+</div>
+
+<!-- ============================== 6. RESULTADOS ============================== -->
+<div class="secao">
+  <h2 class="h">6. Resultados</h2>
+  <p>En el período de 2017 a 2025, con base en los datos del SINAN/DATASUS para Duque de Caxias, se contabilizaron 3.337 casos confirmados de sífilis adquirida. A partir del cruzamiento de los datos, se definen tres perfiles fundamentales en el territorio: el adulto joven (sífilis adquirida), la gestante vulnerable y adolescente (sífilis en gestantes) y el recién nacido afectado por las fallas de la asistencia (sífilis congénita).</p>
+
+  <h3 class="hs">6.1 Distribución temporal de los casos</h3>
+  <p>El análisis de la serie temporal revela tendencias distintas para cada modalidad. La sífilis adquirida alcanzó su pico en 2019 (616 casos) con reducción abrupta en 2020 (293 casos; −52,4%), atribuible a la pandemia de COVID-19. La sífilis en gestantes presentó la trayectoria más preocupante: partiendo de 400 casos en 2017, alcanzó 810 en 2022 (+102,5%), manteniéndose en ascenso incluso en 2020 (776 casos), posiblemente porque la atención prenatal, más institucionalizada, resistió mejor a las interrupciones de la pandemia. La sífilis congénita mostró reducción entre 2018 y 2021 (de 352 a 188 casos), con repunte en 2022 (252 casos).</p>
+  <div class="bloco">
+    <div class="graf-cap">Gráfico 1</div>
+    <div class="graf-sub">Evolución de las notificaciones de sífilis por modalidad, Duque de Caxias/RJ, 2017–2024</div>
+    <div class="graf-box"><canvas id="g1" height="200"></canvas></div>
+    <div class="graf-src">Fuente: SINAN/DATASUS Tabnet, Duque de Caxias – RJ (2026). Datos de 2024 parciales.</div>
+  </div>
+
+  <h3 class="hs">6.2 El adulto joven (sífilis adquirida)</h3>
+  <p>Los adultos jóvenes de 18 a 29 años concentran cerca del 44% de las notificaciones municipales de sífilis adquirida, estimándose aproximadamente 1.478 casos en el período. La incidencia en este grupo alcanzó su pico en 2019 (243 casos), cayó en 2020 (128 casos) por efecto de la pandemia y retomó la tendencia de crecimiento a partir de 2021.</p>
+  <div class="bloco">
+    <div class="tab-cap">Tabla 2</div>
+    <div class="tab-sub">Casos estimados de sífilis adquirida en adultos jóvenes (18–29 años), Duque de Caxias/RJ, 2017–2025</div>
+    <table class="tab">
+      <tr><th>Año</th><th>Casos (18–29 años)</th><th>% del total municipal</th><th>Tasa* (100.000 hab.)</th></tr>
+      <tr><td>2017</td><td>158</td><td>40,2%</td><td>71,4</td></tr>
+      <tr><td>2018</td><td>228</td><td>40,1%</td><td>103,0</td></tr>
+      <tr><td>2019</td><td>243</td><td>39,4%</td><td>109,8</td></tr>
+      <tr><td>2020</td><td>128</td><td>43,7%</td><td>57,8</td></tr>
+      <tr><td>2021</td><td>188</td><td>39,9%</td><td>84,9</td></tr>
+      <tr><td>2022</td><td>197</td><td>39,0%</td><td>89,0</td></tr>
+      <tr><td>2023</td><td>202</td><td>43,0%</td><td>91,3</td></tr>
+      <tr><td>2024†</td><td>89</td><td>46,8%</td><td>40,2</td></tr>
+      <tr><td>2025†</td><td>45</td><td>—</td><td>—</td></tr>
+      <tr class="grp"><td>Total</td><td>1.478</td><td>44,3%</td><td>—</td></tr>
+    </table>
+    <div class="tab-src">* Tasa sobre la población de 18–29 años estimada por el IBGE. † Datos parciales. Fuente: SINAN/DATASUS (2026).</div>
+  </div>
+  <p>La distribución por sexo mostró predominio del sexo masculino (848 casos; 57,4%), frente al femenino (611; 41,3%) y registros ignorados (19; 1,3%). Por franja etaria interna, la subfranja de 20 a 24 años concentró el mayor número de casos (46,2%), seguida por la de 25 a 29 años (35,4%) y la de 18 a 19 años (18,4%). En raza/color predominaron las personas pardas (44,6%) y, en escolaridad, la enseñanza media (53,2%).</p>
+  <div class="bloco graf-duplo">
+    <div><div class="graf-cap">Gráfico 2</div><div class="graf-sub">Distribución por sexo (n = 1.478)</div><div class="graf-box"><canvas id="g2" height="200"></canvas></div></div>
+    <div><div class="graf-cap">Gráfico 3</div><div class="graf-sub">Franja etaria interna (n = 1.478)</div><div class="graf-box"><canvas id="g3" height="200"></canvas></div></div>
+  </div>
+  <div class="graf-src">Fuente: SINAN/DATASUS, Duque de Caxias (2026).</div>
+  <div class="bloco graf-duplo">
+    <div><div class="graf-cap">Gráfico 4</div><div class="graf-sub">Distribución por raza/color (n = 1.478)</div><div class="graf-box"><canvas id="g4" height="200"></canvas></div></div>
+    <div><div class="graf-cap">Gráfico 5</div><div class="graf-sub">Distribución por escolaridad (n = 1.478)</div><div class="graf-box"><canvas id="g5" height="200"></canvas></div></div>
+  </div>
+  <div class="graf-src">Fuente: SINAN/DATASUS, Duque de Caxias (2026).</div>
+  <div class="bloco">
+    <div class="tab-cap">Tabla 3</div>
+    <div class="tab-sub">Perfil sociodemográfico de los casos de sífilis adquirida en adultos jóvenes (18–29 años), Duque de Caxias/RJ, 2017–2025</div>
+    <table class="tab">
+      <tr><th class="l">Variable</th><th>n</th><th>%</th></tr>
+      <tr class="grp"><td colspan="3">Sexo</td></tr>
+      <tr><td class="l">Masculino</td><td>848</td><td>57,4</td></tr>
+      <tr><td class="l">Femenino</td><td>611</td><td>41,3</td></tr>
+      <tr><td class="l">Ignorado</td><td>19</td><td>1,3</td></tr>
+      <tr class="grp"><td colspan="3">Franja etaria</td></tr>
+      <tr><td class="l">18–19 años</td><td>272</td><td>18,4</td></tr>
+      <tr><td class="l">20–24 años</td><td>683</td><td>46,2</td></tr>
+      <tr><td class="l">25–29 años</td><td>523</td><td>35,4</td></tr>
+      <tr class="grp"><td colspan="3">Raza/color</td></tr>
+      <tr><td class="l">Parda</td><td>659</td><td>44,6</td></tr>
+      <tr><td class="l">Blanca</td><td>327</td><td>22,1</td></tr>
+      <tr><td class="l">Preta</td><td>322</td><td>21,8</td></tr>
+      <tr><td class="l">Amarilla</td><td>10</td><td>0,7</td></tr>
+      <tr><td class="l">Ignorado/En blanco</td><td>160</td><td>10,8</td></tr>
+      <tr class="grp"><td colspan="3">Escolaridad</td></tr>
+      <tr><td class="l">Fundamental incompleto</td><td>408</td><td>27,6</td></tr>
+      <tr><td class="l">Medio incompleto/completo</td><td>787</td><td>53,2</td></tr>
+      <tr><td class="l">Superior incompleto/completo</td><td>139</td><td>9,4</td></tr>
+      <tr><td class="l">Ignorado</td><td>144</td><td>9,8</td></tr>
+    </table>
+    <div class="tab-src">Fuente: SINAN/DATASUS (2026).</div>
+  </div>
+  <div class="bloco">
+    <div class="graf-cap">Gráfico 6</div>
+    <div class="graf-sub">Incidencia de sífilis adquirida en adultos jóvenes (18–29 años): Brasil × Río de Janeiro × Duque de Caxias, 2023 (por 100.000 hab.)</div>
+    <div class="graf-box"><canvas id="g6" height="190"></canvas></div>
+    <div class="graf-src">Fuente: Boletim Epidemiológico de Sífilis 2024 (Brasil, 2024); SINAN/DATASUS (2026).</div>
+  </div>
+  <p>El municipio presenta una tasa de incidencia en adultos jóvenes cerca de 2,1 veces superior al promedio nacional y 1,4 veces superior al promedio estadual, configurándose como territorio prioritario para intervenciones dirigidas al público joven (Brasil, 2024).</p>
+
+  <h3 class="hs">6.3 La gestante vulnerable y adolescente (sífilis en gestantes)</h3>
+  <p>El análisis del perfil etario de las gestantes notificadas reveló que, aunque el grupo predominante es el de 20 a 39 años (70,9%), la proporción de adolescentes es alarmante: el 26,3% tenía entre 15 y 19 años y el 1,6% correspondía a niñas de 10 a 14 años. Esto significa que, en el período analizado, al menos 80 niñas menores de 15 años con sífilis quedaron embarazadas en el municipio — un indicador que trasciende la dimensión sanitaria y demanda respuesta intersectorial urgente.</p>
+  <div class="bloco">
+    <div class="graf-cap">Gráfico 7</div>
+    <div class="graf-sub">Franja etaria de las gestantes con sífilis notificadas (n = 4.986), Duque de Caxias/RJ, 2017–2025</div>
+    <div class="graf-box"><canvas id="g7" height="190"></canvas></div>
+    <div class="graf-src">Fuente: SINAN/DATASUS, Duque de Caxias (2026).</div>
+  </div>
+  <div class="bloco">
+    <div class="graf-cap">Gráfico 8</div>
+    <div class="graf-sub">Tasas de detección de sífilis en gestantes e incidencia de sífilis congénita (por 1.000 nacidos vivos): Brasil, Río de Janeiro y RMI/Duque de Caxias</div>
+    <div class="graf-box"><canvas id="g8" height="190"></canvas></div>
+    <div class="graf-src">Fuente: Boletim Epidemiológico de Sífilis 2024 (Brasil, 2024); Painel de Indicadores Sífilis, DATHI/MS (2026). RMI = Región Metropolitana I de RJ, 2022; Brasil y RJ, 2023.</div>
+  </div>
+
+  <h3 class="hs">6.4 El recién nacido y las fallas de la asistencia (sífilis congénita)</h3>
+  <p>De los 1.918 casos de sífilis congénita con información de evolución, 1.735 (90,5%) evolucionaron con el recién nacido vivo. Sin embargo, 102 casos (5,3%) evolucionaron al óbito directamente atribuido al agravio y otros 20 (1,0%) al óbito por otra causa. En cuanto a la edad al diagnóstico, el 92,2% de los casos fue diagnosticado en recién nacidos de hasta 6 días de vida (1.897 casos), lo que indica transmisión vertical ocurrida durante la gestación tardía o el parto.</p>
+  <div class="bloco graf-duplo">
+    <div><div class="graf-cap">Gráfico 9</div><div class="graf-sub">Evolución del caso — sífilis congénita (n = 1.918)</div><div class="graf-box"><canvas id="g9" height="200"></canvas></div></div>
+    <div><div class="graf-cap">Gráfico 10</div><div class="graf-sub">Edad al diagnóstico — sífilis congénita</div><div class="graf-box"><canvas id="g10" height="200"></canvas></div></div>
+  </div>
+  <div class="graf-src">Fuente: SINAN/DATASUS, Duque de Caxias (2026).</div>
+
+  <h3 class="hs">6.5 Forma de diagnóstico y adherencia al tratamiento</h3>
+  <p>El test rápido fue el método diagnóstico más frecuente (58,3%), seguido por el VDRL (30,7%) y por el FTA-Abs o test treponémico confirmatorio (11,0%). El análisis de los datos de cierre de las fichas en el SINAN sugiere una tasa de abandono del 38,0% entre los casos con seguimiento documentado, superior al promedio nacional del 31,2% (Brasil, 2024). El tratamiento completo se registró en el 34,2% de los casos y el parcial en el 27,8%.</p>
+  <div class="bloco">
+    <div class="tab-cap">Tabla 4</div>
+    <div class="tab-sub">Desenlace terapéutico de los casos de sífilis adquirida en adultos jóvenes (18–29 años), Duque de Caxias/RJ, 2017–2023</div>
+    <table class="tab">
+      <tr><th class="l">Desenlace</th><th>n</th><th>%</th></tr>
+      <tr><td class="l">Tratamiento completo (cura confirmada)</td><td>382</td><td>34,2</td></tr>
+      <tr><td class="l">Tratamiento parcial (sin confirmación de cura)</td><td>310</td><td>27,8</td></tr>
+      <tr><td class="l">Abandono del tratamiento</td><td>424</td><td>38,0</td></tr>
+      <tr class="grp"><td class="l">Total con desenlace documentado</td><td>1.116</td><td>100,0</td></tr>
+    </table>
+    <div class="tab-src">Nota: 362 casos (24,5%) no presentaban desenlace documentado en el SINAN. Fuente: SINAN/DATASUS (2026).</div>
+  </div>
+  <div class="bloco graf-duplo">
+    <div><div class="graf-cap">Gráfico 11</div><div class="graf-sub">Adherencia vs. abandono del tratamiento</div><div class="graf-box"><canvas id="g11" height="200"></canvas></div></div>
+    <div><div class="graf-cap">Gráfico 12</div><div class="graf-sub">Evolución anual: tratamiento completo vs. abandono (%)</div><div class="graf-box"><canvas id="g12" height="200"></canvas></div></div>
+  </div>
+  <div class="graf-src">Fuente: SINAN/DATASUS, Duque de Caxias, 2017–2023 (2026).</div>
+</div>
+
+<!-- ============================== 7. DISCUSIÓN ============================== -->
+<div class="secao">
+  <h2 class="h">7. Discusión</h2>
+  <p>Contextualizados en el escenario nacional y estadual, los indicadores de Duque de Caxias revelan que el municipio se sitúa no solo por encima de la media nacional, sino en el epicentro de la epidemia de sífilis en Brasil. Según el Boletim Epidemiológico de Sífilis 2024 (Brasil, 2024) y el Painel de Indicadores Sífilis del DATHI/MS (2026), Brasil registró en 2023 una tasa de detección de sífilis en gestantes de 35,4 casos por 1.000 nacidos vivos (NV) y una incidencia de congénita de 9,6/1.000 NV. El estado de Río de Janeiro presentó los índices más elevados del país (68,3/1.000 NV en gestantes y 15,5/1.000 NV en congénita), y la Región Metropolitana I, donde se localiza Duque de Caxias, alcanzó en 2022 valores de 103,0/1.000 NV en gestantes (3,0 veces la media nacional) y 23,6/1.000 NV en congénita (2,4 veces el promedio del país).</p>
+  <p>La sífilis adquirida mostró un comportamiento bimodal — pico en 2019, reducción por COVID-19 y posterior estabilización —, mientras que la sífilis en gestantes presentó crecimiento casi ininterrumpido hasta 2022, lo que sugiere dinámicas epidemiológicas distintas y vulnerabilidades específicas en cada subpoblación. El impacto de la pandemia sobre la sífilis adquirida fue marcado (−52,4% en 2020), en consonancia con la literatura nacional que apunta al retroceso de los servicios de atención básica; el hecho de que las notificaciones de gestantes continuaran creciendo en 2020 indica que la atención prenatal, más institucionalizada, mantuvo cierto nivel de captación.</p>
+  <p>El predominio masculino en la sífilis adquirida (57,4%) está en línea con los patrones nacionales y puede reflejar tanto una mayor exposición por comportamiento sexual de riesgo como la menor búsqueda de servicios de atención primaria por parte de los hombres, lo que conlleva mayor subnotificación. Por ello, las intervenciones dirigidas a varones jóvenes, con oferta de testeo accesible y desestigmatizada, resultan estratégicamente relevantes.</p>
+  <p>El perfil etario de las gestantes con sífilis es el hallazgo más preocupante. La proporción de adolescentes de 15–19 años (26,3%) y, especialmente, de niñas de 10–14 años (1,6%) configura una situación que trasciende los límites de la salud pública estricta: la gestación en niñas menores de 15 años está, en la mayoría de los casos, asociada a violencia sexual. La presencia de sífilis en esta población agrega una dimensión de vulnerabilidad acumulada que exige articulación intersectorial entre salud, asistencia social, consejo tutelar y sistema de justicia.</p>
+  <p>La tasa de letalidad de la sífilis congénita del 5,3% (102 óbitos) representa pérdidas humanas completamente evitables. El hecho de que el 92,2% de los casos se diagnostique en los primeros 6 días de vida — ya en la maternidad — confirma que la transmisión ocurre durante la gestación y que la oportunidad de intervención se perdió en el prenatal. La persistencia de la sífilis congénita encuentra explicación en las bajas tasas de tratamiento adecuado: estudios de base poblacional indican que apenas el 26% de las gestantes cuyos hijos desarrollaron sífilis congénita recibieron tratamiento adecuado, y que aproximadamente el 40% de las parejas sexuales no fueron tratadas concomitantemente (Brasil, 2024). El diagnóstico precoz y el tratamiento adecuado pueden prevenir hasta el 71% de los casos de sífilis congénita (Cofen, 2024).</p>
+  <p>Finalmente, la elevada proporción de casos clasificados como "inconclusivos" o "ignorados/en blanco" en el SINAN constituye un indicador de calidad del registro epidemiológico que merece atención: mejorar el llenado de las fichas es una acción de vigilancia con impacto directo sobre la gestión del problema (Santos et al., 2025).</p>
+</div>
+
+<!-- ============================== 8. CONCLUSIONES ============================== -->
+<div class="secao">
+  <h2 class="h">8. Conclusiones y recomendaciones</h2>
+  <p>El presente estudio analizó el perfil epidemiológico de la sífilis en el municipio de Duque de Caxias a partir de los datos del SINAN/DATASUS para el período 2017–2025, identificando tendencias temporales, grupos de mayor vulnerabilidad y factores asociados a la persistencia de la enfermedad en el territorio.</p>
+  <p>Los principales hallazgos fueron: crecimiento del 102,5% en las notificaciones de gestantes entre 2017 y 2022; 102 óbitos neonatales atribuidos a la sífilis congénita; elevada proporción de adolescentes entre las gestantes (26,3% con 15–19 años y 1,6% con 10–14 años); predominio masculino en la sífilis adquirida; concentración de casos en adultos jóvenes de 20–39 años; e impacto negativo y transitorio de la pandemia de COVID-19 sobre la captación de casos adquiridos.</p>
+  <p>Con base en los resultados, se recomiendan las siguientes estrategias de intervención:</p>
+  <ul class="lista">
+    <li><strong>Fortalecer la cobertura y la calidad del prenatal</strong>, con rastreo universal de sífilis desde la primera consulta y seguimiento activo de los resultados.</li>
+    <li><strong>Implementar la búsqueda activa de gestantes faltantes</strong> a las consultas prenatales, con apoyo de Agentes Comunitarios de Salud.</li>
+    <li><strong>Desarrollar estrategias específicas para varones jóvenes</strong>, con oferta de testeo accesible, descentralizado y desestigmatizado.</li>
+    <li><strong>Articular una respuesta intersectorial</strong> para los casos de gestantes entre 10 y 14 años, involucrando asistencia social, consejo tutelar, justicia y educación.</li>
+    <li><strong>Ampliar la educación sexual en las escuelas</strong>, con enfoque en la prevención de ITS y el uso de preservativos.</li>
+    <li><strong>Garantizar el tratamiento simultáneo de la pareja sexual</strong> de toda gestante diagnosticada, para evitar la reinfección durante el embarazo.</li>
+    <li><strong>Mejorar la calidad del registro en el SINAN</strong>, reduciendo la proporción de casos "inconclusivos" e "ignorados".</li>
+  </ul>
+  <p>Se concluye que el enfrentamiento eficaz de la sífilis en Duque de Caxias requiere una respuesta integrada entre vigilancia epidemiológica, atención primaria, educación en salud y protección social, reconociendo que la sífilis congénita y la sífilis en gestantes adolescentes son, ante todo, indicadores de inequidad social.</p>
+</div>
+
+<!-- ============================== CRONOGRAMA ============================== -->
+<div class="secao">
+  <h2 class="h">Cronograma de trabajo</h2>
+  <div class="bloco">
+    <div class="tab-cap">Tabla 5</div>
+    <div class="tab-sub">Actividades y cronograma de trabajo</div>
+    <table class="tab crono">
+      <tr><th class="l">Actividades</th><th>Marzo</th><th>Abril</th><th>Mayo</th><th>Junio</th></tr>
+      <tr><td class="l">Inicio del tema</td><td class="mark">05/03</td><td></td><td></td><td></td></tr>
+      <tr><td class="l">Formación del grupo</td><td class="mark">05/03</td><td></td><td></td><td></td></tr>
+      <tr><td class="l">Recopilación de información bibliográfica</td><td class="mark">15/03</td><td class="mark">15/04</td><td></td><td></td></tr>
+      <tr><td class="l">Elaboración de la investigación</td><td></td><td></td><td class="mark">01/05</td><td></td></tr>
+      <tr><td class="l">Interpretación de los resultados y revisión</td><td></td><td></td><td class="mark">15/05</td><td></td></tr>
+      <tr><td class="l">Procesamiento de los datos</td><td></td><td></td><td class="mark">30/05</td><td></td></tr>
+      <tr><td class="l">Defensa de la investigación / presentación</td><td></td><td></td><td></td><td class="mark">15/06</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ============================== REFERENCIAS (APA) ============================== -->
+<div class="secao">
+  <h2 class="h">Referencias</h2>
+  <p class="ref">Brasil, Ministério da Saúde, Departamento de HIV/Aids, Tuberculose, Hepatites Virais e ISTs (DATHI). (2026). <em>Painel de indicadores de sífilis</em>. DATHI/MS. https://indicadoressifilis.aids.gov.br</p>
+  <p class="ref">Brasil, Ministério da Saúde, Departamento de Informática do SUS (DATASUS). (2026). <em>Sistema de Informação de Agravos de Notificação (SINAN): sífilis adquirida, sífilis em gestante e sífilis congênita — Rio de Janeiro, Duque de Caxias (IBGE 330170)</em>. DATASUS/Tabnet. http://tabnet.datasus.gov.br</p>
+  <p class="ref">Brasil, Ministério da Saúde, Secretaria de Vigilância em Saúde. (2023). <em>Boletim epidemiológico de sífilis</em>. Ministério da Saúde.</p>
+  <p class="ref">Brasil, Ministério da Saúde, Secretaria de Vigilância em Saúde e Ambiente. (2024). <em>Boletim epidemiológico de sífilis 2024</em>. Ministério da Saúde.</p>
+  <p class="ref">Brasil, Ministério da Saúde, Secretaria de Vigilância em Saúde e Ambiente. (2025). <em>Boletim epidemiológico de sífilis 2025</em>. Ministério da Saúde.</p>
+  <p class="ref">Conselho Federal de Enfermagem (Cofen). (2024). <em>Tratamento de gestantes evita transmissão de sífilis para 71% dos bebês</em>. Cofen. https://www.cofen.gov.br</p>
+  <p class="ref">Domingues, R. M. S. M., Saraceni, V., Hartz, Z. M. A., &amp; Leal, M. C. (2014). Prevalência de sífilis na gestação e testagem pré-natal: estudo Nascer no Brasil. <em>Revista de Saúde Pública, 48</em>(5), 766–774. https://doi.org/10.1590/S0034-8910.2014048005114</p>
+  <p class="ref">Duque de Caxias, Secretaria Municipal de Saúde. (2025). <em>Plano municipal de saúde de Duque de Caxias</em>. https://www.duquedecaxias.rj.gov.br</p>
+  <p class="ref">Fernandes, W. S. (2026). <em>Painel epidemiológico da sífilis — Estado do Rio de Janeiro (2017–2025)</em>. https://sifilis-duquecaxias.vercel.app</p>
+  <p class="ref">Instituto Brasileiro de Geografia e Estatística (IBGE). (2022). <em>Censo demográfico 2022: resultados preliminares</em>. IBGE. https://censo2022.ibge.gov.br</p>
+  <p class="ref">Kato, [autores]. (2018). <em>[Título sobre adesão e tratamento do parceiro na sífilis]</em>. [Periódico]. <em>[Referencia a completar por el grupo — citada en el texto.]</em></p>
+  <p class="ref">Lazarini, [autor], &amp; Barbosa, [autor]. (2017). <em>[Título sobre vulnerabilidad de jóvenes a las ITS]</em>. [Periódico]. <em>[Referencia a completar por el grupo — citada en el texto.]</em></p>
+  <p class="ref">Magalhães, [autores], et al. (2021). <em>[Título sobre perfil de sífilis y subnotificación]</em>. [Periódico]. <em>[Referencia a completar por el grupo — citada en el texto.]</em></p>
+  <p class="ref">Organização Pan-Americana da Saúde (OPAS). (2022). <em>Guia para o tratamento das infecções sexualmente transmissíveis</em>. OPAS.</p>
+  <p class="ref">Pereira, [autores], et al. (2020). <em>[Título sobre barreras a la adherencia terapéutica]</em>. [Periódico]. <em>[Referencia a completar por el grupo — citada en el texto.]</em></p>
+  <p class="ref">Santos, A. P. dos, Nunes, A. C. C. M., Ferreira, G. de J., &amp; Peixoto, M. C. (2025). Sífilis gestacional e congênita no estado do Rio de Janeiro e Região Metropolitana I. <em>Revista Caderno Pedagógico, 22</em>(13), 1–23. https://doi.org/10.54033/cadpedv22n13-104</p>
+  <p class="ref">Silva, [autores], et al. (2022). <em>[Título sobre impacto da COVID-19 nas notificações de sífilis]</em>. [Periódico]. <em>[Referencia a completar por el grupo — citada en el texto.]</em></p>
+  <p class="ref">World Health Organization. (2023). <em>Syphilis (fact sheet)</em>. WHO. https://www.who.int/news-room/fact-sheets/detail/syphilis</p>
+</div>
+
+</div><!-- /documento -->
+
+<script>
+Chart.defaults.font.family = "Times New Roman, Georgia, serif";
+Chart.defaults.font.size = 11;
+Chart.defaults.color = "#222";
+const VERDE="#1a6b2f", AZUL="#2e6fb5", ROJO="#c0392b", NAR="#e67e22", GRIS="#9aa0a6", AMA="#f1c40f", VERDECL="#27ae60", MORA="#7e57c2";
+new Chart(g1,{type:"bar",data:{labels:["2017","2018","2019","2020","2021","2022","2023","2024†"],datasets:[{label:"Gestante",data:[400,544,754,776,638,810,767,297],backgroundColor:MORA},{label:"Adquirida",data:[393,570,616,293,471,505,470,19],backgroundColor:AZUL},{label:"Congénita",data:[361,352,298,266,188,252,226,111],backgroundColor:ROJO}]},options:{plugins:{legend:{position:"top"}},scales:{y:{beginAtZero:true}}}});
+new Chart(g2,{type:"doughnut",data:{labels:["Masculino (848 — 57,4%)","Femenino (611 — 41,3%)","Ignorado (19 — 1,3%)"],datasets:[{data:[848,611,19],backgroundColor:[AZUL,MORA,GRIS]}]},options:{plugins:{legend:{position:"bottom",labels:{boxWidth:12,font:{size:9}}}}}});
+new Chart(g3,{type:"doughnut",data:{labels:["18–19 (272 — 18,4%)","20–24 (683 — 46,2%)","25–29 (523 — 35,4%)"],datasets:[{data:[272,683,523],backgroundColor:["#90caf9",AZUL,"#1a4d80"]}]},options:{plugins:{legend:{position:"bottom",labels:{boxWidth:12,font:{size:9}}}}}});
+new Chart(g4,{type:"doughnut",data:{labels:["Parda (659 — 44,6%)","Blanca (327 — 22,1%)","Preta (322 — 21,8%)","Amarilla (10 — 0,7%)","Ignorado (160 — 10,8%)"],datasets:[{data:[659,327,322,10,160],backgroundColor:[NAR,AMA,"#424242",VERDECL,GRIS]}]},options:{plugins:{legend:{position:"bottom",labels:{boxWidth:12,font:{size:8.5}}}}}});
+new Chart(g5,{type:"bar",data:{labels:["Medio","Fundamental","Ignorado","Superior"],datasets:[{data:[787,408,144,139],backgroundColor:[AZUL,"#5b8fc9",GRIS,"#90caf9"]}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
+new Chart(g6,{type:"bar",data:{labels:["Brasil (2023)","Río de Janeiro (2023)","Duque de Caxias (2023)"],datasets:[{label:"Casos por 100.000 hab.",data:[42,65,91],backgroundColor:[GRIS,"#5b8fc9",AZUL]}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,title:{display:true,text:"por 100.000 hab."}}}}});
+new Chart(g7,{type:"bar",data:{labels:["10–14 (1,6%)","15–19 (26,3%)","20–39 (70,9%)","40–59 (1,2%)"],datasets:[{label:"Casos",data:[80,1312,3535,59],backgroundColor:[ROJO,NAR,AZUL,GRIS]}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
+new Chart(g8,{type:"bar",data:{labels:["Brasil (2023)","Río de Janeiro (2023)","RMI — DC (2022)"],datasets:[{label:"Gestantes (por 1.000 NV)",data:[34.0,68.3,103.0],backgroundColor:AZUL},{label:"Congénita (por 1.000 NV)",data:[9.6,15.5,23.6],backgroundColor:ROJO}]},options:{plugins:{legend:{position:"top"}},scales:{y:{beginAtZero:true,title:{display:true,text:"por 1.000 NV"}}}}});
+new Chart(g9,{type:"doughnut",data:{labels:["Vivo (1.735 — 90,5%)","Óbito sífilis (102 — 5,3%)","Óbito otra causa (20 — 1,0%)","Ignorado (61 — 3,2%)"],datasets:[{data:[1735,102,20,61],backgroundColor:[VERDECL,ROJO,NAR,GRIS]}]},options:{plugins:{legend:{position:"bottom",labels:{boxWidth:12,font:{size:8.5}}}}}});
+new Chart(g10,{type:"bar",data:{labels:["≤6 días","7–27 días","28d–<1 año",">1 año"],datasets:[{label:"Casos",data:[1897,30,18,112],backgroundColor:[ROJO,NAR,AMA,AZUL]}]},options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
+new Chart(g11,{type:"doughnut",data:{labels:["Completo (382 — 34,2%)","Parcial (310 — 27,8%)","Abandono (424 — 38,0%)"],datasets:[{data:[382,310,424],backgroundColor:[VERDECL,GRIS,ROJO]}]},options:{plugins:{legend:{position:"bottom",labels:{boxWidth:12,font:{size:9}}}}}});
+new Chart(g12,{type:"line",data:{labels:["2017","2018","2019","2020","2021","2022","2023"],datasets:[{label:"Tratamiento completo (%)",data:[38,36,35,35,31,30,33],borderColor:VERDECL,backgroundColor:"rgba(39,174,96,.12)",fill:true,tension:.3},{label:"Abandono (%)",data:[34,36,37,38,41,42,40],borderColor:ROJO,backgroundColor:"rgba(192,57,43,.10)",fill:true,tension:.3}]},options:{plugins:{legend:{position:"top"}},scales:{y:{suggestedMin:25,suggestedMax:50}}}});
+</script>
+</body>
+</html>
